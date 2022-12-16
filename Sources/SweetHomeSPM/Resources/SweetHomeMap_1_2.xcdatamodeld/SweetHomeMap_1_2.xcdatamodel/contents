@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="21512" systemVersion="21G217" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="City" representedClassName="CityMaker" syncable="YES">
+        <attribute name="city_name" optional="YES" attributeType="String"/>
+        <relationship name="cities" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Country" inverseName="country_cities" inverseEntity="Country"/>
+        <relationship name="city_makers" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Maker" inverseName="maker_city" inverseEntity="Maker"/>
+    </entity>
+    <entity name="Country" representedClassName="CountryMaker" syncable="YES">
+        <attribute name="country_name" optional="YES" attributeType="String"/>
+        <relationship name="country_cities" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="City" inverseName="cities" inverseEntity="City"/>
+    </entity>
+    <entity name="Maker" representedClassName="Maker" syncable="YES">
+        <attribute name="date" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="email" optional="YES" attributeType="String"/>
+        <attribute name="lat" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="long" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <attribute name="maker_image" optional="YES" attributeType="URI"/>
+        <attribute name="maker_name" optional="YES" attributeType="String"/>
+        <attribute name="maker_surname" optional="YES" attributeType="String"/>
+        <attribute name="password" optional="YES" attributeType="String"/>
+        <attribute name="phone_number" optional="YES" attributeType="String"/>
+        <relationship name="maker_city" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="City" inverseName="city_makers" inverseEntity="City"/>
+        <relationship name="maker_product_categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product_category_maker" inverseName="maker" inverseEntity="Product_category_maker"/>
+    </entity>
+    <entity name="Product" representedClassName="Product" syncable="YES">
+        <attribute name="product_image" optional="YES" attributeType="URI"/>
+        <attribute name="product_name" optional="YES" attributeType="String"/>
+        <attribute name="product_price" optional="YES" attributeType="Decimal" defaultValueString="0.0"/>
+        <relationship name="products_category_maker" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product_category_maker" inverseName="product" inverseEntity="Product_category_maker"/>
+    </entity>
+    <entity name="Product_category" representedClassName="ProductCategory" syncable="YES">
+        <attribute name="category_image" optional="YES" attributeType="URI"/>
+        <attribute name="category_name" optional="YES" attributeType="String"/>
+        <relationship name="product_categorie_maker" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product_category_maker" inverseName="product_categories" inverseEntity="Product_category_maker"/>
+    </entity>
+    <entity name="Product_category_maker" representedClassName="ProductCategoryMaker" syncable="YES">
+        <attribute name="category_name" optional="YES" attributeType="String"/>
+        <relationship name="maker" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Maker" inverseName="maker_product_categories" inverseEntity="Maker"/>
+        <relationship name="product" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product" inverseName="products_category_maker" inverseEntity="Product"/>
+        <relationship name="product_categories" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Product_category" inverseName="product_categorie_maker" inverseEntity="Product_category"/>
+    </entity>
+</model>
