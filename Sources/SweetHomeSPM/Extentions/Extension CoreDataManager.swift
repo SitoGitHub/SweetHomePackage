@@ -11,9 +11,12 @@ import MapKit
 
 extension CoreDataManager {
     
-    func getCountry() -> Result<[CountryMaker], Errors> {
+    func getCountry(country: String?) -> Result<[CountryMaker], Errors> {
         let fetchRequest: NSFetchRequest<CountryMaker> = CountryMaker.fetchRequest()
-        
+        if let country = country {
+            let predicate = NSPredicate(format: "%K == %@", #keyPath(CountryMaker.country_name), country)
+            fetchRequest.predicate = predicate
+        }
         do {
             let result = try managedObjectContext.fetch(fetchRequest)
 //            guard result != nil else {
@@ -44,7 +47,7 @@ extension CoreDataManager {
     
     func getCity() -> Result<[CityMaker], Errors> {
         var allCities: [CityMaker] = []
-        let countries = getCountry()
+        let countries = getCountry(country: nil)
         
         switch countries {
         case.success(let countries):

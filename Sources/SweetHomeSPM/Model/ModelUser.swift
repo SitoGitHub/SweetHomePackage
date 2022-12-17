@@ -14,12 +14,12 @@ public class ModelUser {
     //let bakers:
     var coreDataManager = CoreDataManager.shared
     //var bakers: Baker?
-//    init () {
+    init () {
 //        setup()
-//    }
+    }
 //
     func setup() {
-     //   addMaker()
+        addMaker()
         
      //   let bakers = coreDataManager.getBaker()
      //   bakers
