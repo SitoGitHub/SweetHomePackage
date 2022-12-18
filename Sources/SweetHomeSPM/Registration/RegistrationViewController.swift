@@ -338,6 +338,11 @@ extension RegistrationViewController: UITextFieldDelegate {
         presenter?.isFieldShouldReturn(textField: textField)
         return true
     }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+       // print(textField.text ?? "default")
+        //presenter?.isFieldSDidEndEditing(textField: textField)
+    }
 }
 
 // MARK: - ImageViewerViewProtocol

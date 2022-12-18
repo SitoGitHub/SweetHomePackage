@@ -12,21 +12,24 @@ protocol RegistrationViewOutputProtocol: AnyObject {
     func isFieldShouldReturn(textField: UITextField)
     func isPressedSaveButton()
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any])
+    //func isFieldSDidEndEditing(textField: UITextField)
 }
 
 protocol RegistrationInteractorOutputProtocol: AnyObject {
-    func existAlreadyMaker(phoneNumberMaker: String)
-    func fetchedMakerData(maker: Maker?, error: Errors?)
+    func existAlreadyMaker(phoneNumberMaker: String, email: String)
+    func fetchedMakerData(maker: MakerAnotation?, error: Errors?)
     
 }
 
  class RegistrationPresenter {
      let validData = ValidData()
      weak var view: RegistrationViewInputProtocol?
+     weak var mapPresenter: RegistrationOutputProtocol?
      var router: RegistrationRouterInputProtocol
      var interactor: RegistrationInteractorInputProtocol
      var touchCoordinate: CLLocationCoordinate2D
      var urlImageMaker: URL?
+     lazy var password = String()
     
     init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol, touchCoordinate: CLLocationCoordinate2D) {
         self.interactor = interactor
@@ -74,11 +77,11 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         guard !error, let surnameMaker = view?.surnameTextField.text,
               let nameMaker = view?.nameTextField.text,
               let phoneNumberMaker = view?.phoneTextField.text,
-              let emailMaker = view?.emailTextField.text,
-              let passwordMaker = view?.passwordTextField.text
+              let emailMaker = view?.emailTextField.text
+              //let passwordMaker = password
         else { return }
         
-        interactor.saveDataNewMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
+        interactor.saveDataNewMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
     }
     
     func checkForErrors() -> Bool
@@ -129,6 +132,8 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
                                 errors = true
                                 message += "Введенные пароли не совпадают"
                                 view?.alertWithTitle(title: title, message: message, toFocus: textField)
+                            } else {
+                                password = text
                             }
                         }
                     }
@@ -165,7 +170,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
 }
 extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
     
-    func fetchedMakerData(maker: Maker?, error: Errors?) {
+    func fetchedMakerData(maker: MakerAnotation?, error: Errors?) {
         
         guard let maker = maker, error == nil else {
             switch error {
@@ -184,13 +189,13 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
             return
         }
 
-            self.view?.showDate(Makers: pinMakers)
+            self.mapPresenter?.fetchedNewMakerData(pinMakers: [maker])
         
     }
     
-    func existAlreadyMaker(phoneNumberMaker: String) {
+    func existAlreadyMaker(phoneNumberMaker: String, email: String) {
         router.presentWarnMessage(title: "Внимание",
-                                 descriptionText: "Поставщик услуг с номером \(phoneNumberMaker) уже зарегестрирован ранее. Регистрация одного и того же поставщика возможна только один раз.")
+                                 descriptionText: "Поставщик услуг с номером \(phoneNumberMaker) или email \(email) уже зарегестрирован ранее. Проверьте данные.")
     }
     
 

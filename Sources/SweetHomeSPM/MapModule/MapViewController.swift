@@ -191,7 +191,9 @@ extension MapViewController: MKMapViewDelegate {
         }
         
         sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
-        sliderBottomView.makerLabel.text = maker?.title
+        if let surname = maker?.surnameMaker, let name = maker?.nameMaker {
+            sliderBottomView.makerLabel.text = surname + " " + name
+        }
     }
     
     // убираем sliderBottomView по клику на карту hide sliderBottomView

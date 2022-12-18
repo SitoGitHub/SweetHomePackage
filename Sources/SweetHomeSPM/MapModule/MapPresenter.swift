@@ -11,6 +11,10 @@ public protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
 }
 
+public protocol RegistrationOutputProtocol: AnyObject {
+    func fetchedNewMakerData(pinMakers: [MakerAnotation])
+}
+
 public protocol MapViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)
@@ -49,6 +53,10 @@ extension MapPresenter: MapInteractorOutputProtocol {
         DispatchQueue.main.async { [unowned self] in
             self.view?.showDate(pinMakers: pinMakers)
         }
+    }
+    
+    func fetchedNewMakerData(pinMakers: [MakerAnotation]) {
+        self.view?.showDate(pinMakers: pinMakers)
     }
 }
 

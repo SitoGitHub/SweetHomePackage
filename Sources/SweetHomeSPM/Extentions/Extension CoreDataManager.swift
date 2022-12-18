@@ -105,20 +105,38 @@ extension CoreDataManager {
                 }
                 
                 for maker in makers {
-                    var nameAndSurname = String()
-                    if let name = maker.maker_name{
-                        nameAndSurname = name
+                    //var nameAndSurname = String()
+                    var name = String()
+                    var surnameMaker = String()
+                    //let coordinate: CLLocationCoordinate2D
+                    var phoneNumberMaker = String()
+                    var emailMaker = String()
+                    var passwordMaker = String()
+                     
+                    if let nameMAker = maker.maker_name {
+                        name = nameMAker
                     }
                     if let surname = maker.maker_surname{
-                        nameAndSurname += " " + surname
+                        surnameMaker = surname
                     }
+                    if let phoneNumber = maker.phone_number{
+                        phoneNumberMaker = phoneNumber
+                    }
+                    if let email = maker.email {
+                        emailMaker = email
+                    }
+                    if let password = maker.password {
+                        passwordMaker = password
+                    }
+                    let urlImage = maker.maker_image
                     let coordinate = CLLocationCoordinate2D(
                         latitude: maker.lat as! CLLocationDegrees,
                         longitude: maker.long as! CLLocationDegrees
                     )
-                    let MakerAnotation = MakerAnotation(title: nameAndSurname, coordinate: coordinate)
                     
-                    allMakersAnotation.append(MakerAnotation)
+                    let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: name, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, urlImageMaker: urlImage, coordinate: coordinate)
+                    
+                    allMakersAnotation.append(makerAnotation)
                 }
             }
             return .success(allMakersAnotation)
@@ -129,10 +147,12 @@ extension CoreDataManager {
     }
     
     //get Maker with his phone number
-    func getMakerWithPhone(phoneNumber: String) -> Result<[Maker], Errors> {
+    func getMakerWithPhoneAndEmail(phoneNumber: String, email: String) -> Result<[Maker], Errors> {
         let fetchRequest: NSFetchRequest<Maker> = Maker.fetchRequest()
-        let predicate = NSPredicate(format: "%K == %@", #keyPath(Maker.phone_number), phoneNumber)
-            fetchRequest.predicate = predicate
+        let predicatePhone = NSPredicate(format: "%K == %@", #keyPath(Maker.phone_number), phoneNumber)
+        let predicateEmail = NSPredicate(format: "%K == %@", #keyPath(Maker.email), email)
+        let orPredicate = NSCompoundPredicate(type: .or, subpredicates: [predicatePhone, predicateEmail])
+            fetchRequest.predicate = orPredicate
         do {
             let result = try managedObjectContext.fetch(fetchRequest)
 //            guard result != nil else {
@@ -144,7 +164,25 @@ extension CoreDataManager {
         }
     }
     
+    //get City with name
     
+    func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors> {
+        let fetchRequest: NSFetchRequest<CityMaker> = CityMaker.fetchRequest()
+        let predicateCityName = NSPredicate(format: "%K == %@", #keyPath(CityMaker.city_name), cityName)
+        let predicateCountryName = NSPredicate(format: "%K == %@", #keyPath(CityMaker.cities), country)
+        let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [predicateCityName, predicateCountryName])
+        fetchRequest.predicate = andPredicate
+        
+        do {
+            let result = try managedObjectContext.fetch(fetchRequest)
+            //            guard result != nil else {
+            //                return .failure(Errors.loadMakersError)
+            //            }
+            return .success(result)
+        } catch {
+            return .failure(Errors.loadMakersError)
+        }
+    }
     
 //    func getProdactCategory() -> Result<[Wallet], Errors> {
 //

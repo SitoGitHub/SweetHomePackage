@@ -17,10 +17,23 @@ public enum Gender{
 
 public class MakerAnotation: NSObject, MKAnnotation{
     public var coordinate: CLLocationCoordinate2D
+    public var nameMaker: String
+    public var surnameMaker: String
+    public var phoneNumberMaker: String
+    public var emailMaker: String
+    public var passwordMaker: String
+    public var urlImageMaker: URL?
     public var title: String?
-    init (title: String, coordinate: CLLocationCoordinate2D){
-        self.title = title
+    
+    init (surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, coordinate: CLLocationCoordinate2D){
         self.coordinate = coordinate
+        self.nameMaker = nameMaker
+        self.surnameMaker = surnameMaker
+        self.phoneNumberMaker = phoneNumberMaker
+        self.emailMaker = emailMaker
+        self.passwordMaker = passwordMaker
+        self.urlImageMaker = urlImageMaker
+        self.title = nameMaker
     }
 }
 
