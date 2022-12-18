@@ -7,12 +7,12 @@
 //  Created by Aleksei Grachev on 28/11/22.
 //
 
-public protocol MapInteractorProtocol: AnyObject {
+public protocol MapInteractorInputProtocol: AnyObject {
    func fetchMakerData()
 }
 
-public class MapInteractor: MapInteractorProtocol {
-    weak var presenter: MapPresenterProtocol?
+public class MapInteractor: MapInteractorInputProtocol {
+    weak var presenter: MapInteractorOutputProtocol?
     let modelUser = ModelUser()
     var users = [[User]]()
     var coreDataManager = CoreDataManager()

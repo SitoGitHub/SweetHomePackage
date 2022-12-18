@@ -7,30 +7,36 @@
 //import Foundation
 import MapKit
 
- protocol RegistrationPresenterProtocol: AnyObject {
+protocol RegistrationViewOutputProtocol: AnyObject {
     func isTouchesBegan(touches: Set<UITouch>)
     func isFieldShouldReturn(textField: UITextField)
     func isPressedSaveButton()
-    func istTappedMakerImage(info: [UIImagePickerController.InfoKey : Any])
+    func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any])
+}
+
+protocol RegistrationInteractorOutputProtocol: AnyObject {
+    func existAlreadyMaker(phoneNumberMaker: String)
+    func fetchedMakerData(maker: Maker?, error: Errors?)
+    
 }
 
  class RegistrationPresenter {
      let validData = ValidData()
-     weak var view: RegistrationViewProtocol?
-     var router: RegistrationRouterProtocol
-     var interactor: RegistrationInteractorProtocol
+     weak var view: RegistrationViewInputProtocol?
+     var router: RegistrationRouterInputProtocol
+     var interactor: RegistrationInteractorInputProtocol
      var touchCoordinate: CLLocationCoordinate2D
      var urlImageMaker: URL?
     
-    init(interactor: RegistrationInteractorProtocol, router: RegistrationRouterProtocol, touchCoordinate: CLLocationCoordinate2D) {
+    init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol, touchCoordinate: CLLocationCoordinate2D) {
         self.interactor = interactor
         self.router = router
         self.touchCoordinate = touchCoordinate
     }
 }
 
-extension RegistrationPresenter: RegistrationPresenterProtocol {
-
+extension RegistrationPresenter: RegistrationViewOutputProtocol {
+    
     //hide keyboard when tap on view
     func isTouchesBegan(touches: Set<UITouch>) {
         if touches.first != nil {
@@ -64,8 +70,8 @@ extension RegistrationPresenter: RegistrationPresenterProtocol {
     
     func isPressedSaveButton() {
         let error = checkForErrors()
-
-        guard error, let surnameMaker = view?.surnameTextField.text,
+        
+        guard !error, let surnameMaker = view?.surnameTextField.text,
               let nameMaker = view?.nameTextField.text,
               let phoneNumberMaker = view?.phoneTextField.text,
               let emailMaker = view?.emailTextField.text,
@@ -76,85 +82,115 @@ extension RegistrationPresenter: RegistrationPresenterProtocol {
     }
     
     func checkForErrors() -> Bool
-        {
-            var errors = false
-            let title = "Внимание"
-            var message = ""
-            guard let textField = view?.surnameTextField, let text = textField.text else { return false }
+    {
+        var errors = false
+        let title = "Внимание"
+        var message = ""
+        guard let textField = view?.surnameTextField, let text = textField.text else { return false }
+        if text.isEmpty {
+            errors = true
+            message += "Введите фамилию"
+            view?.alertWithTitle(title: title, message: message, toFocus: textField)
+        } else {
+            guard let textField = view?.nameTextField, let text = textField.text else { return false }
             if text.isEmpty {
                 errors = true
-                message += "Введите фамилию"
+                message += "Введите имя"
                 view?.alertWithTitle(title: title, message: message, toFocus: textField)
             } else {
-                guard let textField = view?.nameTextField, let text = textField.text else { return false }
+                guard let textField = view?.phoneTextField, let text = textField.text else { return false }
                 if text.isEmpty {
                     errors = true
-                    message += "Введите имя"
+                    message += "Введите номер телефона"
+                    view?.alertWithTitle(title: title, message: message, toFocus: textField)
+                } else if !validData.isValidPhoneNumber(text) {
+                    errors = true
+                    message += "Введите корректный номер телефона"
                     view?.alertWithTitle(title: title, message: message, toFocus: textField)
                 } else {
-                    guard let textField = view?.phoneTextField, let text = textField.text else { return false }
+                    guard let textField = view?.emailTextField, let text = textField.text else { return false }
                     if text.isEmpty {
                         errors = true
-                        message += "Введите номер телефона"
+                        message += "Введите адрес электронной почты"
                         view?.alertWithTitle(title: title, message: message, toFocus: textField)
-                    } else if !validData.isValidPhoneNumber(text) {
+                    } else if !validData.isValidEmailAddress(emailAddressString: text) {
                         errors = true
-                        message += "Введите корректный номер телефона"
+                        message += "Введите корректный адрес электронной почты"
                         view?.alertWithTitle(title: title, message: message, toFocus: textField)
                     } else {
-                        guard let textField = view?.emailTextField, let text = textField.text else { return false }
-                        if text.isEmpty {
+                        guard let textField = view?.passwordTextField, let text = textField.text else { return false }
+                        if text.count < 6 {
                             errors = true
-                            message += "Введите адрес электронной почты"
-                            view?.alertWithTitle(title: title, message: message, toFocus: textField)
-                        } else if !validData.isValidEmailAddress(emailAddressString: text) {
-                            errors = true
-                            message += "Введите корректный адрес электронной почты"
+                            message += "Введите пароль не менее 6 символов "
                             view?.alertWithTitle(title: title, message: message, toFocus: textField)
                         } else {
-                            guard let textField = view?.passwordTextField, let text = textField.text else { return false }
-                            if text.count < 6 {
+                            guard let textField = view?.confirmPasswordTextField, let text = textField.text else { return false }
+                            if text != view?.passwordTextField.text {
                                 errors = true
-                                message += "Введите пароль не менее 6 символов "
+                                message += "Введенные пароли не совпадают"
                                 view?.alertWithTitle(title: title, message: message, toFocus: textField)
-                            } else {
-                                guard let textField = view?.confirmPasswordTextField, let text = textField.text else { return false }
-                                if text != view?.passwordTextField.text {
-                                    errors = true
-                                    message += "Введенные пароли не совпадают"
-                                    view?.alertWithTitle(title: title, message: message, toFocus: textField)
-                                }
                             }
                         }
                     }
                 }
             }
-            return errors
         }
+        return errors
+    }
     
-    func istTappedMakerImage(info: [UIImagePickerController.InfoKey : Any]) {
-       // interactor.getImageForMakerImageView(info: info)
+    func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any]) {
+        // interactor.getImageForMakerImageView(info: info)
         
         if let chosenImage = info[.originalImage] as? UIImage {
-           // imgPhoto.contentMode = .scaleToFill
+            // imgPhoto.contentMode = .scaleToFill
             view?.makerImageView.image = chosenImage
             //interactor.getImageForMakerImageView(forSaveImage: UIImage)
             
             //сохраняем фото юзера в файл
-//            let path = "photo/temp/album1/img.jpg"
-//
+            //            let path = "photo/temp/album1/img.jpg"
+            //
             let path = "photo/temp/sweethome/maker"
             let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
             guard let url = chosenImage.save(at: tempDirectoryUrl) else { return }
             print(url)
             urlImageMaker = url
-//            guard
-//                    let url = chosenImage.save(at: .documentDirectory,
-//                                       pathAndImageName: path) else { return }
-//            print(url)
+            //            guard
+            //                    let url = chosenImage.save(at: .documentDirectory,
+            //                                       pathAndImageName: path) else { return }
+            //            print(url)
         } else{
             print("Something went wrong")
         }
+    }
+}
+extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
+    
+    func fetchedMakerData(maker: Maker?, error: Errors?) {
+        
+        guard let maker = maker, error == nil else {
+            switch error {
+            case .loadCountriesError:
+                router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                         descriptionText: "Возникла ошибка при извлечении названий стран")
+            case .loadCitiesError:
+                router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                         descriptionText: "Возникла ошибка при извлечении названий городов")
+            case .loadMakersError:
+                router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                         descriptionText: "Возникла ошибка при извлечении поставщиков услуг")
+            default:
+                return
+            }
+            return
+        }
+
+            self.view?.showDate(Makers: pinMakers)
+        
+    }
+    
+    func existAlreadyMaker(phoneNumberMaker: String) {
+        router.presentWarnMessage(title: "Внимание",
+                                 descriptionText: "Поставщик услуг с номером \(phoneNumberMaker) уже зарегестрирован ранее. Регистрация одного и того же поставщика возможна только один раз.")
     }
     
 

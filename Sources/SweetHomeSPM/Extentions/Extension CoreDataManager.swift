@@ -128,6 +128,24 @@ extension CoreDataManager {
         }
     }
     
+    //get Maker with his phone number
+    func getMakerWithPhone(phoneNumber: String) -> Result<[Maker], Errors> {
+        let fetchRequest: NSFetchRequest<Maker> = Maker.fetchRequest()
+        let predicate = NSPredicate(format: "%K == %@", #keyPath(Maker.phone_number), phoneNumber)
+            fetchRequest.predicate = predicate
+        do {
+            let result = try managedObjectContext.fetch(fetchRequest)
+//            guard result != nil else {
+//                return .failure(Errors.loadMakersError)
+//            }
+            return .success(result)
+        } catch {
+            return .failure(Errors.loadMakersError)
+        }
+    }
+    
+    
+    
 //    func getProdactCategory() -> Result<[Wallet], Errors> {
 //
 //        let userSettings = getUserSettings()

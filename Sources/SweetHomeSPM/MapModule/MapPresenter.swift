@@ -7,42 +7,40 @@
 import Foundation
 import MapKit
 
-public protocol MapPresenterProtocol: AnyObject {
-    func viewDidLoaded()
+public protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
+}
+
+public protocol MapViewOutputProtocol: AnyObject {
+    func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)
 }
 
 public class MapPresenter {
-    public weak var view: MapViewProtocol?
-    public var router: MapRouterProtocol
-    public var interactor: MapInteractorProtocol
+    public weak var view: MapViewInputProtocol?
+    public var router: MapRouterInputProtocol
+    public var interactor: MapInteractorInputProtocol
     
-    public init(interactor: MapInteractorProtocol, router: MapRouterProtocol) {
+    public init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol) {
         self.interactor = interactor
         self.router = router
     }
 }
 
-extension MapPresenter: MapPresenterProtocol {
-    public func viewDidLoaded() {
-        interactor.fetchMakerData()
-        
-    }
-    
+extension MapPresenter: MapInteractorOutputProtocol {
     public func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?) {
         
         guard let pinMakers = pinMakers, error == nil else {
             switch error {
             case .loadCountriesError:
-                view?.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении транзакций")
+                router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                         descriptionText: "Возникла ошибка при извлечении названий стран")
             case .loadCitiesError:
-                view?.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении кошельков")
+                router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                         descriptionText: "Возникла ошибка при извлечении названий городов")
             case .loadMakersError:
-                view?.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении бюджетов")
+                router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                         descriptionText: "Возникла ошибка при извлечении поставщиков услуг")
             default:
                 return
             }
@@ -51,6 +49,12 @@ extension MapPresenter: MapPresenterProtocol {
         DispatchQueue.main.async { [unowned self] in
             self.view?.showDate(pinMakers: pinMakers)
         }
+    }
+}
+
+extension MapPresenter: MapViewOutputProtocol {
+    public func viewDidLoaded() {
+        interactor.fetchMakerData()
     }
     
     public func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D) {

@@ -10,10 +10,10 @@ import MapKit
 
 
 
-protocol RegistrationViewProtocol: AnyObject {
+protocol RegistrationViewInputProtocol: AnyObject {
     func hideKeyBoard()
     func setNextTextField(textField: UITextField)
-    func alertWithTitle(title: String, message: String, toFocus:UITextField) 
+    func alertWithTitle(title: String, message: String, toFocus:UITextField)
     
     var nameTextField: UITextField { get }
     var surnameTextField: UITextField { get }
@@ -48,7 +48,7 @@ class RegistrationViewController: UIViewController {
     var picker = UIImagePickerController()
     
     // MARK: - Public
-    var presenter: RegistrationPresenterProtocol?
+    var presenter: RegistrationViewOutputProtocol?
     
     
     
@@ -313,7 +313,7 @@ extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigat
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
-        presenter?.istTappedMakerImage(info: info)
+        presenter?.isTappedMakerImage(info: info)
         
         
         
@@ -341,7 +341,7 @@ extension RegistrationViewController: UITextFieldDelegate {
 }
 
 // MARK: - ImageViewerViewProtocol
-extension RegistrationViewController: RegistrationViewProtocol {
+extension RegistrationViewController: RegistrationViewInputProtocol {
     
     
     
@@ -363,6 +363,7 @@ extension RegistrationViewController: RegistrationViewProtocol {
         alert.addAction(action)
         self.present(alert, animated: true, completion:nil)
     }
+    
     
     
 }

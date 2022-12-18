@@ -19,7 +19,7 @@ public class ModelUser {
     }
 //
     func setup() {
-        addMaker()
+      //  addMaker()
         
      //   let bakers = coreDataManager.getBaker()
      //   bakers

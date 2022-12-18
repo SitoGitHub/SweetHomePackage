@@ -11,9 +11,8 @@ import MapKit
 
 
 
-public protocol MapViewProtocol: AnyObject {
+public protocol MapViewInputProtocol: AnyObject {
     func showDate(pinMakers: [MakerAnotation])
-    func presentWarnMessage(title: String?, descriptionText: String?)
 }
 
 public class MapViewController: UIViewController {
@@ -25,7 +24,7 @@ public class MapViewController: UIViewController {
     var viewHeight = CGFloat()
     lazy var heightSliderView: CGFloat = 250
     // MARK: - Public
-    var presenter: MapPresenterProtocol?
+    var presenter: MapViewOutputProtocol?
     
     
     
@@ -327,27 +326,11 @@ extension MapViewController: CLLocationManagerDelegate {
 }
 
 // MARK: - MapViewProtocol
-extension MapViewController: MapViewProtocol {
+extension MapViewController: MapViewInputProtocol {
     public func showDate(pinMakers: [MakerAnotation]){
         for pinMaker in pinMakers {
             mapView.addAnnotation(pinMaker)
         }
     }
     
-    public func presentWarnMessage(title: String?, descriptionText: String?) {
-        
-        let alertController = UIAlertController(title: title,
-                                                message: descriptionText,
-                                                preferredStyle: .alert)
-        
-        let okBtn = UIAlertAction(title: "OK",
-                                  style: .default,
-                                  handler: nil)
-        
-        alertController.addAction(okBtn)
-        
-        present(alertController,
-                animated: true,
-                completion: nil)
-    }
 }
