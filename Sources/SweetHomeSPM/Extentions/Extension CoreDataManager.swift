@@ -95,6 +95,7 @@ extension CoreDataManager {
     func getPinMaker() -> Result<[MakerAnotation], Errors> {
         var allMakersAnotation: [MakerAnotation] = []
         let cities = getCity()
+        //var coordinate: CLLocationCoordinate2D
         
         switch cities {
         case.success(let cities):
@@ -129,10 +130,12 @@ extension CoreDataManager {
                         passwordMaker = password
                     }
                     let urlImage = maker.maker_image
+                    let lat = maker.lat as? CLLocationDegrees ?? 0
+                    let long = maker.long as? CLLocationDegrees ?? 0
+                    
                     let coordinate = CLLocationCoordinate2D(
-                        latitude: maker.lat as! CLLocationDegrees,
-                        longitude: maker.long as! CLLocationDegrees
-                    )
+                            latitude: lat,
+                            longitude: long)
                     
                     let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: name, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, urlImageMaker: urlImage, coordinate: coordinate)
                     
