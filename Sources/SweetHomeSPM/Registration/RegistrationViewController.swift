@@ -58,6 +58,10 @@ class RegistrationViewController: UIViewController {
         initialize()
     }
     
+    deinit{
+        print("RegistrationView deinit")
+    }
+    
 //     override func layoutSubviews() {
 //        super.layoutSubviews()
 //

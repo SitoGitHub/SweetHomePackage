@@ -16,6 +16,10 @@ protocol RegistrationInteractorInputProtocol: AnyObject {
 class RegistrationInteractor: RegistrationInteractorInputProtocol {
     
     weak var presenter: RegistrationInteractorOutputProtocol?
+    
+    deinit{
+        print("RegistrationInteractor deinit")
+    }
    
     //save New Maker Data
     func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) {

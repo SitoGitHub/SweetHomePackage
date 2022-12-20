@@ -13,6 +13,10 @@ protocol RegistrationRouterInputProtocol {
 class RegistrationRouter: RegistrationRouterInputProtocol {
     weak var viewController: RegistrationViewController?
     
+    deinit{
+        print("RegistrationRouter deinit")
+    }
+    
     func presentWarnMessage(title: String?, descriptionText: String?) {
         
         let alertController = UIAlertController(title: title,

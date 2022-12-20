@@ -17,6 +17,10 @@ public class MapInteractor: MapInteractorInputProtocol {
     var users = [[User]]()
     var coreDataManager = CoreDataManager()
     
+    deinit{
+        print("MapInteractor deinit")
+    }
+    
     public func fetchMakerData() {
 //           dateService.getDate { [weak self] date in
 //               self?.presenter?.didLoadDate(date: date.description)

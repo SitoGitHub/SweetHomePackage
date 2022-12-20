@@ -11,7 +11,7 @@ public protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
 }
 
-public protocol RegistrationPresenterOutputProtocol: AnyObject {
+public protocol RegistrationModuleDelegate: AnyObject {
     func fetchedNewMakerData(pinMakers: [MakerAnotation])
 }
 
@@ -29,6 +29,10 @@ public class MapPresenter {
     public init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol) {
         self.interactor = interactor
         self.router = router
+    }
+    
+    deinit{
+        print("MapPresenter deinit")
     }
 }
 
@@ -68,7 +72,7 @@ extension MapPresenter: MapViewOutputProtocol {
     }
 }
 
-extension MapPresenter: RegistrationPresenterOutputProtocol{
+extension MapPresenter: RegistrationModuleDelegate{
     public func fetchedNewMakerData(pinMakers: [MakerAnotation]) {
         
 //        for annotation in self.view?.mapView.annotations{

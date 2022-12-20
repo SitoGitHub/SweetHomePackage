@@ -8,18 +8,19 @@ import MapKit
 
  class RegistrationModuleBuilder {
     //@discardableResult
-     static func build(touchCoordinate: CLLocationCoordinate2D) -> RegistrationViewController {
+     static func build(delegate: RegistrationModuleDelegate?, touchCoordinate: CLLocationCoordinate2D) -> RegistrationViewController {
         let view = RegistrationViewController()
         let interactor = RegistrationInteractor()
         let router = RegistrationRouter()
         
-       //  let mapInteractor = MapInteractor()
-       //  let mapRouter = MapRouter()
-        // let mapPresenter = MapPresenter(interactor: mapInteractor, router: mapRouter)
-        
-         // let mapPresenter = MapPresenter(interactor: <#MapInteractorInputProtocol#>, router: <#MapRouterInputProtocol#>)
+       //  var mapPresenter: RegistrationPresenterOutputProtocol? //= MapPresenter(interactor: MapInteractor(), router: MapRouter())
+         let mapView = MapViewController()
+         let mapInteractor = MapInteractor()
+         let mapRouter = MapRouter()
+         
          let presenter = RegistrationPresenter(interactor: interactor, router: router,/* mapPresenter: mapPresenter, */  touchCoordinate: touchCoordinate)
          view.presenter = presenter
+         presenter.delegate = delegate
          presenter.view = view
         // presenter.mapPresenter = mapPresenter
         interactor.presenter = presenter
@@ -28,4 +29,12 @@ import MapKit
     }
 }
 
+
+// let mapPresenter = MapPresenter(interactor: mapInteractor, router: mapRouter)
+// mapPresenter.view = mapView
+//  mapView.presenter = mapPresenter
+//  mapInteractor.presenter = mapPresenter
+//  mapRouter.viewController = mapView
+ 
+ // let mapPresenter = MapPresenter(interactor: <#MapInteractorInputProtocol#>, router: <#MapRouterInputProtocol#>)
 

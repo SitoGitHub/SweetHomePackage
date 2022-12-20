@@ -40,6 +40,10 @@ public class MapViewController: UIViewController {
         super.viewDidAppear(true)
         checkLocationAnabled()
     }
+    
+    deinit{
+        print("MapView deinit")
+    }
 }
 
 

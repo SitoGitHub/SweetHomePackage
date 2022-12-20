@@ -24,7 +24,7 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
  class RegistrationPresenter {
      let validData = ValidData()
      weak var view: RegistrationViewInputProtocol?
-      var mapPresenter: RegistrationPresenterOutputProtocol? = MapPresenter(interactor: MapInteractor(), router: MapRouter())
+     weak var delegate: RegistrationModuleDelegate? //= MapPresenter(interactor: MapInteractor(), router: MapRouter())
      var router: RegistrationRouterInputProtocol
      var interactor: RegistrationInteractorInputProtocol
      var touchCoordinate: CLLocationCoordinate2D
@@ -37,6 +37,10 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
          //self.mapPresenter = mapPresenter
         self.touchCoordinate = touchCoordinate
     }
+     
+     deinit{
+         print("RegistrationPresenter deinit")
+     }
 }
 
 extension RegistrationPresenter: RegistrationViewOutputProtocol {
@@ -190,7 +194,7 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
             return
         }
 
-            self.mapPresenter?.fetchedNewMakerData(pinMakers: [maker])
+            self.delegate?.fetchedNewMakerData(pinMakers: [maker])
         
     }
     

@@ -16,9 +16,16 @@ public protocol MapRouterInputProtocol {
 public class MapRouter: MapRouterInputProtocol {
     weak var viewController: MapViewController?
     
+    deinit{
+        print("MapRouter deinit")
+    }
+    
+    
     public func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D) {
-        let vc = RegistrationModuleBuilder.build(touchCoordinate: touchCoordinate)
+        let vc = RegistrationModuleBuilder.build(delegate: viewController?.presenter as? RegistrationModuleDelegate, touchCoordinate: touchCoordinate)
+     //   vc.modalPresentationStyle = .fullScreen
         viewController?.present(vc, animated: true, completion: nil)
+        
     }
     
     public func presentWarnMessage(title: String?, descriptionText: String?) {
