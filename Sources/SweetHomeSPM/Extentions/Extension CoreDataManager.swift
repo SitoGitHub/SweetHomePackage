@@ -170,22 +170,48 @@ extension CoreDataManager {
     //get City with name
     
     func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors> {
-        let fetchRequest: NSFetchRequest<CityMaker> = CityMaker.fetchRequest()
-        let predicateCityName = NSPredicate(format: "%K == %@", #keyPath(CityMaker.city_name), cityName)
-        let predicateCountryName = NSPredicate(format: "%K == %@", #keyPath(CityMaker.cities), country)
-        let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [predicateCityName, predicateCountryName])
-        fetchRequest.predicate = andPredicate
+        var allCities: [CityMaker] = []
+        let countries = getCountry(country: country)
         
-        do {
-            let result = try managedObjectContext.fetch(fetchRequest)
-            //            guard result != nil else {
-            //                return .failure(Errors.loadMakersError)
-            //            }
-            return .success(result)
-        } catch {
-            return .failure(Errors.loadMakersError)
+        switch countries {
+        case.success(let countries):
+           // let countries: [AnyObject] = countries
+            for country in countries {
+                guard let cities = country.country_cities?.allObjects as? [CityMaker]
+                else {
+                    return .failure(Errors.loadCitiesError)
+                }
+                
+                for city in cities {
+                    if city.city_name == cityName {
+                        allCities.append(city)
+                    }
+                }
+            }
+            return .success(allCities)
+            
+        case .failure(let error):
+            return .failure(error)
         }
     }
+//    
+//    func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors> {
+//        let fetchRequest: NSFetchRequest<CityMaker> = CityMaker.fetchRequest()
+//        let predicateCityName = NSPredicate(format: "%K == %@", #keyPath(CityMaker.city_name), cityName)
+//        let predicateCountryName = NSPredicate(format: "%K == %@", #keyPath(CountryMaker.country_name), country)
+//        let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [predicateCityName, predicateCountryName])
+//        fetchRequest.predicate = andPredicate
+//
+//        do {
+//            let result = try managedObjectContext.fetch(fetchRequest)
+//            //            guard result != nil else {
+//            //                return .failure(Errors.loadMakersError)
+//            //            }
+//            return .success(result)
+//        } catch {
+//            return .failure(Errors.loadMakersError)
+//        }
+//    }
     
 //    func getProdactCategory() -> Result<[Wallet], Errors> {
 //

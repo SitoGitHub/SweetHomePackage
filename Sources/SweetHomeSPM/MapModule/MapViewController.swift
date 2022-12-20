@@ -13,10 +13,11 @@ import MapKit
 
 public protocol MapViewInputProtocol: AnyObject {
     func showDate(pinMakers: [MakerAnotation])
+    var mapView: MKMapView { get }
 }
 
 public class MapViewController: UIViewController {
-    var mapView = MKMapView()
+    public var mapView = MKMapView()
     //var annotationView: MKAnnotationView?
     var maker: MakerAnotation?
     let locationManager = CLLocationManager()

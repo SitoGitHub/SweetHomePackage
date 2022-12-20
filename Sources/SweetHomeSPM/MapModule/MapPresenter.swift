@@ -11,7 +11,7 @@ public protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
 }
 
-public protocol RegistrationOutputProtocol: AnyObject {
+public protocol RegistrationPresenterOutputProtocol: AnyObject {
     func fetchedNewMakerData(pinMakers: [MakerAnotation])
 }
 
@@ -24,6 +24,7 @@ public class MapPresenter {
     public weak var view: MapViewInputProtocol?
     public var router: MapRouterInputProtocol
     public var interactor: MapInteractorInputProtocol
+    
     
     public init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol) {
         self.interactor = interactor
@@ -55,9 +56,6 @@ extension MapPresenter: MapInteractorOutputProtocol {
         }
     }
     
-    func fetchedNewMakerData(pinMakers: [MakerAnotation]) {
-        self.view?.showDate(pinMakers: pinMakers)
-    }
 }
 
 extension MapPresenter: MapViewOutputProtocol {
@@ -67,5 +65,23 @@ extension MapPresenter: MapViewOutputProtocol {
     
     public func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D) {
         router.openRegistrtionScreen(for: touchCoordinate)
+    }
+}
+
+extension MapPresenter: RegistrationPresenterOutputProtocol{
+    public func fetchedNewMakerData(pinMakers: [MakerAnotation]) {
+        
+//        for annotation in self.view?.mapView.annotations{
+//            self.view?.mapView.removeAnnotation(annotation)
+//        }
+       
+        for pinMaker in pinMakers {
+            
+            
+            self.view?.mapView.addAnnotation(pinMaker)
+            
+           // self.view?.mapView.reloadInputViews()
+        }
+      //  self.view?.showDate(pinMakers: pinMakers)
     }
 }

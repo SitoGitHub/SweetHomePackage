@@ -24,16 +24,17 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
  class RegistrationPresenter {
      let validData = ValidData()
      weak var view: RegistrationViewInputProtocol?
-     weak var mapPresenter: RegistrationOutputProtocol?
+      var mapPresenter: RegistrationPresenterOutputProtocol? = MapPresenter(interactor: MapInteractor(), router: MapRouter())
      var router: RegistrationRouterInputProtocol
      var interactor: RegistrationInteractorInputProtocol
      var touchCoordinate: CLLocationCoordinate2D
      var urlImageMaker: URL?
      lazy var password = String()
     
-    init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol, touchCoordinate: CLLocationCoordinate2D) {
+     init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol,/* mapPresenter: RegistrationPresenterOutputProtocol,*/ touchCoordinate: CLLocationCoordinate2D) {
         self.interactor = interactor
         self.router = router
+         //self.mapPresenter = mapPresenter
         self.touchCoordinate = touchCoordinate
     }
 }

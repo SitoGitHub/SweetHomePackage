@@ -18,8 +18,8 @@ extension Maker {
 
     @NSManaged public var date: Date?
     @NSManaged public var email: String?
-    @NSManaged public var lat: Double?
-    @NSManaged public var long: Double?
+    @NSManaged public var lat: Double
+    @NSManaged public var long: Double
     @NSManaged public var maker_image: URL?
     @NSManaged public var maker_name: String?
     @NSManaged public var maker_surname: String?
