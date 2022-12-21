@@ -32,12 +32,13 @@ class GetProductCategoriesPresenter {
     }
     
     deinit{
-        print("MapPresenter deinit")
+        print("GetProductCategoriesPresenter deinit")
     }
     
 }
 
 extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputProtocol {
+    
 }
 extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol {
     

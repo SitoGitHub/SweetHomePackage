@@ -9,22 +9,16 @@
 import Foundation
 import UIKit
 
-class GetProductCategoriesRouter: PresenterToRouterGetProductCategoriesProtocol {
+protocol GetProductCategoriesRouterInputProtocol {
+  
+}
+
+class GetProductCategoriesRouter: GetProductCategoriesRouterInputProtocol {
+    weak var viewController: GetProductCategoriesViewController?
     
-    // MARK: Static methods
-    static func createModule() -> UIViewController {
-        
-        let viewController = GetProductCategoriesViewController()
-        
-        let presenter: ViewToPresenterGetProductCategoriesProtocol & InteractorToPresenterGetProductCategoriesProtocol = GetProductCategoriesPresenter()
-        
-        viewController.presenter = presenter
-        viewController.presenter?.router = GetProductCategoriesRouter()
-        viewController.presenter?.view = viewController
-        viewController.presenter?.interactor = GetProductCategoriesInteractor()
-        viewController.presenter?.interactor?.presenter = presenter
-        
-        return viewController
+    deinit{
+        print("GetProductCategoriesRouter deinit")
     }
+    
     
 }

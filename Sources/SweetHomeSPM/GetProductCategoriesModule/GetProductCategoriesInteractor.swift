@@ -8,8 +8,14 @@
 
 import Foundation
 
-class GetProductCategoriesInteractor: PresenterToInteractorGetProductCategoriesProtocol {
+ protocol GetProductCategoriesInteractorInputProtocol: AnyObject {
+   
+}
 
-    // MARK: Properties
-    var presenter: InteractorToPresenterGetProductCategoriesProtocol?
+class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtocol {
+    weak var presenter: GetProductCategoriesInteractorOutputProtocol?
+    
+    deinit{
+        print("GetProductCategoriesInteractor deinit")
+    }
 }

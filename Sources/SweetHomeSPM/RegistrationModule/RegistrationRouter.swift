@@ -23,9 +23,9 @@ class RegistrationRouter: RegistrationRouterInputProtocol {
    // weak var presentedViewController: ModuleViewController?
 
     func pushViewController(to navigationController: UINavigationController, animated: Bool) {
-//        self.navigationController = navigationController
+        self.navigationController = navigationController
 //        guard let newViewController = presentedViewController else { return }
-//        navigationController?.pushViewController(newViewController, animated: animated)
+        navigationController.pushViewController(GetProductCategoriesBuilder.build(), animated: animated)
     }
     
     func presentWarnMessage(title: String?, descriptionText: String?) {

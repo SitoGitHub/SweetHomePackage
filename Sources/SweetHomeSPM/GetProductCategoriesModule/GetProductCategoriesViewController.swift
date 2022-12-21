@@ -19,9 +19,22 @@ class GetProductCategoriesViewController: UIViewController {
     // MARK: - Lifecycle Methods
     override func viewDidLoad() {
         super.viewDidLoad()
+        initialize()
     }
 
+    deinit{
+        print("GetProductCategoriesViewController deinit")
+    }
    
+}
+
+// MARK: - Private functions
+extension GetProductCategoriesViewController {
+    func initialize() {
+        self.title = "Категории продуктов"
+        view.backgroundColor = .white
+        
+    }
 }
 
 extension GetProductCategoriesViewController: GetProductCategoriesViewInputProtocol{
