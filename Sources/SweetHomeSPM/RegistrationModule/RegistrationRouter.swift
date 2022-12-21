@@ -8,13 +8,24 @@ import UIKit
 
 protocol RegistrationRouterInputProtocol {
     func presentWarnMessage(title: String?, descriptionText: String?)
+    func pushViewController(to navigationController: UINavigationController, animated: Bool)
 }
 
 class RegistrationRouter: RegistrationRouterInputProtocol {
     weak var viewController: RegistrationViewController?
+    var navigationController: UINavigationController?
     
     deinit{
         print("RegistrationRouter deinit")
+    }
+    
+    
+   // weak var presentedViewController: ModuleViewController?
+
+    func pushViewController(to navigationController: UINavigationController, animated: Bool) {
+//        self.navigationController = navigationController
+//        guard let newViewController = presentedViewController else { return }
+//        navigationController?.pushViewController(newViewController, animated: animated)
     }
     
     func presentWarnMessage(title: String?, descriptionText: String?) {

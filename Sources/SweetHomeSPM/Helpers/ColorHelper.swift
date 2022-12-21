@@ -18,6 +18,7 @@ enum Colors {
     case blackLabel
     case lightGrayButton
     case placeHolderColor
+    case registrationViewColor
     var colorViewUIColor: UIColor{
         switch self {
         case .headerColor:
@@ -40,8 +41,10 @@ enum Colors {
             return .lightGray
             #colorLiteral(red: 0.6605595946, green: 0.3039845228, blue: 0.572892487, alpha: 1)
         case .placeHolderColor:
-            return .lightGray
+            return .darkGray
             #colorLiteral(red: 0.8039215803, green: 0.8039215803, blue: 0.8039215803, alpha: 1)
+        case .registrationViewColor:
+            return #colorLiteral(red: 0.5881078839, green: 0.8096932769, blue: 0.9557163119, alpha: 1)
         }
     }
 //    var colorViewCGColor: CGColor{

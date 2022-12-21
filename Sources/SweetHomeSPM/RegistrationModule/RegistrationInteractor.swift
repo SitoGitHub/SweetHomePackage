@@ -52,12 +52,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                 //            print (Double(touchCoordinateMaker.latitude) as? NSDecimalNumber, Double(touchCoordinateMaker.latitude))
                 
                 
-                
-                let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, urlImageMaker: urlImageMaker, coordinate: touchCoordinateMaker)
-                
-                //allMakersAnotation.append(MakerAnotation)
-                
-                self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
+               
                 
             case .failure(let error):
                 self.presenter?.fetchedMakerData(maker: nil, error: error)
@@ -115,6 +110,13 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                  //   print(error)
                 }
             }
+            
+            //данные для созданияя пина на карте
+            let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, urlImageMaker: urlImageMaker, coordinate: touchCoordinateMaker)
+            
+            //allMakersAnotation.append(MakerAnotation)
+            
+            self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
             
             cityLocation.addToCity_makers([newMaker])
             coreDataManager.saveContext()

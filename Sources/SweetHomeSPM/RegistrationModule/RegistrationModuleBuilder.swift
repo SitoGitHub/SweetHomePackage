@@ -8,15 +8,18 @@ import MapKit
 
  class RegistrationModuleBuilder {
     //@discardableResult
-     static func build(delegate: RegistrationModuleDelegate?, touchCoordinate: CLLocationCoordinate2D) -> RegistrationViewController {
+     static func build(factory: NavigationFactory, delegate: RegistrationModuleDelegate?, touchCoordinate: CLLocationCoordinate2D) ->
+     UINavigationController
+     //RegistrationViewController
+     {
         let view = RegistrationViewController()
         let interactor = RegistrationInteractor()
         let router = RegistrationRouter()
         
        //  var mapPresenter: RegistrationPresenterOutputProtocol? //= MapPresenter(interactor: MapInteractor(), router: MapRouter())
-         let mapView = MapViewController()
-         let mapInteractor = MapInteractor()
-         let mapRouter = MapRouter()
+//         let mapView = MapViewController()
+//         let mapInteractor = MapInteractor()
+//         let mapRouter = MapRouter()
          
          let presenter = RegistrationPresenter(interactor: interactor, router: router,/* mapPresenter: mapPresenter, */  touchCoordinate: touchCoordinate)
          view.presenter = presenter
@@ -25,7 +28,8 @@ import MapKit
         // presenter.mapPresenter = mapPresenter
         interactor.presenter = presenter
         router.viewController = view
-        return view
+        return factory(view)
+         //view
     }
 }
 

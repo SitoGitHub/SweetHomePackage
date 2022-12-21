@@ -14,6 +14,7 @@ protocol RegistrationViewInputProtocol: AnyObject {
     func hideKeyBoard()
     func setNextTextField(textField: UITextField)
     func alertWithTitle(title: String, message: String, toFocus:UITextField)
+    func updateMenuTableView(newMakerIsSaved: Bool?, categoriesIsSaved: Bool?)
     
     var nameTextField: UITextField { get }
     var surnameTextField: UITextField { get }
@@ -23,9 +24,18 @@ protocol RegistrationViewInputProtocol: AnyObject {
     var confirmPasswordTextField: ShowHideTextField { get }
    // var picker: UIImagePickerController { get set }
     var makerImageView: UIImageView { get }
+    var newMakerIsSaved: Bool { get set }
+    var categoriesIsSaved: Bool { get set }
+    var navController: UINavigationController { get }
 }
 
 class RegistrationViewController: UIViewController {
+
+    let registrationView = UIView()
+    
+    let menuTableView = UITableView()
+    let identifier = "MyCell"
+    let listMenu = ListMenuRegistration()
     
     let topHeaderLabel = UILabel()
     let plusLabel = UILabel()
@@ -44,6 +54,11 @@ class RegistrationViewController: UIViewController {
     let saveButton = UIButton()
     
     var makerImageView = UIImageView()
+    
+    lazy var newMakerIsSaved = false
+    lazy var categoriesIsSaved = false
+    
+    var navController = UINavigationController()
     
     var picker = UIImagePickerController()
     
@@ -74,22 +89,41 @@ class RegistrationViewController: UIViewController {
 private extension RegistrationViewController {
     func initialize() {
         view.backgroundColor = .white
+        createRegistrationView()
         setupCurrencyNameLabel()
         setupNameTextField()
         createSaveButton()
         createMAkerImageView()
+        createMenuTableView()
+        if let navController = self.navigationController {
+            self.navController = navController
+        }
     }
     
+    //create Registration View
+    private func createRegistrationView() {
+        registrationView.backgroundColor = Colors.registrationViewColor.colorViewUIColor //.lightGray
+        registrationView.layer.cornerRadius = 10
+        view.addSubview(registrationView)
+        
+        registrationView.snp.makeConstraints { (make) -> Void in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().inset(20)
+            make.width.equalToSuperview().inset(5)
+            make.height.equalToSuperview().multipliedBy(0.55)
+            //make.height.equalTo(20)
+        }
+    }
     //setup Registration Label
     private func setupCurrencyNameLabel() {
         topHeaderLabel.font = Fonts.fontTopLabel.fontsForViews
-        topHeaderLabel.textColor = Colors.headerColor.colorViewUIColor
+        topHeaderLabel.textColor = Colors.headerColor.colorViewUIColor//.darkGray//Colors.headerColor.colorViewUIColor
         topHeaderLabel.text = "Регистрация"
-        view.addSubview(topHeaderLabel)
+        registrationView.addSubview(topHeaderLabel)
         
         topHeaderLabel.snp.makeConstraints { (make) -> Void in
                    make.centerX.equalToSuperview()
-                   make.top.equalToSuperview().inset(40)
+                   make.top.equalToSuperview().inset(20)
                    //make.height.equalTo(20)
                }
     }
@@ -185,8 +219,8 @@ private extension RegistrationViewController {
         
        // topStack.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubview(topStack)
-        view.addSubview(passwordStack)
+        registrationView.addSubview(topStack)
+        registrationView.addSubview(passwordStack)
         
 //        surnameTextField.snp.makeConstraints { (make) -> Void in
 //            make.width.equalToSuperview().inset(20)
@@ -244,7 +278,7 @@ private extension RegistrationViewController {
         //RouteButton.layer.masksToBounds = true
         saveButton.setTitle("Сохранить", for: .normal)
         saveButton.setTitleColor(Colors.whiteLabel.colorViewUIColor, for: .normal)
-        saveButton.backgroundColor = Colors.activeButtonColor.colorViewUIColor
+        saveButton.backgroundColor = Colors.activeButtonColor.colorViewUIColor //.darkGray//Colors.activeButtonColor.colorViewUIColor
         saveButton.titleLabel?.font = Fonts.fontButton.fontsForViews
         saveButton.layer.cornerRadius = 10
         
@@ -252,14 +286,15 @@ private extension RegistrationViewController {
         //RouteButton.isEnabled = true
         saveButton.addTarget(self, action: #selector(isPressedSaveButton(sender: )), for: .touchUpInside)
        // routeButton.frame = CGRect(x: 50, y: 50, width: 70, height: 30)
-        view.addSubview(saveButton)
+        registrationView.addSubview(saveButton)
         
         saveButton.snp.makeConstraints { (make) -> Void in
            // make.left.equalToSuperview().offset(60)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.3)
             make.height.equalTo(30)
-            make.top.equalTo(passwordStack.snp.bottom).offset(15)
+            make.bottom.equalToSuperview().inset(10)
+            //(passwordStack.snp.bottom).offset(15)
         }
     }
     
@@ -273,14 +308,14 @@ private extension RegistrationViewController {
         if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil){
             makerImageView.image = image
         }
-        view.addSubview(makerImageView)
+        registrationView.addSubview(makerImageView)
         
         makerImageView.snp.makeConstraints { (make) -> Void in
            // make.left.equalToSuperview().offset(60)
             make.right.equalToSuperview().inset(25)
             make.width.equalTo(65)
             make.height.equalTo(65)
-            make.top.equalTo(topHeaderLabel).inset(50)
+            make.top.equalTo(topHeaderLabel).inset(25)
         }
         makerImageView.layoutIfNeeded()
         makerImageView.layer.cornerRadius = makerImageView.frame.width / 2
@@ -290,6 +325,30 @@ private extension RegistrationViewController {
         recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
         makerImageView.addGestureRecognizer(recognizer)
     }
+    
+    private func createMenuTableView() {
+       
+       // myTableView = UITableView(frame: view.bounds, style: .plain)
+        
+        menuTableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
+        //menuTableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+        menuTableView.backgroundColor = .white
+        
+        menuTableView.delegate = self
+        menuTableView.dataSource = self
+        
+        view.addSubview(menuTableView)
+        
+        menuTableView.snp.makeConstraints { (make) -> Void in
+            make.centerX.equalToSuperview()
+            make.top.equalTo(registrationView.snp.bottom).offset(10)
+            make.width.equalToSuperview().inset(5)
+            make.height.equalTo(90)
+            //make.height.equalTo(20)
+        }
+      
+    }
+    
     
     //обработка нажатия кнопки Сохранить action when save button is pressed
     @objc func isPressedSaveButton (sender: UIButton){
@@ -373,6 +432,60 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
         self.present(alert, animated: true, completion:nil)
     }
     
+    func updateMenuTableView(newMakerIsSaved: Bool?, categoriesIsSaved: Bool?) {
+        var index = 0
+        var status = false
+        if let newMaker = newMakerIsSaved {
+            self.newMakerIsSaved = newMaker
+            index = 0
+            status = newMaker
+        }
+        if let newCategoies = categoriesIsSaved {
+            self.categoriesIsSaved = newCategoies
+            index = 1
+            status = newCategoies
+        }
+        menuTableView.cellForRow(at: [0,index])?.isUserInteractionEnabled = status
+        menuTableView.cellForRow(at: [0,index])?.textLabel?.textColor = status ? Colors.activeButtonColor.colorViewUIColor : Colors.lightGrayButton.colorViewUIColor
+    }
     
     
+    
+}
+
+// MARK: - UITableViewDelegate, UITableViewDataSource
+
+
+extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource {
+    
+    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return listMenu.listMenu.count
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        cell.textLabel?.text = listMenu.listMenu[indexPath.item]
+        switch indexPath {
+        case [0]:
+            cell.textLabel?.textColor = newMakerIsSaved ? Colors.activeButtonColor.colorViewUIColor : Colors.lightGrayButton.colorViewUIColor
+            cell.isUserInteractionEnabled = newMakerIsSaved
+        case [1]:
+            cell.textLabel?.textColor = categoriesIsSaved ? Colors.activeButtonColor.colorViewUIColor : Colors.lightGrayButton.colorViewUIColor
+            cell.isUserInteractionEnabled = categoriesIsSaved
+        default:
+            cell.textLabel?.textColor =  Colors.lightGrayButton.colorViewUIColor
+            cell.isUserInteractionEnabled = false
+        }
+        cell.accessoryType = .disclosureIndicator
+        
+        
+        return cell
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        presenter?.isSelectedRowMenuTableView(indexRow: indexPath.row)
+        
+    }
 }

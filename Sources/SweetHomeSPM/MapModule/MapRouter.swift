@@ -22,7 +22,7 @@ public class MapRouter: MapRouterInputProtocol {
     
     
     public func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D) {
-        let vc = RegistrationModuleBuilder.build(delegate: viewController?.presenter as? RegistrationModuleDelegate, touchCoordinate: touchCoordinate)
+        let vc = RegistrationModuleBuilder.build(factory: NavigationBuilder.build, delegate: viewController?.presenter as? RegistrationModuleDelegate, touchCoordinate: touchCoordinate)
      //   vc.modalPresentationStyle = .fullScreen
         viewController?.present(vc, animated: true, completion: nil)
         

@@ -11,6 +11,7 @@ protocol RegistrationViewOutputProtocol: AnyObject {
     func isTouchesBegan(touches: Set<UITouch>)
     func isFieldShouldReturn(textField: UITextField)
     func isPressedSaveButton()
+    func isSelectedRowMenuTableView(indexRow: Int)
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any])
     //func isFieldSDidEndEditing(textField: UITextField)
 }
@@ -21,6 +22,7 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
     
 }
 
+// MARK: -  RegistrationPresenter
  class RegistrationPresenter {
      let validData = ValidData()
      weak var view: RegistrationViewInputProtocol?
@@ -43,6 +45,7 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
      }
 }
 
+// MARK: - RegistrationViewOutputProtocol
 extension RegistrationPresenter: RegistrationViewOutputProtocol {
     
     //hide keyboard when tap on view
@@ -52,6 +55,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         }
     }
     
+    //переход на следующий textField
     func isFieldShouldReturn(textField: UITextField) {
         
         switch textField {
@@ -76,6 +80,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         }
     }
     
+    //обработка нажатия конпки SaveButton
     func isPressedSaveButton() {
         let error = checkForErrors()
         
@@ -89,6 +94,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         interactor.saveDataNewMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
     }
     
+    //проверка на корректное заполнение данных нового makerа
     func checkForErrors() -> Bool
     {
         var errors = false
@@ -148,6 +154,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         return errors
     }
     
+    //выбор фото нового makera
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any]) {
         // interactor.getImageForMakerImageView(info: info)
         
@@ -172,9 +179,19 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
             print("Something went wrong")
         }
     }
+    
+    func isSelectedRowMenuTableView(indexRow: Int) {
+        print("This cell was selected: \(indexRow)")
+        //      router.openScreen(for: touchCoordinate)
+        guard let navigationController = view?.navController else { return }
+        router.pushViewController(to: navigationController, animated: true)
+    }
 }
+
+// MARK: - RegistrationInteractorOutputProtocol
 extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
     
+    //передаем данные в Map module для формирования пина
     func fetchedMakerData(maker: MakerAnotation?, error: Errors?) {
         
         guard let maker = maker, error == nil else {
@@ -193,11 +210,13 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
             }
             return
         }
-
-            self.delegate?.fetchedNewMakerData(pinMakers: [maker])
+        
+        view?.updateMenuTableView(newMakerIsSaved: true, categoriesIsSaved: nil)
+        self.delegate?.fetchedNewMakerData(pinMakers: [maker])
         
     }
     
+    // оповещение, если такой Maker в системе уже есть
     func existAlreadyMaker(phoneNumberMaker: String, email: String) {
         router.presentWarnMessage(title: "Внимание",
                                  descriptionText: "Поставщик услуг с номером \(phoneNumberMaker) или email \(email) уже зарегестрирован ранее. Проверьте данные.")
