@@ -454,8 +454,6 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource
-
-
 extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource {
     
     

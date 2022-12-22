@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 protocol GetProductCategoriesRouterInputProtocol {
-  
+    func presentWarnMessage(title: String?, descriptionText: String?)
 }
 
 class GetProductCategoriesRouter: GetProductCategoriesRouterInputProtocol {
@@ -20,5 +20,20 @@ class GetProductCategoriesRouter: GetProductCategoriesRouterInputProtocol {
         print("GetProductCategoriesRouter deinit")
     }
     
-    
+    func presentWarnMessage(title: String?, descriptionText: String?) {
+        
+        let alertController = UIAlertController(title: title,
+                                                message: descriptionText,
+                                                preferredStyle: .alert)
+        
+        let okBtn = UIAlertAction(title: "OK",
+                                  style: .default,
+                                  handler: nil)
+        
+        alertController.addAction(okBtn)
+        
+        viewController?.present(alertController,
+                animated: true,
+                completion: nil)
+    }
 }

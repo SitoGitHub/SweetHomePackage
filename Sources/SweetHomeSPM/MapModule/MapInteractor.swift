@@ -26,7 +26,7 @@ public class MapInteractor: MapInteractorInputProtocol {
 //               self?.presenter?.didLoadDate(date: date.description)
 //           }
         
-        modelUser.setup()
+      //  modelUser.setup()
         
       
         let pinMakers = coreDataManager.getPinMaker()

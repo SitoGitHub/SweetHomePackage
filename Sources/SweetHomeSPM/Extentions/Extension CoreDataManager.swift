@@ -194,6 +194,23 @@ extension CoreDataManager {
             return .failure(error)
         }
     }
+    //список категорий продуктов
+    func getProductCategories(category: String?) -> Result<[ProductCategory], Errors> {
+        let fetchRequest: NSFetchRequest<ProductCategory> = ProductCategory.fetchRequest()
+        if let productCategory = category {
+            let predicate = NSPredicate(format: "%K == %@", #keyPath(ProductCategory.category_name), productCategory)
+            fetchRequest.predicate = predicate
+        }
+        do {
+            let result = try managedObjectContext.fetch(fetchRequest)
+//            guard result != nil else {
+//                return .failure(Errors.loadMakersError)
+//            }
+            return .success(result)
+        } catch {
+            return .failure(Errors.loadProdactCategoryError)
+        }
+    }
 //    
 //    func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors> {
 //        let fetchRequest: NSFetchRequest<CityMaker> = CityMaker.fetchRequest()

@@ -79,13 +79,13 @@ extension MapPresenter: RegistrationModuleDelegate{
 //            self.view?.mapView.removeAnnotation(annotation)
 //        }
        
-        for pinMaker in pinMakers {
-            
-            
-            self.view?.mapView.addAnnotation(pinMaker)
-            
-           // self.view?.mapView.reloadInputViews()
-        }
-      //  self.view?.showDate(pinMakers: pinMakers)
+//        for pinMaker in pinMakers {
+//
+//
+//            self.view?.mapView.addAnnotation(pinMaker)
+//
+//           // self.view?.mapView.reloadInputViews()
+//        }
+        self.view?.showDate(pinMakers: pinMakers)
     }
 }
