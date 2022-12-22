@@ -10,24 +10,25 @@ import MapKit
 
 
 protocol RegistrationInteractorInputProtocol: AnyObject {
-    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D)
+    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) -> Maker
 }
 
 class RegistrationInteractor: RegistrationInteractorInputProtocol {
     
     weak var presenter: RegistrationInteractorOutputProtocol?
+    var maker = Maker()
     
     deinit{
         print("RegistrationInteractor deinit")
     }
-   
+    
     //save New Maker Data
-    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) {
+    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) -> Maker {
         
         let locationManager = LocationManager()
-  
-        locationManager.geocode(latitude: touchCoordinateMaker.latitude, longitude: touchCoordinateMaker.longitude) { placemarks, error in
         
+        locationManager.geocode(latitude: touchCoordinateMaker.latitude, longitude: touchCoordinateMaker.longitude) { placemarks, error in
+            
             var newMaker = Maker()
             let coreDataManager = CoreDataManager.shared
             lazy var countryLocation = CountryMaker()
@@ -52,7 +53,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                 //            print (Double(touchCoordinateMaker.latitude) as? NSDecimalNumber, Double(touchCoordinateMaker.latitude))
                 
                 
-               
+                
                 
             case .failure(let error):
                 self.presenter?.fetchedMakerData(maker: nil, error: error)
@@ -107,7 +108,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                     
                 case .failure(let error):
                     self.presenter?.fetchedMakerData(maker: nil, error: error)
-                 //   print(error)
+                    //   print(error)
                 }
             }
             
@@ -120,7 +121,9 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             
             cityLocation.addToCity_makers([newMaker])
             coreDataManager.saveContext()
-         
+            
+            self.maker = newMaker
+            
             //create New Maker
             func createNewMaker() -> Maker {
                 let newMaker = Maker()
@@ -137,7 +140,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                 return newMaker
             }
         }
-        
+        return self.maker
         
     }
     

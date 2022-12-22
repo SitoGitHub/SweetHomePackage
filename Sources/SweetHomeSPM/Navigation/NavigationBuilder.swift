@@ -12,7 +12,7 @@ typealias NavigationFactory = (UIViewController) -> (UINavigationController)
 class NavigationBuilder {
     static func build(rootView: UIViewController) -> UINavigationController {
         let navigationController = UINavigationController(rootViewController: rootView)
-        navigationController.title = "Регистрация"
+       // navigationController.title = "Регистрация"
         return navigationController
     }
 }

@@ -9,11 +9,11 @@
 
  class GetProductCategoriesBuilder {
     //@discardableResult
-    public static func build() -> GetProductCategoriesViewController {
+     public static func build(maker: Maker) -> GetProductCategoriesViewController {
         let view = GetProductCategoriesViewController()
         let interactor = GetProductCategoriesInteractor()
         let router = GetProductCategoriesRouter()
-        let presenter = GetProductCategoriesPresenter(interactor: interactor, router: router)
+         let presenter = GetProductCategoriesPresenter(interactor: interactor, router: router, maker: maker)
         view.presenter = presenter
         presenter.view = view
         interactor.presenter = presenter

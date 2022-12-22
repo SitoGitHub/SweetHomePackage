@@ -211,6 +211,42 @@ extension CoreDataManager {
             return .failure(Errors.loadProdactCategoryError)
         }
     }
+    
+    //список категорий продуктов мейкера
+    func getProductCategoriesMakers(categoryName: String?, maker: Maker) -> Result<[ProductCategoryMaker], Errors> {
+        var allCategories: [ProductCategoryMaker] = []
+        guard let categories = maker.maker_product_categories?.allObjects as? [ProductCategoryMaker]
+        else {
+            return .failure(Errors.loadProdactCategoryError)
+        }
+        
+        for category in categories {
+            if category.category_name == categoryName {
+                allCategories.append(category)
+            }
+        }
+        return .success(allCategories)
+    }
+    
+    //удаление категории продуктов мейкера
+    func deleteProductCategoriesMakers(categoryName: String?, maker: Maker, productCategory: ProductCategory) -> Result<Bool, Errors> {
+        var result = false
+        guard let categories = maker.maker_product_categories?.allObjects as? [ProductCategoryMaker]
+        else {
+            return .failure(Errors.loadProdactCategoryError)
+        }
+        
+        for category in categories {
+            if category.category_name == categoryName {
+                managedObjectContext.delete(category)
+                maker.removeFromMaker_product_categories(category)
+                productCategory.removeFromProduct_categorie_maker(category)
+                result = true
+            }
+        }
+        return .success(result)
+    }
+    
 //    
 //    func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors> {
 //        let fetchRequest: NSFetchRequest<CityMaker> = CityMaker.fetchRequest()

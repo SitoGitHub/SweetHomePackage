@@ -97,6 +97,10 @@ private extension RegistrationViewController {
         createMenuTableView()
         if let navController = self.navigationController {
             self.navController = navController
+            //let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCategory))
+           // let save = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(isPressedSaveButton(sender:)))
+
+         //   self.navigationItem.rightBarButtonItem = save
         }
     }
     
@@ -466,10 +470,12 @@ extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         cell.textLabel?.text = listMenu.listMenu[indexPath.item]
         switch indexPath {
-        case [0]:
-            cell.textLabel?.textColor = newMakerIsSaved ? Colors.activeButtonColor.colorViewUIColor : Colors.lightGrayButton.colorViewUIColor
-            cell.isUserInteractionEnabled = newMakerIsSaved
-        case [1]:
+        case [0,0]:
+            cell.textLabel?.textColor = //newMakerIsSaved ?
+            Colors.activeButtonColor.colorViewUIColor
+            //: Colors.lightGrayButton.colorViewUIColor
+            cell.isUserInteractionEnabled = true//newMakerIsSaved
+        case [0,1]:
             cell.textLabel?.textColor = categoriesIsSaved ? Colors.activeButtonColor.colorViewUIColor : Colors.lightGrayButton.colorViewUIColor
             cell.isUserInteractionEnabled = categoriesIsSaved
         default:

@@ -8,7 +8,7 @@ import UIKit
 
 protocol RegistrationRouterInputProtocol {
     func presentWarnMessage(title: String?, descriptionText: String?)
-    func pushViewController(to navigationController: UINavigationController, animated: Bool)
+    func pushViewController(to navigationController: UINavigationController, animated: Bool, maker: Maker)
 }
 
 class RegistrationRouter: RegistrationRouterInputProtocol {
@@ -22,10 +22,10 @@ class RegistrationRouter: RegistrationRouterInputProtocol {
     
    // weak var presentedViewController: ModuleViewController?
 
-    func pushViewController(to navigationController: UINavigationController, animated: Bool) {
+    func pushViewController(to navigationController: UINavigationController, animated: Bool, maker: Maker) {
         self.navigationController = navigationController
 //        guard let newViewController = presentedViewController else { return }
-        navigationController.pushViewController(GetProductCategoriesBuilder.build(), animated: animated)
+        navigationController.pushViewController(GetProductCategoriesBuilder.build(maker: maker), animated: animated)
     }
     
     func presentWarnMessage(title: String?, descriptionText: String?) {
