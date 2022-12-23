@@ -221,9 +221,12 @@ extension CoreDataManager {
         }
         
         for category in categories {
-            if category.category_name == categoryName {
+            if categoryName != nil && category.category_name == categoryName {
+                allCategories.append(category)
+            } else {
                 allCategories.append(category)
             }
+                
         }
         return .success(allCategories)
     }

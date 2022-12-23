@@ -216,8 +216,9 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
             }
             return
         }
-        
+        //активируем ячейку таблицы для выбора категорий продуктов мейкера
         view?.updateMenuTableView(newMakerIsSaved: true, categoriesIsSaved: nil)
+        //передаем в map модуль данные для пина
         self.delegate?.fetchedNewMakerData(pinMakers: [maker])
         
     }

@@ -27,15 +27,7 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
         //           dateService.getDate { [weak self] date in
         //               self?.presenter?.didLoadDate(date: date.description)
         //           }
-        let productCategories = coreDataManager.getProductCategories(category: nil)
-        switch productCategories {
-        case.success(let productCategories):
-            self.presenter?.fetchedProductCategoriesData(productCategories: productCategories, error: nil)
-            
-        case .failure(let error):
-            self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
-        }
-        
+       //получение категорий продуктов мейкера
         let makers = coreDataManager.getMakerWithPhoneAndEmail(phoneNumber: phoneMaker, email: emailMaker)
         switch makers {
         case.success(let makers):
@@ -55,6 +47,18 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
         case .failure(let error):
             self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
         }
+        
+        
+        //получение общего списка категорий продуктов
+        let productCategories = coreDataManager.getProductCategories(category: nil)
+        switch productCategories {
+        case.success(let productCategories):
+            self.presenter?.fetchedProductCategoriesData(productCategories: productCategories, error: nil)
+            
+        case .failure(let error):
+            self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
+        }
+        
         
        
         

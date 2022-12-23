@@ -471,10 +471,9 @@ extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource
         cell.textLabel?.text = listMenu.listMenu[indexPath.item]
         switch indexPath {
         case [0,0]:
-            cell.textLabel?.textColor = //newMakerIsSaved ?
-            Colors.activeButtonColor.colorViewUIColor
-            //: Colors.lightGrayButton.colorViewUIColor
-            cell.isUserInteractionEnabled = true//newMakerIsSaved
+            cell.textLabel?.textColor = newMakerIsSaved ?
+            Colors.activeButtonColor.colorViewUIColor: Colors.lightGrayButton.colorViewUIColor
+            cell.isUserInteractionEnabled = newMakerIsSaved
         case [0,1]:
             cell.textLabel?.textColor = categoriesIsSaved ? Colors.activeButtonColor.colorViewUIColor : Colors.lightGrayButton.colorViewUIColor
             cell.isUserInteractionEnabled = categoriesIsSaved
