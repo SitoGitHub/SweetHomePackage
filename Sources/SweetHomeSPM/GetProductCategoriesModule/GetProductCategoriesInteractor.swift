@@ -9,20 +9,21 @@
 import Foundation
 
 protocol GetProductCategoriesInteractorInputProtocol: AnyObject {
-    func fetchCategoriesData(maker: Maker)
-    func modifyCategoryProductMaker(check: Bool, index: Int, productCategory: ProductCategory, maker: Maker) -> Bool
+    func fetchCategoriesData(phoneMaker: String, emailMaker: String)
+    func modifyCategoryProductMaker(check: Bool, index: Int, productCategory: ProductCategory, phoneMaker: String, emailMaker: String) -> Bool
 }
 
 class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtocol {
     
     weak var presenter: GetProductCategoriesInteractorOutputProtocol?
-    var coreDataManager = CoreDataManager()
+    let coreDataManager = CoreDataManager.shared
+    var maker = Maker()
     
     deinit{
         print("GetProductCategoriesInteractor deinit")
     }
     
-    func fetchCategoriesData(maker: Maker) {
+    func fetchCategoriesData (phoneMaker: String, emailMaker: String) {
         //           dateService.getDate { [weak self] date in
         //               self?.presenter?.didLoadDate(date: date.description)
         //           }
@@ -35,6 +36,17 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
             self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
         }
         
+        let makers = coreDataManager.getMakerWithPhoneAndEmail(phoneNumber: phoneMaker, email: emailMaker)
+        switch makers {
+        case.success(let makers):
+            for maker in makers{
+              //  maker.addToMaker_product_categories(newCategoryProductMaker)
+                self.maker = maker
+            }
+        case .failure(let error):
+            self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
+        }
+        
         let productCategoriesMakers = coreDataManager.getProductCategoriesMakers(categoryName: nil, maker: maker)
         switch productCategoriesMakers {
         case.success(let productCategoriesMakers):
@@ -44,6 +56,7 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
             self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
         }
         
+       
         
         //        self.users = modelUser.users
         //        self.presenter?.didLoadDate(users: users)
@@ -55,13 +68,42 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
     }
     
     
-    func modifyCategoryProductMaker(check: Bool, index: Int, productCategory: ProductCategory, maker: Maker) -> Bool {
+    func modifyCategoryProductMaker(check: Bool, index: Int, productCategory: ProductCategory, phoneMaker: String, emailMaker: String) -> Bool {
         var resultModifyCategory = false
         switch check {
         case true:
             let newCategoryProductMaker = ProductCategoryMaker()
             newCategoryProductMaker.category_name = productCategory.category_name
-            maker.addToMaker_product_categories(newCategoryProductMaker)
+            //coreDataManager.saveContext()
+            let makers = coreDataManager.getMakerWithPhoneAndEmail(phoneNumber: phoneMaker, email: emailMaker)
+        
+           // coreDataManager.saveContext()
+            switch makers {
+            case.success(let makers):
+                for maker in makers{
+             //       coreDataManager.saveContext()
+                    //coreDataManager.managedObjectContext.insert(maker)
+                    maker.addToMaker_product_categories(newCategoryProductMaker)
+                    coreDataManager.saveContext()
+            //        self.maker = maker
+                }
+            case .failure(let error):
+                self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
+            }
+//            
+          //  let copy = Maker.MR User.MR_createEntityInContext(localContext)!
+          //  let objectID = maker.objectID
+          //  let copyMaker = coreDataManager.managedObjectContext.objectwi
+          //  object(with: objectID) as? Maker
+           // coreDataManager.managedObjectContext.insert(maker)
+            //let copy = context2.objectWithID(objectID)
+          //  coreDataManager.saveContext()
+            
+          //  maker.addToMaker_product_categories(newCategoryProductMaker)
+        
+//            let objectIDProductCategory = productCategory.objectID
+//            let copyProductCategory = coreDataManager.managedObjectContext.object(with: objectIDProductCategory) as? ProductCategory
+//
             productCategory.addToProduct_categorie_maker(newCategoryProductMaker)
             resultModifyCategory = true
             coreDataManager.saveContext()

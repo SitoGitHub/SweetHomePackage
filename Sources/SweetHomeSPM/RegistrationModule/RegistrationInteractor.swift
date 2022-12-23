@@ -10,7 +10,7 @@ import MapKit
 
 
 protocol RegistrationInteractorInputProtocol: AnyObject {
-    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) -> Maker
+    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D)
 }
 
 class RegistrationInteractor: RegistrationInteractorInputProtocol {
@@ -23,7 +23,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
     }
     
     //save New Maker Data
-    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) -> Maker {
+    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) {
         
         let locationManager = LocationManager()
         
@@ -122,8 +122,6 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             cityLocation.addToCity_makers([newMaker])
             coreDataManager.saveContext()
             
-            self.maker = newMaker
-            
             //create New Maker
             func createNewMaker() -> Maker {
                 let newMaker = Maker()
@@ -140,8 +138,6 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                 return newMaker
             }
         }
-        return self.maker
-        
     }
     
     

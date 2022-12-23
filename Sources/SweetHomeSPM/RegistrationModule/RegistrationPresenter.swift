@@ -32,8 +32,10 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
      var touchCoordinate: CLLocationCoordinate2D
      var urlImageMaker: URL?
      lazy var password = String()
-     lazy var maker = Maker()
-    
+    // lazy var maker = Maker()
+     var phoneMaker = String()
+     var email = String()
+     
      init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol,/* mapPresenter: RegistrationPresenterOutputProtocol,*/ touchCoordinate: CLLocationCoordinate2D) {
         self.interactor = interactor
         self.router = router
@@ -92,7 +94,10 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
               //let passwordMaker = password
         else { return }
         
-        maker = interactor.saveDataNewMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
+        self.phoneMaker = phoneNumberMaker
+        self.email = emailMaker
+        
+        interactor.saveDataNewMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
     }
     
     //проверка на корректное заполнение данных нового makerа
@@ -185,7 +190,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         print("This cell was selected: \(indexRow)")
         //      router.openScreen(for: touchCoordinate)
         guard let navigationController = view?.navController else { return }
-        router.pushViewController(to: navigationController, animated: true, maker: maker)
+        router.pushViewController(to: navigationController, animated: true, phoneMaker: self.phoneMaker, emailMaker: self.email)
     }
 }
 

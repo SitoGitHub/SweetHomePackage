@@ -29,16 +29,20 @@ class GetProductCategoriesPresenter {
     weak var view: GetProductCategoriesViewInputProtocol?
     var router: GetProductCategoriesRouterInputProtocol
     var interactor: GetProductCategoriesInteractorInputProtocol
-    var maker: Maker
+    //var maker: Maker
+    var phoneMaker: String
+    var emailMaker: String
     var numberOfCategories: Int?
     lazy var arrayCategoriesMakers = [String]()
     var categoriesViewModel: [(String, Bool)] = []
     lazy var productCategories = [ProductCategory]()
     
-    init(interactor: GetProductCategoriesInteractorInputProtocol, router: GetProductCategoriesRouterInputProtocol, maker: Maker) {
+    init(interactor: GetProductCategoriesInteractorInputProtocol, router: GetProductCategoriesRouterInputProtocol, phoneMaker: String, emailMaker: String) {
         self.interactor = interactor
         self.router = router
-        self.maker = maker
+        //self.maker = maker
+        self.phoneMaker = phoneMaker
+        self.emailMaker = emailMaker
     }
     
     deinit{
@@ -116,7 +120,7 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
     
     //запрос данных
     func viewDidLoaded() {
-        interactor.fetchCategoriesData(maker: maker)
+        interactor.fetchCategoriesData(phoneMaker: phoneMaker, emailMaker: emailMaker)
     }
     
     //выделение и снятие выделения ячеек check and uncheck a cell
@@ -124,8 +128,8 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
         let categoryName = categoriesViewModel[index].0
         let productCategory = productCategories[index]
         var check = !categoriesViewModel[index].1
-        print(maker.maker_name)
-        let resultModify = interactor.modifyCategoryProductMaker(check: check, index: index, productCategory: productCategory, maker: maker)
+        
+        let resultModify = interactor.modifyCategoryProductMaker(check: check, index: index, productCategory: productCategory, phoneMaker: phoneMaker, emailMaker: emailMaker)
         if resultModify == false {
             check = !check
         }

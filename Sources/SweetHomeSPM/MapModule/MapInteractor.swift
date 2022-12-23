@@ -15,7 +15,7 @@ public class MapInteractor: MapInteractorInputProtocol {
     weak var presenter: MapInteractorOutputProtocol?
     let modelUser = ModelUser()
     var users = [[User]]()
-    var coreDataManager = CoreDataManager()
+    let coreDataManager = CoreDataManager.shared
     
     deinit{
         print("MapInteractor deinit")
