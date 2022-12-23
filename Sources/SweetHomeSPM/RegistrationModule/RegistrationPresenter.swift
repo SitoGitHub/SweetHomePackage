@@ -22,6 +22,10 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
     
 }
 
+protocol GetProductCategoriesDelegate: AnyObject {
+    func isChangedProductCategoriesMakers(isChanged: Bool)
+}
+
 // MARK: -  RegistrationPresenter
  class RegistrationPresenter {
      let validData = ValidData()
@@ -230,4 +234,12 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
     }
     
 
+}
+
+extension RegistrationPresenter: GetProductCategoriesDelegate {
+    
+    func isChangedProductCategoriesMakers(isChanged: Bool) {
+        //активируем ячейку таблицы для выбора категорий продуктов мейкера
+        view?.updateMenuTableView(newMakerIsSaved: true, categoriesIsSaved: isChanged)
+    }
 }

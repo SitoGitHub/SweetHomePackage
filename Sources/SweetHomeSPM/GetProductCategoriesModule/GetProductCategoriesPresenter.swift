@@ -29,6 +29,7 @@ class GetProductCategoriesPresenter {
     weak var view: GetProductCategoriesViewInputProtocol?
     var router: GetProductCategoriesRouterInputProtocol
     var interactor: GetProductCategoriesInteractorInputProtocol
+    weak var delegate: GetProductCategoriesDelegate?
     //var maker: Maker
     var phoneMaker: String
     var emailMaker: String
@@ -36,6 +37,12 @@ class GetProductCategoriesPresenter {
     lazy var arrayCategoriesMakers = [String]()
     var categoriesViewModel: [(String, Bool)] = []
     lazy var productCategories = [ProductCategory]()
+    var isCheckedCount = 0
+    var isChangedProductCategoriesMaker = false {
+        didSet {
+            delegate?.isChangedProductCategoriesMakers(isChanged: isChangedProductCategoriesMaker)
+        }
+    }
     
     init(interactor: GetProductCategoriesInteractorInputProtocol, router: GetProductCategoriesRouterInputProtocol, phoneMaker: String, emailMaker: String) {
         self.interactor = interactor
@@ -60,6 +67,7 @@ extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputPro
             return
         }
         self.arrayCategoriesMakers = makeCategoriesMaker(productCategoriesMaker: productCategoriesMakers)
+        isChangedProductCategoriesMaker = arrayCategoriesMakers.count > 0
        // productCategoriesMakers[0].managedObjectContext?.delete(productCategoriesMakers[0])
     }
     
@@ -79,22 +87,27 @@ extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputPro
         numberOfCategories = productCategories.count
         self.productCategories = productCategories
         categoriesViewModel = makeCategoriesViewModel(productCategories: productCategories)
-        
       //  DispatchQueue.main.async { [unowned self] in
          //   self.view?.updateViewWithProductCategories(productCategories: [productCategories])
-        self.view?.updateViewWithProductCategories(productCategories: categoriesViewModel)
-     //       }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.view?.updateViewWithProductCategories(productCategories: self.categoriesViewModel)
+            self.view?.stopActivityIndicator()
+        }
       //  }
     }
     
     //create ViewModel for tableView
     func makeCategoriesViewModel(productCategories: [ProductCategory]) -> [(String, Bool)] {
+    //    var isChanged = false
         return productCategories.map { productCategory in
             var categoryName = String()
             var check = Bool()
             if let category = productCategory.category_name {
                 categoryName = category
                 check = arrayCategoriesMakers.contains(categoryName)
+//                if check == true {
+//                    isChanged = true
+//                }
             }
             return (categoryName, check)
         }
@@ -125,7 +138,7 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
     
     //выделение и снятие выделения ячеек check and uncheck a cell
     func didSelectRowAt(index: Int) -> Bool {
-        let categoryName = categoriesViewModel[index].0
+       // let categoryName = categoriesViewModel[index].0
         let productCategory = productCategories[index]
         var check = !categoriesViewModel[index].1
         
@@ -133,6 +146,8 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
         if resultModify == false {
             check = !check
         }
+        isCheckedCount = check ? isCheckedCount + 1 : isCheckedCount - 1
+        isChangedProductCategoriesMaker = isCheckedCount > 0
         categoriesViewModel[index].1 = check
         return check
     }

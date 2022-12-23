@@ -25,7 +25,7 @@ class RegistrationRouter: RegistrationRouterInputProtocol {
     func pushViewController(to navigationController: UINavigationController, animated: Bool, phoneMaker: String, emailMaker: String) {
         self.navigationController = navigationController
 //        guard let newViewController = presentedViewController else { return }
-        navigationController.pushViewController(GetProductCategoriesBuilder.build(phoneMaker: phoneMaker, emailMaker: emailMaker), animated: animated)
+        navigationController.pushViewController(GetProductCategoriesBuilder.build(phoneMaker: phoneMaker, emailMaker: emailMaker, delegate: viewController?.presenter as? GetProductCategoriesDelegate), animated: animated)
     }
     
     func presentWarnMessage(title: String?, descriptionText: String?) {

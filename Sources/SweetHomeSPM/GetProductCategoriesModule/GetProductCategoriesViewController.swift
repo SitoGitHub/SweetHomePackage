@@ -10,7 +10,7 @@ import UIKit
 
 protocol GetProductCategoriesViewInputProtocol: AnyObject {
    // func updateViewWithProductCategories(productCategories: [ProductCategory])
-    
+    func stopActivityIndicator()
     func updateViewWithProductCategories(productCategories: [(String, Bool)])
 }
 
@@ -21,6 +21,7 @@ class GetProductCategoriesViewController: UIViewController {
     let categoriesTableView = UITableView()
     let identifier = "MyCell"
     lazy var categoryName = String()
+    let activityIndicator = UIActivityIndicatorView(style: .medium)
     
     var productCategories: [(String, Bool)]? {
         didSet {
@@ -56,11 +57,28 @@ extension GetProductCategoriesViewController {
         view.backgroundColor = .white
         presenter?.viewDidLoaded()
         createCategoriesTableView()
+        configureActivityIndicator()
         
         let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCategory))
         let save = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(saveCategories))
 
         self.navigationItem.rightBarButtonItems = [add, save]
+    }
+    
+    private func configureActivityIndicator() {
+        view.addSubview(activityIndicator)
+        activityIndicator.snp.makeConstraints { (make) -> Void in
+           // make.centerX.equalToSuperview()
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().offset(100)
+        }
+        
+        activityIndicator.color = Colors.activeButtonColor.colorViewUIColor
+    }
+    
+    // stop activityIndicator
+    func stopActivityIndicator() {
+        activityIndicator.stopAnimating()
     }
     //create categories TableView
     private func createCategoriesTableView() {
@@ -84,6 +102,7 @@ extension GetProductCategoriesViewController {
            // make.height.equalTo(90)
             //make.height.equalTo(20)
         }
+        activityIndicator.startAnimating()
       
     }
     
