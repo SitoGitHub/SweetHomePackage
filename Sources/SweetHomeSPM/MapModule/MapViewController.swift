@@ -53,6 +53,7 @@ extension MapViewController: MKMapViewDelegate {
     func initialize() {
         createMApView()
         presenter?.viewDidLoaded()
+        setupMakerImageView()
         //  checkLocationAnabled()
     }
     private func createMApView(){
@@ -81,6 +82,17 @@ extension MapViewController: MKMapViewDelegate {
             make.top.equalTo(viewHeight)
         }
     }
+    func setupMakerImageView() {
+        sliderBottomView.recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
+    }
+    
+    
+    //обработка клика на makerImageFiew action when makerImageFiew is pressed
+    @objc func tapForMakerImageAction (_ gestureRecognizer: UITapGestureRecognizer){
+        presenter.isTappedMakerImageView()
+      
+    }
+    
     //add Gesture Recognizer on the map
     func addGestureRecognizerOnMap() {
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))

@@ -14,12 +14,15 @@ protocol RegistrationViewOutputProtocol: AnyObject {
     func isSelectedRowMenuTableView(indexRow: Int)
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any])
     //func isFieldSDidEndEditing(textField: UITextField)
+    func isTappedEditDataMaker()
 }
 
 protocol RegistrationInteractorOutputProtocol: AnyObject {
     func existAlreadyMaker(phoneNumberMaker: String, email: String)
     func fetchedMakerData(maker: MakerAnotation?, error: Errors?)
-    
+    func isNeedEditMaker(phoneNumberMaker: String, email: String)
+    func isSavedData()
+    func isEditedData() 
 }
 
 protocol GetProductCategoriesDelegate: AnyObject {
@@ -39,6 +42,9 @@ protocol GetProductCategoriesDelegate: AnyObject {
     // lazy var maker = Maker()
      var phoneMaker = String()
      var email = String()
+     var surnameMaker = String()
+     var nameMaker = String()
+    
      
      init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol,/* mapPresenter: RegistrationPresenterOutputProtocol,*/ touchCoordinate: CLLocationCoordinate2D) {
         self.interactor = interactor
@@ -98,6 +104,8 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
               //let passwordMaker = password
         else { return }
         
+        self.surnameMaker = surnameMaker
+        self.nameMaker = nameMaker
         self.phoneMaker = phoneNumberMaker
         self.email = emailMaker
         
@@ -194,7 +202,27 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         print("This cell was selected: \(indexRow)")
         //      router.openScreen(for: touchCoordinate)
         guard let navigationController = view?.navController else { return }
-        router.pushViewController(to: navigationController, animated: true, phoneMaker: self.phoneMaker, emailMaker: self.email)
+        switch indexRow {
+        case 0:
+            router.pushGetProductCategoriesViewController(to: navigationController, animated: true, phoneMaker: self.phoneMaker, emailMaker: self.email)
+        case 1:
+            router.pushAddProductViewController(to: navigationController, animated: true)
+        default:
+            return
+        }
+    }
+    //вызываем редактирование данных Makera
+    func isTappedEditDataMaker() {
+        let error = checkForErrors()
+        
+        guard !error, let surnameMaker = view?.surnameTextField.text,
+              let nameMaker = view?.nameTextField.text,
+              let phoneNumberMaker = view?.phoneTextField.text,
+              let emailMaker = view?.emailTextField.text
+              //let passwordMaker = password
+        else { return }
+        
+        interactor.editDataMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
     }
 }
 
@@ -231,6 +259,25 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
     func existAlreadyMaker(phoneNumberMaker: String, email: String) {
         router.presentWarnMessage(title: "Внимание",
                                  descriptionText: "Поставщик услуг с номером \(phoneNumberMaker) или email \(email) уже зарегестрирован ранее. Проверьте данные.")
+    }
+    // оповещение, если данные успешно сохранились
+    func isSavedData() {
+        router.presentWarnMessage(title: "Внимание",
+                                 descriptionText: "Данные спешно сохранены.")
+        view?.changetitleButton()
+        
+    }
+    
+    func isEditedData() {
+        router.presentWarnMessage(title: "Внимание",
+                                 descriptionText: "Данные спешно изменены.")
+        view?.changetitleButton()
+        
+    }
+    
+    func isNeedEditMaker(phoneNumberMaker: String, email: String) {
+        view?.presentEditMessage(title: "Внимание",
+                                 descriptionText: "Хотите внести изменения?")
     }
     
 

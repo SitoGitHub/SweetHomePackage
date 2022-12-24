@@ -11,12 +11,16 @@ import MapKit
 
 protocol RegistrationInteractorInputProtocol: AnyObject {
     func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D)
+    func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D)
 }
 
 class RegistrationInteractor: RegistrationInteractorInputProtocol {
     
     weak var presenter: RegistrationInteractorOutputProtocol?
     var maker = Maker()
+    let coreDataManager = CoreDataManager.shared
+    var lat = Double()
+    var long = Double()
     
     deinit{
         print("RegistrationInteractor deinit")
@@ -30,19 +34,25 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
         locationManager.geocode(latitude: touchCoordinateMaker.latitude, longitude: touchCoordinateMaker.longitude) { placemarks, error in
             
             var newMaker = Maker()
-            let coreDataManager = CoreDataManager.shared
             lazy var countryLocation = CountryMaker()
             lazy var cityLocation = CityMaker()
             var countryMaker: String?
             var cityMaker: String?
             
-            let maker = coreDataManager.getMakerWithPhoneAndEmail(phoneNumber: phoneNumberMaker, email: emailMaker)
+            let maker = self.self.coreDataManager.getMakerWithPhoneAndEmail(phoneNumber: phoneNumberMaker, email: emailMaker)
             
             
             switch maker {
-            case.success(let maker):
-                guard maker.count == 0 else {
-                    self.presenter?.existAlreadyMaker(phoneNumberMaker: phoneNumberMaker, email: emailMaker)
+            case.success(let makers):
+                guard makers.count == 0 else {
+                    for maker in makers{
+                        if maker.lat == Double(touchCoordinateMaker.latitude) &&
+                            maker.long == Double(touchCoordinateMaker.longitude) {
+                            self.presenter?.isNeedEditMaker(phoneNumberMaker: phoneNumberMaker, email: emailMaker)
+                        } else {
+                            self.presenter?.existAlreadyMaker(phoneNumberMaker: phoneNumberMaker, email: emailMaker)
+                        }
+                    }
                     return
                 }
                 
@@ -73,7 +83,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                 print(city)
             }
             if let country = countryMaker {
-                let countryExist = coreDataManager.getCountry(country: country)
+                let countryExist = self.self.coreDataManager.getCountry(country: country)
                 switch countryExist {
                 case.success(let countryExist):
                     if countryExist.count == 0 {
@@ -92,7 +102,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             
             if let city = cityMaker {
                 let countryName = countryLocation.country_name ?? ""
-                let cityExist = coreDataManager.getCityWithName(cityName: city, country: countryName)
+                let cityExist = self.self.coreDataManager.getCityWithName(cityName: city, country: countryName)
                 switch cityExist {
                 case.success(let cityExist):
                     if cityExist.count == 0 {
@@ -120,7 +130,8 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
             
             cityLocation.addToCity_makers([newMaker])
-            coreDataManager.saveContext()
+            self.self.coreDataManager.saveContext()
+            self.presenter?.isSavedData()
             
             //create New Maker
             func createNewMaker() -> Maker {
@@ -130,7 +141,9 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                 // bakerSergei.baker_product_categories = ["Торты"]
                 newMaker.date = Date()
                 newMaker.lat = Double(touchCoordinateMaker.latitude)
+                self.lat = newMaker.lat
                 newMaker.long = Double(touchCoordinateMaker.longitude)
+                self.long = newMaker.long
                 newMaker.phone_number = phoneNumberMaker
                 newMaker.email  = emailMaker
                 newMaker.password = passwordMaker
@@ -140,6 +153,35 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
         }
     }
     
+    func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) {
+        let lat = Double(touchCoordinateMaker.latitude)
+        let long = Double(touchCoordinateMaker.longitude)
+        let maker = coreDataManager.getMakerWithCoordinate(latitude: lat, long: long)
+        
+        
+        switch maker {
+        case.success(let makers):
+           // guard makers.count == 0 else {
+            if makers.count == 0 {
+                self.presenter?.fetchedMakerData(maker: nil, error: .loadMakersError)
+            } else {
+            for maker in makers{
+                    maker.setValue(nameMaker, forKey: "maker_name")
+                    maker.setValue(phoneNumberMaker, forKey: "phone_number")
+                    maker.setValue(emailMaker, forKey: "email")
+                    maker.setValue(passwordMaker, forKey: "password")
+                    maker.setValue(urlImageMaker, forKey: "maker_image")
+                    maker.setValue(surnameMaker, forKey: "maker_surname")
+                }
+                coreDataManager.saveContext()
+                presenter?.isEditedData()
+            }
+           
+        case .failure(let error):
+            self.presenter?.fetchedMakerData(maker: nil, error: error)
+            
+        }
+    }
     
     //
     //    func geocode(latitude: Double, longitude: Double, completion: @escaping (_ placemark: [CLPlacemark]?, _ error: Error?) -> Void)  {

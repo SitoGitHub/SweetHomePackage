@@ -15,6 +15,9 @@ protocol RegistrationViewInputProtocol: AnyObject {
     func setNextTextField(textField: UITextField)
     func alertWithTitle(title: String, message: String, toFocus:UITextField)
     func updateMenuTableView(newMakerIsSaved: Bool?, categoriesIsSaved: Bool?)
+    func presentEditMessage(title: String?,
+                            descriptionText: String?)
+    func changetitleButton()
     
     var nameTextField: UITextField { get }
     var surnameTextField: UITextField { get }
@@ -453,7 +456,34 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
         menuTableView.cellForRow(at: [0,index])?.textLabel?.textColor = status ? Colors.activeButtonColor.colorViewUIColor : Colors.lightGrayButton.colorViewUIColor
     }
     
+    func presentEditMessage(title: String?,
+                            descriptionText: String?) {
+        let alertController = UIAlertController(title: title,
+                                                message: descriptionText,
+                                                preferredStyle: .alert)
+        
+        let okBtn = UIAlertAction(title: "OK",
+                                  style: .default) {
+            //[weak self, weak alertController]
+            _ in
+            self.presenter?.isTappedEditDataMaker()
+        }
+        let cancelBtn = UIAlertAction(title: "OK",
+                                        style: .cancel,
+                                        handler: nil)
+        
+        alertController.addAction(okBtn)
+        alertController.addAction(cancelBtn)
+        
+        present(alertController,
+                                animated: true,
+                                completion: nil)
+        
+    }
     
+    func changetitleButton() {
+        saveButton.setTitle("Изменить", for: .normal)
+    }
     
 }
 

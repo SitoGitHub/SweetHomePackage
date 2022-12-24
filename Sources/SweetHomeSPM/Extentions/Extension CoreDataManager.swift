@@ -167,6 +167,26 @@ extension CoreDataManager {
         }
     }
     
+    func getMakerWithCoordinate(latitude: Double, long: Double)  -> Result<[Maker], Errors> {
+        let fetchRequest: NSFetchRequest<Maker> = Maker.fetchRequest()
+       
+       // let predicatePh = NSPredicate(format: "%K == %@", #keyPath(Maker.phone_number), "121")
+        let predicateLong = NSPredicate(format: "%K == %lf", #keyPath(Maker.long), long)
+        let predicateLatitude = NSPredicate(format: "%K == %lf", #keyPath(Maker.lat), latitude)
+        
+        let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [predicateLatitude, predicateLong])
+            fetchRequest.predicate = andPredicate
+        do {
+            let result = try managedObjectContext.fetch(fetchRequest)
+//            guard result != nil else {
+//                return .failure(Errors.loadMakersError)
+//            }
+            return .success(result)
+        } catch {
+            return .failure(Errors.loadMakersError)
+        }
+    }
+    
     //get City with name
     
     func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors> {

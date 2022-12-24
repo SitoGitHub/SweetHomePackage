@@ -18,6 +18,7 @@ public protocol RegistrationModuleDelegate: AnyObject {
 public protocol MapViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)
+    func isTappedMakerImageView()
 }
 
 public class MapPresenter {
@@ -69,6 +70,10 @@ extension MapPresenter: MapViewOutputProtocol {
     
     public func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D) {
         router.openRegistrtionScreen(for: touchCoordinate)
+    }
+    
+    public func isTappedMakerImageView(){
+        
     }
 }
 
