@@ -37,7 +37,7 @@ protocol GetProductCategoriesDelegate: AnyObject {
      var router: RegistrationRouterInputProtocol
      var interactor: RegistrationInteractorInputProtocol
      var touchCoordinate: CLLocationCoordinate2D
-     var urlImageMaker: URL?
+     var pathImageMaker: String?
      lazy var password = String()
     // lazy var maker = Maker()
      var phoneMaker = String()
@@ -109,7 +109,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         self.phoneMaker = phoneNumberMaker
         self.email = emailMaker
         
-        interactor.saveDataNewMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
+        interactor.saveDataNewMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, pathImageMaker: pathImageMaker, touchCoordinateMaker: touchCoordinate)
     }
     
     //проверка на корректное заполнение данных нового makerа
@@ -172,23 +172,55 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         return errors
     }
     
+    // Helper function inserted by Swift 4.2 migrator. For imagePickerController
+    fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+
+        return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+
+    }
+    
+    // Helper function inserted by Swift 4.2 migrator.
+    fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+
+        return input.rawValue
+
+    }
+    
     //выбор фото нового makera
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any]) {
         // interactor.getImageForMakerImageView(info: info)
-        
+       // var fileName = String()
         if let chosenImage = info[.originalImage] as? UIImage {
             // imgPhoto.contentMode = .scaleToFill
+            var fileName = String()
             view?.makerImageView.image = chosenImage
+            
+            // info: Local variable inserted by Swift 4.2 migrator.
+                  let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
+                  if let url = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.imageURL)] as? URL {
+                      fileName = url.lastPathComponent
+                      
+                  }
+            
+            
+//            if let asset = info[UIImagePickerControllerPHAsset] as? PHAsset {
+//                   if let fileName = (asset.value(forKey: "filename")) as? String {
+                       //Do your stuff here
+              //     }
+              // }
             //interactor.getImageForMakerImageView(forSaveImage: UIImage)
             
             //сохраняем фото юзера в файл
             //            let path = "photo/temp/album1/img.jpg"
-            //
-            let path = "photo/temp/sweethome/maker"
+            
+            //generate unique filname
+            let name = ProcessInfo.processInfo.globallyUniqueString
+            let path = "photo/temp/sweethome2/maker/\(name).jpeg"
             let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
             guard let url = chosenImage.save(at: tempDirectoryUrl) else { return }
             print(url)
-            urlImageMaker = url
+            pathImageMaker = path//url
             //            guard
             //                    let url = chosenImage.save(at: .documentDirectory,
             //                                       pathAndImageName: path) else { return }
@@ -222,7 +254,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
               //let passwordMaker = password
         else { return }
         
-        interactor.editDataMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, urlImageMaker: urlImageMaker, touchCoordinateMaker: touchCoordinate)
+        interactor.editDataMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, pathImageMaker: pathImageMaker, touchCoordinateMaker: touchCoordinate)
     }
 }
 
@@ -263,14 +295,14 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
     // оповещение, если данные успешно сохранились
     func isSavedData() {
         router.presentWarnMessage(title: "Внимание",
-                                 descriptionText: "Данные спешно сохранены.")
+                                 descriptionText: "Данные успешно сохранены.")
         view?.changetitleButton()
         
     }
     
     func isEditedData() {
         router.presentWarnMessage(title: "Внимание",
-                                 descriptionText: "Данные спешно изменены.")
+                                 descriptionText: "Данные успешно изменены.")
         view?.changetitleButton()
         
     }

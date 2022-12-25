@@ -1,8 +1,8 @@
 //
 //  Maker+CoreDataProperties.swift
-//  SweetHomeWithSPM 1.6
+//  SweetHomeWithSPM 2.0
 //
-//  Created by Aleksei Grachev on 16/12/22.
+//  Created by Aleksei Grachev on 25/12/22.
 //
 //
 
@@ -25,6 +25,7 @@ extension Maker {
     @NSManaged public var maker_surname: String?
     @NSManaged public var password: String?
     @NSManaged public var phone_number: String?
+    @NSManaged public var path_image: String?
     @NSManaged public var maker_city: CityMaker?
     @NSManaged public var maker_product_categories: NSSet?
 

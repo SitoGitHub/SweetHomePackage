@@ -129,7 +129,7 @@ extension CoreDataManager {
                     if let password = maker.password {
                         passwordMaker = password
                     }
-                    let urlImage = maker.maker_image
+                    let pathImage = maker.path_image
                     let lat = maker.lat as? CLLocationDegrees ?? 0
                     let long = maker.long as? CLLocationDegrees ?? 0
                     
@@ -137,7 +137,7 @@ extension CoreDataManager {
                             latitude: lat,
                             longitude: long)
                     
-                    let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: name, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, urlImageMaker: urlImage, coordinate: coordinate)
+                    let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: name, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImage, coordinate: coordinate)
                     
                     allMakersAnotation.append(makerAnotation)
                 }

@@ -383,6 +383,17 @@ extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigat
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         
+//        
+//            if let asset = info[UIImagePickerControllerPHAsset] as? PHAsset {
+//                if let fileName = (asset.value(forKey: "filename")) as? String {
+//                    //Do your stuff here
+//                }
+//            }
+
+        //    picker.dismiss(animated: true, completion: nil)
+       // }
+        
+        
         presenter?.isTappedMakerImage(info: info)
         
         
@@ -468,7 +479,7 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
             _ in
             self.presenter?.isTappedEditDataMaker()
         }
-        let cancelBtn = UIAlertAction(title: "OK",
+        let cancelBtn = UIAlertAction(title: "Отмена",
                                         style: .cancel,
                                         handler: nil)
         

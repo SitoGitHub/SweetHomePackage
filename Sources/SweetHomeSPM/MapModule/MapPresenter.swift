@@ -18,7 +18,8 @@ public protocol RegistrationModuleDelegate: AnyObject {
 public protocol MapViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)
-    func isTappedMakerImageView()
+    func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D)
+    func getMakerImage(pathImage: String?)
 }
 
 public class MapPresenter {
@@ -72,8 +73,42 @@ extension MapPresenter: MapViewOutputProtocol {
         router.openRegistrtionScreen(for: touchCoordinate)
     }
     
-    public func isTappedMakerImageView(){
+    public func getMakerImage(pathImage: String?) {
+        //let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
+        var imageMaker = UIImage()
+       // if let path = pathImage{
+                    //    let data = NSData(contentsOf: url)
+                    //       let image = UIImage(data: data!)
+            if let path = pathImage { //"photo/temp/sweethome2/maker/B8FA35B6-F97E-4518-B771-6D870396904E-71944-000004153D29E2FB.jpeg"
+                let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
+                
+                if let image = UIImage(fileURLWithPath: tempDirectoryUrl) {
+                    imageMaker = image
+                }
+            }
+//            do {
+//                let data = try Data(contentsOf: url)
+//                let image = UIImage(data: data)
+//                if let image = image{
+//                    imageMaker = image
+//                }
+//            } catch {
+//                print ("не получили image")
+//            }
+       // }
+        //UIImage(contentsOfFile: url.path)
+        // UIImage(fileURLWithPath: url.path)
+        else {
+            if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil) {
+                imageMaker = image
+            }
+        }
         
+        view?.setMakerImageView(imageMAker: imageMaker)
+        
+    }
+    public func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D) {
+        router.openRegistrtionScreen(for: touchCoordinate)
     }
 }
 

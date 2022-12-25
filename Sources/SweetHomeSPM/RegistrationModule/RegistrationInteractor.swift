@@ -10,8 +10,8 @@ import MapKit
 
 
 protocol RegistrationInteractorInputProtocol: AnyObject {
-    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D)
-    func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D)
+    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D)
+    func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D)
 }
 
 class RegistrationInteractor: RegistrationInteractorInputProtocol {
@@ -27,7 +27,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
     }
     
     //save New Maker Data
-    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) {
+    func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D) {
         
         let locationManager = LocationManager()
         
@@ -123,15 +123,15 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             }
             
             //данные для созданияя пина на карте
-            let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, urlImageMaker: urlImageMaker, coordinate: touchCoordinateMaker)
+            let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImageMaker, coordinate: touchCoordinateMaker)
             
             //allMakersAnotation.append(MakerAnotation)
-            
-            self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
+        
             
             cityLocation.addToCity_makers([newMaker])
             self.self.coreDataManager.saveContext()
             self.presenter?.isSavedData()
+            self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
             
             //create New Maker
             func createNewMaker() -> Maker {
@@ -147,13 +147,13 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                 newMaker.phone_number = phoneNumberMaker
                 newMaker.email  = emailMaker
                 newMaker.password = passwordMaker
-                newMaker.maker_image = urlImageMaker
+                newMaker.path_image = pathImageMaker
                 return newMaker
             }
         }
     }
     
-    func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, urlImageMaker: URL?, touchCoordinateMaker: CLLocationCoordinate2D) {
+    func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D) {
         let lat = Double(touchCoordinateMaker.latitude)
         let long = Double(touchCoordinateMaker.longitude)
         let maker = coreDataManager.getMakerWithCoordinate(latitude: lat, long: long)
@@ -170,10 +170,13 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                     maker.setValue(phoneNumberMaker, forKey: "phone_number")
                     maker.setValue(emailMaker, forKey: "email")
                     maker.setValue(passwordMaker, forKey: "password")
-                    maker.setValue(urlImageMaker, forKey: "maker_image")
+                    maker.setValue(pathImageMaker, forKey: "path_image")
                     maker.setValue(surnameMaker, forKey: "maker_surname")
                 }
                 coreDataManager.saveContext()
+                //данные для созданияя пина на карте
+                let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImageMaker, coordinate: touchCoordinateMaker)
+                self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
                 presenter?.isEditedData()
             }
            

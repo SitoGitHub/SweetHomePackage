@@ -18,6 +18,7 @@
         <attribute name="maker_name" optional="YES" attributeType="String"/>
         <attribute name="maker_surname" optional="YES" attributeType="String"/>
         <attribute name="password" optional="YES" attributeType="String"/>
+        <attribute name="path_image" optional="YES" attributeType="String"/>
         <attribute name="phone_number" optional="YES" attributeType="String"/>
         <relationship name="maker_city" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="City" inverseName="city_makers" inverseEntity="City"/>
         <relationship name="maker_product_categories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Product_category_maker" inverseName="maker" inverseEntity="Product_category_maker"/>

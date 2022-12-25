@@ -29,8 +29,9 @@ class SliderBottomView: UIView {
         self.backgroundColor = .white
         self.layer.cornerRadius = 20
         createRouteButton()
-        setupMakerLabel()
         createMAkerImageView()
+        setupMakerLabel()
+        
     }
     
     private func createRouteButton(){
@@ -54,36 +55,23 @@ class SliderBottomView: UIView {
         }
     }
     
-    private func setupMakerLabel() {
-        makerLabel.font = Fonts.fontNameMakerLabelSlideView.fontsForViews
-        makerLabel.textColor = Colors.blackLabel.colorViewUIColor
-        self.addSubview(makerLabel)
-        
-        makerLabel.snp.makeConstraints { (make) -> Void in
-            make.top.equalToSuperview().offset(20)
-            make.centerX.equalToSuperview()
-//            make.width.equalToSuperview().multipliedBy(0.3)
-//            make.height.equalToSuperview().multipliedBy(0.15)
-//            make.bottom.equalToSuperview().inset(30)
-        }
-    }
     
     private func createMAkerImageView(){
-       // makerImageView.layer.cornerRadius = makerImageView.frame.width / 2
+        makerImageView.layer.cornerRadius = makerImageView.frame.width / 2
         makerImageView.layer.masksToBounds = false
         makerImageView.clipsToBounds = true
        // picker.delegate = self
         
         makerImageView.contentMode = .scaleAspectFill
-        if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil){
-            makerImageView.image = image
-        }
+//        if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil){
+//            makerImageView.image = image
+//        }
         self.addSubview(makerImageView)
         
         makerImageView.snp.makeConstraints { (make) -> Void in
            // make.left.equalToSuperview().offset(60)
-            make.left.equalToSuperview().inset(2)
-            make.right.equalTo(makerLabel.snp.left).inset(2)
+            make.right.equalToSuperview().inset(2)
+            //make.right.equalTo(makerLabel.snp.left).inset(2)
             make.width.equalTo(65)
             make.height.equalTo(makerImageView.snp.width)
             make.top.equalToSuperview().inset(2)
@@ -97,4 +85,26 @@ class SliderBottomView: UIView {
         //recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
         makerImageView.addGestureRecognizer(recognizer)
     }
+    
+    private func setupMakerLabel() {
+        makerLabel.font = Fonts.fontNameMakerLabelSlideView.fontsForViews
+        makerLabel.textColor = Colors.blackLabel.colorViewUIColor
+        makerLabel.numberOfLines = 2
+        makerLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+        makerLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        self.addSubview(makerLabel)
+        
+
+        
+        
+        makerLabel.snp.makeConstraints { (make) -> Void in
+            make.top.equalToSuperview().offset(20)
+            make.centerX.equalToSuperview()
+            make.right.equalTo(makerImageView.snp.left)
+//            make.width.equalToSuperview().multipliedBy(0.3)
+//            make.height.equalToSuperview().multipliedBy(0.15)
+//            make.bottom.equalToSuperview().inset(30)
+        }
+    }
+    
 }

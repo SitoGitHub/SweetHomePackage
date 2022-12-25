@@ -13,7 +13,9 @@ import MapKit
 
 public protocol MapViewInputProtocol: AnyObject {
     func showDate(pinMakers: [MakerAnotation])
+    func setMakerImageView(imageMAker: UIImage)
     var mapView: MKMapView { get }
+    
 }
 
 public class MapViewController: UIViewController {
@@ -53,7 +55,6 @@ extension MapViewController: MKMapViewDelegate {
     func initialize() {
         createMApView()
         presenter?.viewDidLoaded()
-        setupMakerImageView()
         //  checkLocationAnabled()
     }
     private func createMApView(){
@@ -83,13 +84,16 @@ extension MapViewController: MKMapViewDelegate {
         }
     }
     func setupMakerImageView() {
+        let pathImageMaker = maker?.pathImageMaker
+        presenter?.getMakerImage(pathImage: pathImageMaker)
         sliderBottomView.recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
     }
     
     
     //обработка клика на makerImageFiew action when makerImageFiew is pressed
     @objc func tapForMakerImageAction (_ gestureRecognizer: UITapGestureRecognizer){
-        presenter.isTappedMakerImageView()
+        guard let coordinate = maker?.coordinate else { return }
+        presenter?.isTappedMakerImageView(touchCoordinate: coordinate)
       
     }
     
@@ -211,6 +215,7 @@ extension MapViewController: MKMapViewDelegate {
         if let surname = maker?.surnameMaker, let name = maker?.nameMaker {
             sliderBottomView.makerLabel.text = surname + " " + name
         }
+        setupMakerImageView()
     }
     
     // убираем sliderBottomView по клику на карту hide sliderBottomView
@@ -350,6 +355,10 @@ extension MapViewController: MapViewInputProtocol {
         for pinMaker in pinMakers {
             mapView.addAnnotation(pinMaker)
         }
+    }
+    
+    public func setMakerImageView(imageMAker: UIImage) {
+        sliderBottomView.makerImageView.image = imageMAker
     }
     
 }
