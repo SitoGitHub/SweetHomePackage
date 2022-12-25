@@ -24,6 +24,7 @@ public class MapViewController: UIViewController {
     var maker: MakerAnotation?
     let locationManager = CLLocationManager()
     let sliderBottomView = SliderBottomView()
+    let buttonStack = UIStackView()
     var viewHeight = CGFloat()
     lazy var heightSliderView: CGFloat = 250
     // MARK: - Public
@@ -210,12 +211,52 @@ extension MapViewController: MKMapViewDelegate {
             }
             self.mapView.layoutIfNeeded()
         }
-        
+        createProductCategoriesButton()
         sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
         if let surname = maker?.surnameMaker, let name = maker?.nameMaker {
             sliderBottomView.makerLabel.text = surname + " " + name
         }
         setupMakerImageView()
+    }
+    
+    //выводим название категорий для конкретного мейкера
+    private func createProductCategoriesButton() {
+        guard let productCategories = maker?.productCategoriesMaker else { return }
+       // let productCategoryButton = UIButton()
+        var productCategoriesButton: [UIButton] = [] // [productCategoryButton]
+        var indexArrayButton = 0
+        
+        buttonStack.removeArrangedSubview(<#T##view: UIView##UIView#>)
+        buttonStack.axis = .horizontal
+        buttonStack.alignment = .fill
+        buttonStack.spacing = 2.0
+        
+        sliderBottomView.addSubview(buttonStack)
+       
+        buttonStack.snp.makeConstraints { (make) -> Void in
+            make.left.equalToSuperview().inset(20)
+            make.width.equalToSuperview().inset(20)
+            
+            make.top.equalTo(sliderBottomView.categoryLabel.snp.bottom).offset(10)
+            //make.width.equalToSuperview().multipliedBy(0.6)
+        }
+        for productCategory in productCategories {
+            let button = UIButton()
+            let categoryName = productCategory.category_name
+            button.setTitle(categoryName, for: .normal)
+            button.setTitleColor(Colors.activeButtonColor.colorViewUIColor, for: .normal)
+            button.backgroundColor = Colors.whiteLabel.colorViewUIColor
+            button.titleLabel?.font = Fonts.fontButton.fontsForViews
+            productCategoriesButton.append(button)
+            buttonStack.addArrangedSubview(productCategoriesButton[indexArrayButton])
+            
+            indexArrayButton += 1
+//            productCategoriesButton[indexArrayButton].snp.makeConstraints { (make) -> Void in
+//                make.width.equalToSuperview().inset(20)
+//                make.height.equalTo(20)
+            
+        }
+            
     }
     
     // убираем sliderBottomView по клику на карту hide sliderBottomView

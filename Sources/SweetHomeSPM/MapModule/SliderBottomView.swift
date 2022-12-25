@@ -12,6 +12,7 @@ class SliderBottomView: UIView {
    
     let routeButton = UIButton()
     let makerLabel = UILabel()
+    let categoryLabel = UILabel()
     let makerImageView = UIImageView()
     let recognizer = UITapGestureRecognizer()
     
@@ -31,6 +32,7 @@ class SliderBottomView: UIView {
         createRouteButton()
         createMAkerImageView()
         setupMakerLabel()
+        createCategoryLabel()
         
     }
     
@@ -90,8 +92,12 @@ class SliderBottomView: UIView {
         makerLabel.font = Fonts.fontNameMakerLabelSlideView.fontsForViews
         makerLabel.textColor = Colors.blackLabel.colorViewUIColor
         makerLabel.numberOfLines = 2
-        makerLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
-        makerLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
+        makerLabel.textAlignment = .center
+        //makerLabel.lineBreakMode = .byWordWrapping
+        makerLabel.adjustsFontSizeToFitWidth = true
+        makerLabel.minimumScaleFactor = 0.5
+       // makerLabel.setContentHuggingPriority(.defaultHigh, for: .horizontal)
+       // makerLabel.setContentCompressionResistancePriority(.defaultLow, for: .horizontal)
         self.addSubview(makerLabel)
         
 
@@ -106,5 +112,18 @@ class SliderBottomView: UIView {
 //            make.bottom.equalToSuperview().inset(30)
         }
     }
+   
+    private func createCategoryLabel() {
+        categoryLabel.font = Fonts.fontNameMakerLabelSlideView.fontsForViews
+        categoryLabel.textColor = Colors.blackLabel.colorViewUIColor
+        makerLabel.textAlignment = .center
+        makerLabel.text = "Категории"
+        self.addSubview(categoryLabel)
     
+        categoryLabel.snp.makeConstraints { (make) -> Void in
+            make.top.equalTo(makerLabel.snp.bottom).offset(10)
+            make.centerX.equalToSuperview()
+          
+        }
+    }
 }

@@ -136,8 +136,18 @@ extension CoreDataManager {
                     let coordinate = CLLocationCoordinate2D(
                             latitude: lat,
                             longitude: long)
+                    let productCategoriesMaker: [ProductCategoryMaker]
+                    let productCategories = getProductCategoriesMakers(categoryName: nil, maker: maker)
+                    switch productCategories {
+                    case.success(let productCategories):
+                        productCategoriesMaker = productCategories
+                        //for productCategoryMakers in productCategoriesMakers {
+                    case .failure(let error):
+                        return .failure(error)
+                    }
                     
-                    let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: name, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImage, coordinate: coordinate)
+                    let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: name, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImage, coordinate: coordinate, productCategoriesMaker: productCategoriesMaker)
+                    
                     
                     allMakersAnotation.append(makerAnotation)
                 }

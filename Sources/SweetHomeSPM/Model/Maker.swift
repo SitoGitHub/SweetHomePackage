@@ -24,8 +24,9 @@ public class MakerAnotation: NSObject, MKAnnotation{
     public var passwordMaker: String
     public var pathImageMaker: String?
     public var title: String?
+    public var productCategoriesMaker: [ProductCategoryMaker]?
     
-    init (surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, coordinate: CLLocationCoordinate2D){
+    init (surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, coordinate: CLLocationCoordinate2D, productCategoriesMaker: [ProductCategoryMaker]?){
         self.coordinate = coordinate
         self.nameMaker = nameMaker
         self.surnameMaker = surnameMaker
@@ -33,7 +34,8 @@ public class MakerAnotation: NSObject, MKAnnotation{
         self.emailMaker = emailMaker
         self.passwordMaker = passwordMaker
         self.pathImageMaker = pathImageMaker
-        self.title = nameMaker
+        self.title = surnameMaker + " " + nameMaker
+        self.productCategoriesMaker = productCategoriesMaker
     }
 }
 

@@ -123,7 +123,7 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             }
             
             //данные для созданияя пина на карте
-            let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImageMaker, coordinate: touchCoordinateMaker)
+            let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImageMaker, coordinate: touchCoordinateMaker, productCategoriesMaker: nil)
             
             //allMakersAnotation.append(MakerAnotation)
         
@@ -174,8 +174,19 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
                     maker.setValue(surnameMaker, forKey: "maker_surname")
                 }
                 coreDataManager.saveContext()
+                var productCategoriesMaker: [ProductCategoryMaker] = []
+                if let maker = makers.first{
+                    let productCategories = coreDataManager.getProductCategoriesMakers(categoryName: nil, maker: maker)
+                    switch productCategories {
+                    case.success(let productCategories):
+                        productCategoriesMaker = productCategories
+                        //for productCategoryMakers in productCategoriesMakers {
+                    case .failure(let error):
+                        self.presenter?.fetchedMakerData(maker: nil, error: error)
+                    }
+                }
                 //данные для созданияя пина на карте
-                let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImageMaker, coordinate: touchCoordinateMaker)
+                let makerAnotation = MakerAnotation(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: passwordMaker, pathImageMaker: pathImageMaker, coordinate: touchCoordinateMaker, productCategoriesMaker: productCategoriesMaker)
                 self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
                 presenter?.isEditedData()
             }
