@@ -18,6 +18,8 @@ protocol RegistrationViewInputProtocol: AnyObject {
     func presentEditMessage(title: String?,
                             descriptionText: String?)
     func changetitleButton()
+    func updateMakerData(makerAnotation: MakerAnotation)
+    func setMakerImageView(imageMAker: UIImage)
     
     var nameTextField: UITextField { get }
     var surnameTextField: UITextField { get }
@@ -34,6 +36,8 @@ protocol RegistrationViewInputProtocol: AnyObject {
 
 class RegistrationViewController: UIViewController {
 
+    let makerAnotation: MakerAnotation? = nil
+    
     let registrationView = UIView()
     
     let menuTableView = UITableView()
@@ -93,18 +97,19 @@ private extension RegistrationViewController {
     func initialize() {
         view.backgroundColor = .white
         createRegistrationView()
-        setupCurrencyNameLabel()
+        setupTopNameLabel()
         setupNameTextField()
         createSaveButton()
         createMAkerImageView()
         createMenuTableView()
         if let navController = self.navigationController {
             self.navController = navController
-            //let add = UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addCategory))
-           // let save = UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(isPressedSaveButton(sender:)))
-
-         //   self.navigationItem.rightBarButtonItem = save
+            //add button on the barButton if need
         }
+        setMakerAnotation()
+    }
+    private func setMakerAnotation() {
+        presenter?.getMakerAnotation()
     }
     
     //create Registration View
@@ -122,7 +127,7 @@ private extension RegistrationViewController {
         }
     }
     //setup Registration Label
-    private func setupCurrencyNameLabel() {
+    private func setupTopNameLabel() {
         topHeaderLabel.font = Fonts.fontTopLabel.fontsForViews
         topHeaderLabel.textColor = Colors.headerColor.colorViewUIColor//.darkGray//Colors.headerColor.colorViewUIColor
         topHeaderLabel.text = "Регистрация"
@@ -451,6 +456,8 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
     }
     
     func updateMenuTableView(newMakerIsSaved: Bool?, categoriesIsSaved: Bool?) {
+        
+        //let status = getStatusCellMenuTableView(newMakerIsSaved: newMakerIsSaved, categoriesIsSaved: categoriesIsSaved)
         var index = 0
         var status = false
         if let newMaker = newMakerIsSaved {
@@ -492,10 +499,27 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
         
     }
     
+    //после сохранения данных меняем название кнопки
     func changetitleButton() {
         saveButton.setTitle("Изменить", for: .normal)
     }
     
+    //заполняем форму в соответсвии с данными на Maker, которые получили из модуля Map
+    func updateMakerData(makerAnotation: MakerAnotation) {
+        nameTextField.text = makerAnotation.nameMaker
+        surnameTextField.text = makerAnotation.surnameMaker
+        phoneTextField.text = makerAnotation.phoneNumberMaker
+        emailTextField.text = makerAnotation.emailMaker
+        
+        changetitleButton()
+        let productCategoriesBool = (makerAnotation.productCategoriesMaker?.first != nil)
+        updateMenuTableView(newMakerIsSaved: true, categoriesIsSaved: productCategoriesBool)
+        presenter?.getMakerImage(pathImage: makerAnotation.pathImageMaker)
+    }
+    //обновляем фото makera
+    func setMakerImageView(imageMAker: UIImage) {
+        makerImageView.image = imageMAker
+    }
 }
 
 // MARK: - UITableViewDelegate, UITableViewDataSource

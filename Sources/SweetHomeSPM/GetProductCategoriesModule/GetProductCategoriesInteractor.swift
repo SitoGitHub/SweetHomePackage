@@ -87,8 +87,6 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
             switch makers {
             case.success(let makers):
                 for maker in makers{
-                    //       coreDataManager.saveContext()
-                    //coreDataManager.managedObjectContext.insert(maker)
                     maker.addToMaker_product_categories(newCategoryProductMaker)
                     coreDataManager.saveContext()
                     //        self.maker = maker
@@ -96,20 +94,7 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
             case .failure(let error):
                 self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
             }
-            //
-            //  let copy = Maker.MR User.MR_createEntityInContext(localContext)!
-            //  let objectID = maker.objectID
-            //  let copyMaker = coreDataManager.managedObjectContext.objectwi
-            //  object(with: objectID) as? Maker
-            // coreDataManager.managedObjectContext.insert(maker)
-            //let copy = context2.objectWithID(objectID)
-            //  coreDataManager.saveContext()
-            
-            //  maker.addToMaker_product_categories(newCategoryProductMaker)
-            
-            //            let objectIDProductCategory = productCategory.objectID
-            //            let copyProductCategory = coreDataManager.managedObjectContext.object(with: objectIDProductCategory) as? ProductCategory
-            //
+           
             productCategory.addToProduct_categorie_maker(newCategoryProductMaker)
             resultModifyCategory = true
             coreDataManager.saveContext()

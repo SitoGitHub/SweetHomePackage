@@ -23,15 +23,16 @@ public protocol GetProductMapDelegate: AnyObject {
 public protocol MapViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)
-    func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D)
+    func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
     func getMakerImage(pathImage: String?)
+    func isLongTappedOnMapView(sender: UIGestureRecognizer)
 }
 
 public class MapPresenter {
     public weak var view: MapViewInputProtocol?
     public var router: MapRouterInputProtocol
     public var interactor: MapInteractorInputProtocol
-    
+    lazy var imageManager = ImageManager()
     
     public init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol) {
         self.interactor = interactor
@@ -75,34 +76,25 @@ extension MapPresenter: MapViewOutputProtocol {
     }
     
     public func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D) {
-        router.openRegistrtionScreen(for: touchCoordinate)
+        router.openRegistrtionScreen(for: touchCoordinate, makerAnotation: nil)
     }
     
     public func getMakerImage(pathImage: String?) {
-        //let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
+        
         var imageMaker = UIImage()
-       // if let path = pathImage{
-                    //    let data = NSData(contentsOf: url)
-                    //       let image = UIImage(data: data!)
-            if let path = pathImage { //"photo/temp/sweethome2/maker/B8FA35B6-F97E-4518-B771-6D870396904E-71944-000004153D29E2FB.jpeg"
-                let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
-                
-                if let image = UIImage(fileURLWithPath: tempDirectoryUrl) {
-                    imageMaker = image
-                }
+        
+        if let path = pathImage {
+            if let image = imageManager.getImage(pathImage: path) {
+                imageMaker = image
             }
-//            do {
-//                let data = try Data(contentsOf: url)
-//                let image = UIImage(data: data)
-//                if let image = image{
-//                    imageMaker = image
-//                }
-//            } catch {
-//                print ("не получили image")
+        
+//            let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
+//
+//            if let image = UIImage(fileURLWithPath: tempDirectoryUrl) {
+//                imageMaker = image
 //            }
-       // }
-        //UIImage(contentsOfFile: url.path)
-        // UIImage(fileURLWithPath: url.path)
+        }
+        
         else {
             if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil) {
                 imageMaker = image
@@ -112,8 +104,17 @@ extension MapPresenter: MapViewOutputProtocol {
         view?.setMakerImageView(imageMAker: imageMaker)
         
     }
-    public func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D) {
-        router.openRegistrtionScreen(for: touchCoordinate)
+    public func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
+        router.openRegistrtionScreen(for: touchCoordinate, makerAnotation: makerAnotation)
+    }
+    
+    public func isLongTappedOnMapView(sender: UIGestureRecognizer) {
+        if sender.state == .began {
+            let touchPoint = sender.location(in: view?.mapView)
+            let touchCoordinate = view?.mapView.convert(touchPoint, toCoordinateFrom: view?.mapView)
+            
+            view?.showAlertLocation(title: "Регистрация", message: "Хотите добавить нового поставщика услуг?", url: nil, titleAction: "Да", touchCoordinate: touchCoordinate)
+        }
     }
 }
 
@@ -132,5 +133,6 @@ extension MapPresenter: RegistrationModuleDelegate{
 //           // self.view?.mapView.reloadInputViews()
 //        }
         self.view?.showDate(pinMakers: pinMakers)
+        view?.setupBottomViewMakerData()
     }
 }

@@ -15,6 +15,8 @@ protocol RegistrationViewOutputProtocol: AnyObject {
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any])
     //func isFieldSDidEndEditing(textField: UITextField)
     func isTappedEditDataMaker()
+    func getMakerAnotation()
+    func getMakerImage(pathImage: String?)
 }
 
 protocol RegistrationInteractorOutputProtocol: AnyObject {
@@ -33,6 +35,7 @@ protocol GetProductCategoriesDelegate: AnyObject {
 // MARK: -  RegistrationPresenter
  class RegistrationPresenter {
      let validData = ValidData()
+     lazy var imageManager = ImageManager()
      weak var view: RegistrationViewInputProtocol?
      weak var delegate: RegistrationModuleDelegate? //= MapPresenter(interactor: MapInteractor(), router: MapRouter())
      var router: RegistrationRouterInputProtocol
@@ -45,13 +48,15 @@ protocol GetProductCategoriesDelegate: AnyObject {
      var email = String()
      var surnameMaker = String()
      var nameMaker = String()
+     let makerAnotation: MakerAnotation? //данные из MapView
     
      
-     init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol,/* mapPresenter: RegistrationPresenterOutputProtocol,*/ touchCoordinate: CLLocationCoordinate2D) {
+     init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol,/* mapPresenter: RegistrationPresenterOutputProtocol,*/ touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
         self.interactor = interactor
         self.router = router
          //self.mapPresenter = mapPresenter
         self.touchCoordinate = touchCoordinate
+         self.makerAnotation = makerAnotation
     }
      
      deinit{
@@ -62,6 +67,14 @@ protocol GetProductCategoriesDelegate: AnyObject {
 // MARK: - RegistrationViewOutputProtocol
 extension RegistrationPresenter: RegistrationViewOutputProtocol {
     
+    //запрос на makerAnnotation
+    func getMakerAnotation(){
+        if let makerAnotation = makerAnotation {
+            view?.updateMakerData(makerAnotation: makerAnotation)
+            phoneMaker = makerAnotation.phoneNumberMaker
+            email = makerAnotation.phoneNumberMaker
+        }
+    }
     //hide keyboard when tap on view
     func isTouchesBegan(touches: Set<UITouch>) {
         if touches.first != nil {
@@ -256,6 +269,21 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         else { return }
         
         interactor.editDataMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, pathImageMaker: pathImageMaker, touchCoordinateMaker: touchCoordinate)
+    }
+    
+    //загружаем фото мейкера и передаем ее во view
+    func getMakerImage(pathImage: String?) {
+        var imageMaker = UIImage()
+        if let image = imageManager.getImage(pathImage: pathImage){
+            imageMaker = image
+        } else {
+            if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil) {
+                imageMaker = image
+            }
+        }
+        
+        view?.setMakerImageView(imageMAker: imageMaker)
+        
     }
 }
 

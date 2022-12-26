@@ -14,6 +14,8 @@ import MapKit
 public protocol MapViewInputProtocol: AnyObject {
     func showDate(pinMakers: [MakerAnotation])
     func setMakerImageView(imageMAker: UIImage)
+    func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?)
+    func setupBottomViewMakerData()
     var mapView: MKMapView { get }
     
 }
@@ -121,7 +123,7 @@ extension MapViewController: MKMapViewDelegate {
     //обработка клика на makerImageFiew action when makerImageFiew is pressed
     @objc func tapForMakerImageAction (_ gestureRecognizer: UITapGestureRecognizer){
         guard let coordinate = maker?.coordinate else { return }
-        presenter?.isTappedMakerImageView(touchCoordinate: coordinate)
+        presenter?.isTappedMakerImageView(touchCoordinate: coordinate, makerAnotation: maker)
       
     }
     
@@ -171,31 +173,6 @@ extension MapViewController: MKMapViewDelegate {
         
     }
     
-    //Алерт
-    func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?){
-        var anyAction: UIAlertAction
-        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
-        switch titleAction {
-        case "Настройки":
-            anyAction = UIAlertAction(title: titleAction, style: .default) { (alert) in
-                if let url = url{
-                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
-                }
-            }
-        case "Да":
-            anyAction = UIAlertAction(title: titleAction, style: .default) { (alert) in
-                print("регистрация")
-                guard let touchCoordinate = touchCoordinate else { return }
-                self.presenter?.newRegistrationIsTapped(touchCoordinate: touchCoordinate)
-            }
-        default: return
-        }
-        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
-        alert.addAction(anyAction)
-        alert.addAction(cancelAction)
-        
-        present(alert, animated: true, completion: nil)
-    }
     
     
     public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
@@ -243,11 +220,13 @@ extension MapViewController: MKMapViewDelegate {
         }
       //  createProductCategoriesButton()
         //sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
-        setupListOfCategoryLabel()
+        setupBottomViewMakerData()
+    }
+    
+    func setupMakerLabel() {
         if let surname = maker?.surnameMaker, let name = maker?.nameMaker {
             sliderBottomView.makerLabel.text = surname + " " + name
         }
-        setupMakerImageView()
     }
     
     //выводим название категорий для конкретного мейкера
@@ -310,12 +289,16 @@ extension MapViewController: MKMapViewDelegate {
     
     // убираем sliderBottomView по клику на карту hide sliderBottomView
     @objc func shortClickOnMap() {
+        getoutSliferBottomView()
+    }
+    
+    // убираем sliderBottomView
+    func getoutSliferBottomView() {
         self.sliderBottomView.snp.updateConstraints { (make) -> Void in
             make.top.equalTo(self.viewHeight)
         }
         mapView.alpha = 1
     }
-    
     
     //построить маршрут build and show a route
     @objc func routeToMaker(){ //(mapView: MKMapView, annotationView view: MKAnnotationView){
@@ -352,67 +335,8 @@ extension MapViewController: MKMapViewDelegate {
     //add new location on the map
     @objc func longTap(sender: UIGestureRecognizer){
         print("long tap")
-        if sender.state == .began {
-            let touchPoint = sender.location(in: mapView)
-            let touchCoordinate = mapView.convert(touchPoint, toCoordinateFrom: self.mapView)
-//            let locationInView = sender.location(in: mapView)
-//            let locationOnMap = mapView.convert(locationInView, toCoordinateFrom: mapView)
-//            addAnnotation(location: locationOnMap)
-            showAlertLocation(title: "Регистрация", message: "Хотите добавить нового поставщика услуг?", url: nil, titleAction: "Да", touchCoordinate: touchCoordinate)
-            
-            //get address, sity and contry names from location after long tap on the map
-            
-            // Add below code to get address for touch coordinates.
-            let geoCoder = CLGeocoder()
-            let location = CLLocation(latitude: touchCoordinate.latitude, longitude: touchCoordinate.longitude)
-            geoCoder.reverseGeocodeLocation(location, completionHandler:
-                                                {
-                placemarks, error -> Void in
-                
-                // Place details
-                guard let placeMark = placemarks?.first else { return }
-                
-                // Location name
-                if let locationName = placeMark.location {
-                    print(locationName)
-                }
-                // Street address
-                if let street = placeMark.thoroughfare {
-                    print(street)
-                }
-                // City
-                if let city = placeMark.subAdministrativeArea {
-                    print(city)
-                }
-                // Zip code
-                if let zip = placeMark.isoCountryCode {
-                    print(zip)
-                }
-                // Country
-                if let country = placeMark.country {
-                    print(country)
-                }
-            })
-            
-//                          let annotation = MKPointAnnotation()
-//             annotation.coordinate = touchCoordinate
-//             annotation.title = "Your position"
-//             mapView.addAnnotation(annotation) //drops the pin
-//             print("lat:  \(touchCoordinate.latitude)")
-//             let num = touchCoordinate.latitude as NSNumber
-//             let formatter = NumberFormatter()
-//             formatter.maximumFractionDigits = 4
-//             formatter.minimumFractionDigits = 4
-//             _ = formatter.string(from: num)
-//             print("long: \(touchCoordinate.longitude)")
-//             let num1 = touchCoordinate.longitude as NSNumber
-//             let formatter1 = NumberFormatter()
-//             formatter1.maximumFractionDigits = 4
-//             formatter1.minimumFractionDigits = 4
-//             _ = formatter1.string(from: num1)
-//             print( "что-то \(num),\(num1)")
-//
-        }
+        getoutSliferBottomView()
+        presenter?.isLongTappedOnMapView(sender: sender)
     }
     
     func addAnnotation(location: CLLocationCoordinate2D){
@@ -443,6 +367,7 @@ extension MapViewController: CLLocationManagerDelegate {
 extension MapViewController: MapViewInputProtocol {
     public func showDate(pinMakers: [MakerAnotation]){
         for pinMaker in pinMakers {
+            maker = pinMaker
             mapView.addAnnotation(pinMaker)
         }
     }
@@ -450,5 +375,39 @@ extension MapViewController: MapViewInputProtocol {
     public func setMakerImageView(imageMAker: UIImage) {
         sliderBottomView.makerImageView.image = imageMAker
     }
+    
+    //Алерт
+    public func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?){
+        var anyAction: UIAlertAction
+        let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
+        switch titleAction {
+        case "Настройки":
+            anyAction = UIAlertAction(title: titleAction, style: .default) { (alert) in
+                if let url = url{
+                    UIApplication.shared.open(url, options: [:], completionHandler: nil)
+                }
+            }
+        case "Да":
+            anyAction = UIAlertAction(title: titleAction, style: .default) { (alert) in
+                print("регистрация")
+                guard let touchCoordinate = touchCoordinate else { return }
+                self.presenter?.newRegistrationIsTapped(touchCoordinate: touchCoordinate)
+            }
+        default: return
+        }
+        let cancelAction = UIAlertAction(title: "Отмена", style: .cancel, handler: nil)
+        alert.addAction(anyAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    //обновляем данные на Makerа на bottomView
+    public func setupBottomViewMakerData() {
+        setupListOfCategoryLabel()
+        setupMakerLabel()
+        setupMakerImageView()
+    }
+    
     
 }

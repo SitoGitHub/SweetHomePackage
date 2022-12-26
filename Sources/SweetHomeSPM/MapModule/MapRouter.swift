@@ -9,7 +9,7 @@ import MapKit
 import UIKit
 
 public protocol MapRouterInputProtocol {
-    func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D)
+    func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
     func presentWarnMessage(title: String?, descriptionText: String?)
 }
 
@@ -21,8 +21,8 @@ public class MapRouter: MapRouterInputProtocol {
     }
     
     
-    public func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D) {
-        let vc = RegistrationModuleBuilder.build(factory: NavigationBuilder.build, delegate: viewController?.presenter as? RegistrationModuleDelegate, touchCoordinate: touchCoordinate)
+    public func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
+        let vc = RegistrationModuleBuilder.build(factory: NavigationBuilder.build, delegate: viewController?.presenter as? RegistrationModuleDelegate, touchCoordinate: touchCoordinate, makerAnotation: makerAnotation)
      //   vc.modalPresentationStyle = .fullScreen
         viewController?.present(vc, animated: true, completion: nil)
         
@@ -44,5 +44,7 @@ public class MapRouter: MapRouterInputProtocol {
                 animated: true,
                 completion: nil)
     }
+    
+    
     
 }
