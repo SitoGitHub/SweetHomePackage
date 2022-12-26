@@ -15,6 +15,8 @@ class SliderBottomView: UIView {
     let categoryLabel = UILabel()
     let makerImageView = UIImageView()
     let recognizer = UITapGestureRecognizer()
+    let buttonStack = UIStackView()
+    let listOfCategoryLabel = UILabel()
     
     required init() {
         
@@ -33,6 +35,7 @@ class SliderBottomView: UIView {
         createMAkerImageView()
         setupMakerLabel()
         createCategoryLabel()
+        createListOfCategoryLabel()
         
     }
     
@@ -114,10 +117,10 @@ class SliderBottomView: UIView {
     }
    
     private func createCategoryLabel() {
-        categoryLabel.font = Fonts.fontNameMakerLabelSlideView.fontsForViews
+        categoryLabel.font = Fonts.fontTopLabel.fontsForViews
         categoryLabel.textColor = Colors.blackLabel.colorViewUIColor
-        makerLabel.textAlignment = .center
-        makerLabel.text = "Категории"
+        categoryLabel.textAlignment = .center
+        categoryLabel.text = "Категории:"
         self.addSubview(categoryLabel)
     
         categoryLabel.snp.makeConstraints { (make) -> Void in
@@ -126,4 +129,35 @@ class SliderBottomView: UIView {
           
         }
     }
+   
+    private func createListOfCategoryLabel() {
+        listOfCategoryLabel.font = Fonts.fontLabel.fontsForViews
+        listOfCategoryLabel.textColor = Colors.blackLabel.colorViewUIColor
+        listOfCategoryLabel.numberOfLines = 0
+        listOfCategoryLabel.textAlignment = .center
+        //makerLabel.lineBreakMode = .byWordWrapping
+        
+        self.addSubview(listOfCategoryLabel)
+    
+        listOfCategoryLabel.snp.makeConstraints { (make) -> Void in
+            make.width.equalToSuperview().inset(5)
+            make.top.equalTo(categoryLabel.snp.bottom).offset(10)
+          
+        }
+    }
+//    private func createbuttonStack() {
+//        buttonStack.axis = .horizontal
+//        buttonStack.alignment = .fill
+//        buttonStack.spacing = 2.0
+//        buttonStack.backgroundColor = .yellow
+//        self.addSubview(buttonStack)
+//        
+//        buttonStack.snp.makeConstraints { (make) -> Void in
+//            //make.left.equalToSuperview().inset(20)
+//            make.width.equalToSuperview().inset(10)
+//            
+//            make.top.equalTo(categoryLabel.snp.bottom).offset(10)
+//            //make.width.equalToSuperview().multipliedBy(0.6)
+//        }
+//    }
 }

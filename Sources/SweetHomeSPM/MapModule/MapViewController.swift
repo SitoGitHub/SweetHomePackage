@@ -24,7 +24,8 @@ public class MapViewController: UIViewController {
     var maker: MakerAnotation?
     let locationManager = CLLocationManager()
     let sliderBottomView = SliderBottomView()
-    let buttonStack = UIStackView()
+//    let buttonStack = UIStackView()
+    var productCategoriesButton: [UIButton] = []
     var viewHeight = CGFloat()
     lazy var heightSliderView: CGFloat = 250
     // MARK: - Public
@@ -55,6 +56,7 @@ public class MapViewController: UIViewController {
 extension MapViewController: MKMapViewDelegate {
     func initialize() {
         createMApView()
+        setupSliderButtonView()
         presenter?.viewDidLoaded()
         //  checkLocationAnabled()
     }
@@ -75,6 +77,10 @@ extension MapViewController: MKMapViewDelegate {
             //make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
         
+       
+    }
+    
+    func setupSliderButtonView() {
         mapView.addSubview(sliderBottomView)
         viewHeight = view.bounds.height
             //.bounds.size
@@ -83,7 +89,28 @@ extension MapViewController: MKMapViewDelegate {
             make.height.equalTo(heightSliderView)
             make.top.equalTo(viewHeight)
         }
+        
+        sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
+        
+      //  createbuttonStack()
     }
+    
+//    private func createbuttonStack() {
+//        sliderBottomView.buttonStack.axis = .horizontal
+//        sliderBottomView.buttonStack.alignment = .bottom
+//        sliderBottomView.buttonStack.spacing = 4.0
+//        //sliderBottomView.buttonStack.backgroundColor = .yellow
+//        sliderBottomView.addSubview(sliderBottomView.buttonStack)
+//
+//        sliderBottomView.buttonStack.snp.makeConstraints { (make) -> Void in
+//            //make.left.equalToSuperview().inset(20)
+//            //make.width.equalToSuperview().inset(10)
+//            make.height.equalTo(30)
+//            make.top.equalTo(sliderBottomView.categoryLabel.snp.bottom).offset(10)
+//            //make.width.equalToSuperview().multipliedBy(0.6)
+//        }
+//    }
+    
     func setupMakerImageView() {
         let pathImageMaker = maker?.pathImageMaker
         presenter?.getMakerImage(pathImage: pathImageMaker)
@@ -102,6 +129,9 @@ extension MapViewController: MKMapViewDelegate {
     func addGestureRecognizerOnMap() {
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         mapView.addGestureRecognizer(longTapGesture)
+
+        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shortClickOnMap))
+        mapView.addGestureRecognizer(tapGesture)
     }
     
     func checkLocationAnabled(){
@@ -201,8 +231,8 @@ extension MapViewController: MKMapViewDelegate {
         //  sliderView.frame = CGRect(x: 0, y: viewMapSize.height, width: viewMapSize.width, height: 250)
         
         mapView.alpha = 0.5
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shortClickOnMap))
-        mapView.addGestureRecognizer(tapGesture)
+//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shortClickOnMap))
+//        mapView.addGestureRecognizer(tapGesture)
         
         // show sliderBottomView with animation
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
@@ -211,8 +241,9 @@ extension MapViewController: MKMapViewDelegate {
             }
             self.mapView.layoutIfNeeded()
         }
-        createProductCategoriesButton()
-        sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
+      //  createProductCategoriesButton()
+        //sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
+        setupListOfCategoryLabel()
         if let surname = maker?.surnameMaker, let name = maker?.nameMaker {
             sliderBottomView.makerLabel.text = surname + " " + name
         }
@@ -220,26 +251,34 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     //выводим название категорий для конкретного мейкера
+    private func setupListOfCategoryLabel() {
+        sliderBottomView.listOfCategoryLabel.text = ""
+        guard let productCategories = maker?.productCategoriesMaker else { return }
+        var text = String()
+        for productCategory in productCategories {
+            if let categoryName = productCategory.category_name{
+                text += categoryName + "  "
+            }
+        }
+        sliderBottomView.listOfCategoryLabel.text = text
+    }
+    
+    //выводим название категорий для конкретного мейкера
     private func createProductCategoriesButton() {
+       // var indexArrayButton = Int()
+       // for index in 0 .. indexAr
+        while let first = sliderBottomView.buttonStack.arrangedSubviews.first {
+            sliderBottomView.buttonStack.removeArrangedSubview(first)
+                first.removeFromSuperview()
+        }
+        productCategoriesButton.removeAll()
         guard let productCategories = maker?.productCategoriesMaker else { return }
        // let productCategoryButton = UIButton()
-        var productCategoriesButton: [UIButton] = [] // [productCategoryButton]
+     //   var productCategoriesButton: [UIButton] = [] // [productCategoryButton]
         var indexArrayButton = 0
         
-        buttonStack.removeArrangedSubview(<#T##view: UIView##UIView#>)
-        buttonStack.axis = .horizontal
-        buttonStack.alignment = .fill
-        buttonStack.spacing = 2.0
         
-        sliderBottomView.addSubview(buttonStack)
-       
-        buttonStack.snp.makeConstraints { (make) -> Void in
-            make.left.equalToSuperview().inset(20)
-            make.width.equalToSuperview().inset(20)
-            
-            make.top.equalTo(sliderBottomView.categoryLabel.snp.bottom).offset(10)
-            //make.width.equalToSuperview().multipliedBy(0.6)
-        }
+        
         for productCategory in productCategories {
             let button = UIButton()
             let categoryName = productCategory.category_name
@@ -247,8 +286,18 @@ extension MapViewController: MKMapViewDelegate {
             button.setTitleColor(Colors.activeButtonColor.colorViewUIColor, for: .normal)
             button.backgroundColor = Colors.whiteLabel.colorViewUIColor
             button.titleLabel?.font = Fonts.fontButton.fontsForViews
+//            switch indexArrayButton {
+//            case 0:
+//                button.backgroundColor = .yellow
+//            case 1:
+//                button.backgroundColor = .blue
+//            case 2:
+//                button.backgroundColor = .green
+//            default:
+//                button.backgroundColor = .gray
+//            }
             productCategoriesButton.append(button)
-            buttonStack.addArrangedSubview(productCategoriesButton[indexArrayButton])
+            sliderBottomView.buttonStack.addArrangedSubview(productCategoriesButton[indexArrayButton])
             
             indexArrayButton += 1
 //            productCategoriesButton[indexArrayButton].snp.makeConstraints { (make) -> Void in

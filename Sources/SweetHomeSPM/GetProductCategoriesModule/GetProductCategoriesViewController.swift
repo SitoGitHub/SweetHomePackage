@@ -39,7 +39,7 @@ class GetProductCategoriesViewController: UIViewController {
         super.viewWillDisappear(animated)
 
         if self.isMovingFromParent {
-            presenter?.saveDataMakerCategory()
+            presenter?.isDeinitedModule()
         }
     }
     
@@ -70,7 +70,7 @@ extension GetProductCategoriesViewController {
         activityIndicator.snp.makeConstraints { (make) -> Void in
            // make.centerX.equalToSuperview()
             make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().offset(100)
+            make.centerY.equalToSuperview().inset(100)
         }
         
         activityIndicator.color = Colors.activeButtonColor.colorViewUIColor

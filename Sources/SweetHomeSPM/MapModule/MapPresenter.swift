@@ -15,6 +15,11 @@ public protocol RegistrationModuleDelegate: AnyObject {
     func fetchedNewMakerData(pinMakers: [MakerAnotation])
 }
 
+public protocol GetProductMapDelegate: AnyObject {
+    func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation])
+}
+
+
 public protocol MapViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)

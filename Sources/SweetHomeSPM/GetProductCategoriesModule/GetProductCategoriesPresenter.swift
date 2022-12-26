@@ -11,14 +11,15 @@ import Foundation
  protocol GetProductCategoriesInteractorOutputProtocol: AnyObject {
      func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
      func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker]?, error: Errors?)
+     func isWrittenMakerAnotation(makerAnotation: MakerAnotation)
 }
 
 
  protocol GetProductCategoriesViewOutputProtocol: AnyObject {
      func viewDidLoaded()
      func didSelectRowAt(index: Int) -> Bool
-     func saveDataMakerCategory()
-     
+    // func saveDataMakerCategory()
+     func isDeinitedModule()
      var numberOfRowsInSection: Int { get }
 }
 
@@ -30,6 +31,7 @@ class GetProductCategoriesPresenter {
     var router: GetProductCategoriesRouterInputProtocol
     var interactor: GetProductCategoriesInteractorInputProtocol
     weak var delegate: GetProductCategoriesDelegate?
+   // weak var delegate: GetProductMapDelegate?
     //var maker: Maker
     var phoneMaker: String
     var emailMaker: String
@@ -123,9 +125,15 @@ extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputPro
             return (categoryNameMaker)
         }
     }
+    //передаем обновленный makerAnotation в Map module in the presenter
+    func isWrittenMakerAnotation(makerAnotation: MakerAnotation) {
+        self.delegate?.IsWrittenMakerAnnotation(pinMakers: [makerAnotation])
+    }
 }
 
 extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol {
+    
+    
     
     var numberOfRowsInSection: Int {
         return numberOfCategories ?? 0
@@ -152,8 +160,8 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
         return check
     }
 
-    //обработка нажатия конпки SaveButton
-        func saveDataMakerCategory() {
-           // interactor.saveDataNewMaker(categoriesViewModel)
+//    //при деините модуля формируем новый Maker Annotation
+        func isDeinitedModule() {
+            interactor.reWriteMakerAnnotation()
         }
 }

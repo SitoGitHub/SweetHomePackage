@@ -130,8 +130,9 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             
             cityLocation.addToCity_makers([newMaker])
             self.self.coreDataManager.saveContext()
-            self.presenter?.isSavedData()
+           // self.presenter?.isSavedData()
             self.presenter?.fetchedMakerData(maker: makerAnotation, error: nil)
+            self.presenter?.isSavedData()
             
             //create New Maker
             func createNewMaker() -> Maker {

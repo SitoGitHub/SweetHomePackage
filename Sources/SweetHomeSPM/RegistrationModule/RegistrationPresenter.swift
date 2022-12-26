@@ -27,6 +27,7 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
 
 protocol GetProductCategoriesDelegate: AnyObject {
     func isChangedProductCategoriesMakers(isChanged: Bool)
+    func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation])
 }
 
 // MARK: -  RegistrationPresenter
@@ -320,5 +321,9 @@ extension RegistrationPresenter: GetProductCategoriesDelegate {
     func isChangedProductCategoriesMakers(isChanged: Bool) {
         //активируем ячейку таблицы для выбора категорий продуктов мейкера
         view?.updateMenuTableView(newMakerIsSaved: true, categoriesIsSaved: isChanged)
+    }
+    
+    func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation]) {
+        self.delegate?.fetchedNewMakerData(pinMakers: pinMakers)
     }
 }
