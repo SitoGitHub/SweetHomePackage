@@ -9,6 +9,7 @@
 
 public protocol MapInteractorInputProtocol: AnyObject {
    func fetchMakerData()
+    func fetchCategoriesData ()
 }
 
 public class MapInteractor: MapInteractorInputProtocol {
@@ -16,19 +17,13 @@ public class MapInteractor: MapInteractorInputProtocol {
     let modelUser = ModelUser()
     var users = [[User]]()
     let coreDataManager = CoreDataManager.shared
+   // var maker = Maker()
     
     deinit{
         print("MapInteractor deinit")
     }
     
     public func fetchMakerData() {
-//           dateService.getDate { [weak self] date in
-//               self?.presenter?.didLoadDate(date: date.description)
-//           }
-        
-      //  modelUser.setup()
-        
-      
         let pinMakers = coreDataManager.getPinMaker()
         switch pinMakers {
         case.success(let pinMakers):
@@ -37,16 +32,19 @@ public class MapInteractor: MapInteractorInputProtocol {
         case .failure(let error):
             self.presenter?.fetchedMakerData(pinMakers: nil, error: error)
         }
-
-        
-        
-//        self.users = modelUser.users
-//        self.presenter?.didLoadDate(users: users)
-        
-//        for user in modelUser.users.first!{
-//            mapView.addAnnotation(user)
-//        }
-        
-       }
+    }
+    
+    //получение общего списка категорий продуктов
+    public func fetchCategoriesData () {
+        let productCategories = coreDataManager.getProductCategories(category: nil)
+        switch productCategories {
+        case.success(let productCategories):
+            self.presenter?.fetchedProductCategoriesData(productCategories: productCategories, error: nil)
+            
+        case .failure(let error):
+            self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
+        }
+  
+    }
     
 }

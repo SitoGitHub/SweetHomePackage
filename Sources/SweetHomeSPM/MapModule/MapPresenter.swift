@@ -9,6 +9,7 @@ import MapKit
 
 public protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
+    func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
 }
 
 public protocol RegistrationModuleDelegate: AnyObject {
@@ -26,6 +27,7 @@ public protocol MapViewOutputProtocol: AnyObject {
     func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
     func getMakerImage(pathImage: String?)
     func isLongTappedOnMapView(sender: UIGestureRecognizer)
+    var numberOfRowsInSectionCategoriesView: Int { get }
 }
 
 public class MapPresenter {
@@ -33,6 +35,12 @@ public class MapPresenter {
     public var router: MapRouterInputProtocol
     public var interactor: MapInteractorInputProtocol
     lazy var imageManager = ImageManager()
+    // var numberOfRowsInSectionCategoriesView: Int?
+    lazy var productCategories = [ProductCategory]()
+    var numberOfCategories: Int?
+    var categoriesViewModel: [(String, Bool)] = []
+    lazy var touchCoordinateTappedImageMaker = CLLocationCoordinate2D()
+    var makerAnotationTappedImageMaker: MakerAnotation?
     
     public init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol) {
         self.interactor = interactor
@@ -42,6 +50,25 @@ public class MapPresenter {
     deinit{
         print("MapPresenter deinit")
     }
+    
+    //create ViewModel for tableView    -ТУТ НУЖНО ПРОВЕРКУ ДЕЛАТЬ, КАКИЕ ПУНКТЫ РАНЕЕ ВЫБИРАЛ ПОЛЬЗОВАТЕЛЬ
+    func makeCategoriesViewModel(productCategories: [ProductCategory]) -> [(String, Bool)] {
+    //    var isChanged = false
+        return productCategories.map { productCategory in
+            var categoryName = String()
+            var check = false//Bool()
+//            if let category = productCategory.category_name {
+//                categoryName = category
+//                check = arrayCategoriesMakers.contains(categoryName)
+////                if check == true {
+////                    isChanged = true
+////                }
+//            }
+            return (categoryName, check)
+        }
+    }
+    
+    
 }
 
 extension MapPresenter: MapInteractorOutputProtocol {
@@ -68,11 +95,46 @@ extension MapPresenter: MapInteractorOutputProtocol {
         }
     }
     
+    public func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?) {
+        
+        guard let productCategories = productCategories, error == nil else {
+            switch error {
+            case .loadProdactCategoryError:
+                router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                         descriptionText: "Возникла ошибка при извлечении категорий продуктов")
+           
+            default:
+                return
+            }
+            return
+        }
+        numberOfCategories = productCategories.count
+        self.productCategories = productCategories
+        categoriesViewModel = makeCategoriesViewModel(productCategories: productCategories)
+      //  DispatchQueue.main.async { [unowned self] in
+         //   self.view?.updateViewWithProductCategories(productCategories: [productCategories])
+        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
+            self.view?.updateSliderFilterCategoriesView(productCategories: self.categoriesViewModel)
+          //  self.view?.stopActivityIndicator()
+        }
+      //  }
+    }
+    
 }
 
 extension MapPresenter: MapViewOutputProtocol {
+   
+    public var numberOfRowsInSectionCategoriesView: Int {
+        return numberOfCategories ?? 0
+    }
+    
     public func viewDidLoaded() {
         interactor.fetchMakerData()
+    }
+    
+    //запрос данных
+    func ispressedProductCategoriesButton() {
+        interactor.fetchCategoriesData()
     }
     
     public func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D) {
@@ -105,6 +167,8 @@ extension MapPresenter: MapViewOutputProtocol {
         
     }
     public func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
+        touchCoordinateTappedImageMaker = touchCoordinate
+        makerAnotationTappedImageMaker = makerAnotation
         router.openRegistrtionScreen(for: touchCoordinate, makerAnotation: makerAnotation)
     }
     
@@ -132,6 +196,23 @@ extension MapPresenter: RegistrationModuleDelegate{
 //
 //           // self.view?.mapView.reloadInputViews()
 //        }
+        if let makerAnotation = makerAnotationTappedImageMaker {
+            self.view?.removePinMakers(pinMakers: makerAnotation)
+        }
+        
+        self.view?.showDate(pinMakers: pinMakers)
+        view?.setupBottomViewMakerData()
+    }
+}
+
+extension MapPresenter: GetProductMapDelegate{
+    
+    public func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation]) {
+      //  self.view?.removePinMakers(pinMakers: pinMakers)
+        if let makerAnotation = makerAnotationTappedImageMaker {
+            self.view?.removePinMakers(pinMakers: makerAnotation)
+        }
+        
         self.view?.showDate(pinMakers: pinMakers)
         view?.setupBottomViewMakerData()
     }

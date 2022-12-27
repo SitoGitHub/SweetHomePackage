@@ -16,6 +16,8 @@ public protocol MapViewInputProtocol: AnyObject {
     func setMakerImageView(imageMAker: UIImage)
     func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?)
     func setupBottomViewMakerData()
+    func updateSliderFilterCategoriesView(productCategories: [(String, Bool)])
+    func removePinMakers(pinMakers: MakerAnotation)
     var mapView: MKMapView { get }
     
 }
@@ -25,11 +27,29 @@ public class MapViewController: UIViewController {
     //var annotationView: MKAnnotationView?
     var maker: MakerAnotation?
     let locationManager = CLLocationManager()
+    
+    lazy var sliderFilterCategoriesView = SliderFilterCategoriesView(tableView: categoriesTableView)
+    let categoriesTableView = UITableView()
+    let identifier = "MyCell"
+    
     let sliderBottomView = SliderBottomView()
+    
+    
 //    let buttonStack = UIStackView()
     var productCategoriesButton: [UIButton] = []
-    var viewHeight = CGFloat()
+    let filterCategoriesButton = UIButton()
+    lazy var viewHeight = CGFloat()
+    lazy var viewWidth = CGFloat()
     lazy var heightSliderView: CGFloat = 250
+    lazy var indentOfRightForSliderFilterCategoriesView: CGFloat = 80
+    
+    var productCategories: [(String, Bool)]? {
+        didSet {
+            categoriesTableView.reloadData()
+        }
+    }
+    
+    lazy var isHiddenFilterCategoriesView = true
     // MARK: - Public
     var presenter: MapViewOutputProtocol?
     
@@ -58,8 +78,14 @@ public class MapViewController: UIViewController {
 extension MapViewController: MKMapViewDelegate {
     func initialize() {
         createMApView()
+        createFilterCategoriesButton()
         setupSliderButtonView()
+        setupSliderFilterCategoriesView()
         presenter?.viewDidLoaded()
+        
+        //let sliderFilterCategoriesView = SliderFilterCategoriesView(tableView: categoriesTableView)
+        categoriesTableView.delegate = self
+        categoriesTableView.dataSource = self
         //  checkLocationAnabled()
     }
     private func createMApView(){
@@ -73,12 +99,12 @@ extension MapViewController: MKMapViewDelegate {
         view.addSubview(mapView)
         
         mapView.snp.makeConstraints { (make) -> Void in
-            make.left.right.top.bottom.equalTo(self.view)
+            make.edges.equalTo(self.view)
             //make.right.equalTo(self.view)
             // make.top.bottom.equalTo(self.view.snp.top)
             //make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
-        
+       // mapView.layoutIfNeeded()
        
     }
     
@@ -91,27 +117,102 @@ extension MapViewController: MKMapViewDelegate {
             make.height.equalTo(heightSliderView)
             make.top.equalTo(viewHeight)
         }
-        
+        //sliderBottomView.layoutIfNeeded()
         sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
         
       //  createbuttonStack()
     }
     
-//    private func createbuttonStack() {
-//        sliderBottomView.buttonStack.axis = .horizontal
-//        sliderBottomView.buttonStack.alignment = .bottom
-//        sliderBottomView.buttonStack.spacing = 4.0
-//        //sliderBottomView.buttonStack.backgroundColor = .yellow
-//        sliderBottomView.addSubview(sliderBottomView.buttonStack)
-//
-//        sliderBottomView.buttonStack.snp.makeConstraints { (make) -> Void in
-//            //make.left.equalToSuperview().inset(20)
-//            //make.width.equalToSuperview().inset(10)
-//            make.height.equalTo(30)
-//            make.top.equalTo(sliderBottomView.categoryLabel.snp.bottom).offset(10)
-//            //make.width.equalToSuperview().multipliedBy(0.6)
-//        }
-//    }
+    func setupSliderFilterCategoriesView() {
+        mapView.addSubview(sliderFilterCategoriesView)
+        viewWidth = view.bounds.width
+        //.bounds.size
+        sliderFilterCategoriesView.snp.makeConstraints { (make) -> Void in
+           // make.left.equalToSuperview()
+            //make.right.equalTo(mapView.snp.left)
+            //make.right.equalTo(viewWidth - viewWidth)
+            make.left.equalTo(-viewWidth)
+            
+           // make.right.equalTo(viewWidth + indentOfRightForSliderFilterCategoriesView)
+            //make.left.equalTo(mapView.snp.left)
+            // make.width.equalToSuperview().multipliedBy(0.7)
+            make.width.equalTo(viewWidth - indentOfRightForSliderFilterCategoriesView)
+            make.top.equalTo(filterCategoriesButton.snp.bottom)
+            
+            make.bottom.equalToSuperview()
+        }
+       // sliderFilterCategoriesView.layoutIfNeeded()
+    }
+    
+    func createFilterCategoriesButton() {
+        
+        //RouteButton.layer.masksToBounds = true
+        filterCategoriesButton.setImage(UIImage(named: "layers", in: .module, compatibleWith: nil) , for: .normal)
+        //routeButton.setTitleColor(Colors.whiteLabel.colorViewUIColor, for: .normal)
+        filterCategoriesButton.backgroundColor = .clear //Colors.activeButtonColor.colorViewUIColor
+        //routeButton.titleLabel?.font = Fonts.fontButton.fontsForViews
+        
+        //RouteButton.isEnabled = true
+        filterCategoriesButton.addTarget(self, action: #selector(isClickedFilterCategoriesButton), for: .touchUpInside)
+        // routeButton.frame = CGRect(x: 50, y: 50, width: 70, height: 30)
+        mapView.addSubview(filterCategoriesButton)
+        
+        filterCategoriesButton.snp.makeConstraints { (make) -> Void in
+            // make.left.equalToSuperview().offset(60)
+           // make.centerX.equalToSuperview()
+            make.width.equalTo(37)
+            make.height.equalTo(37)
+            make.top.equalTo(mapView.safeAreaInsets.top).inset(60)
+            make.left.equalTo(mapView.safeAreaInsets.left).inset(25)
+            
+        }
+        filterCategoriesButton.layoutIfNeeded()
+        //filterCategoriesButton.layoutIfNeeded()
+       // filterCategoriesButton.layer.cornerRadius = 0.5 * filterCategoriesButton.bounds.size.width
+        
+    }
+    
+    @objc func isClickedFilterCategoriesButton() {
+        
+        if isHiddenFilterCategoriesView {
+            showFilterCategoriesView()
+            isHiddenFilterCategoriesView = false
+            //скрываем Slider Bottom View
+            getoutSliferBottomView()
+        } else {
+            hideFilterCategoriesView()
+            isHiddenFilterCategoriesView = true
+        }
+        
+    }
+    
+    //показываем
+    func showFilterCategoriesView() {
+        mapView.alpha = 0.5
+        
+       // self.sliderFilterCategoriesView.layoutIfNeeded()
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
+            self.sliderFilterCategoriesView.snp.updateConstraints { (make) -> Void in
+                make.left.equalTo(self.viewWidth - self.viewWidth)
+             
+            }
+           self.mapView.layoutIfNeeded()
+        }
+        
+    }
+    
+    func hideFilterCategoriesView() {
+        mapView.alpha = 1
+        
+        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
+            self.sliderFilterCategoriesView.snp.updateConstraints { (make) -> Void in
+                make.left.equalTo(-self.viewWidth)
+            }
+           self.mapView.layoutIfNeeded()
+        }
+    }
+    
     
     func setupMakerImageView() {
         let pathImageMaker = maker?.pathImageMaker
@@ -195,22 +296,11 @@ extension MapViewController: MKMapViewDelegate {
     //callout AccessoryControl Tapped обработка нажатия на кнопку в аннотации
     public func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         maker = view.annotation as? MakerAnotation
-        //annotationView = view
-        //routeToMaker (mapView: mapView, annotationView: view)
         
-        //let sliderBottomView = SliderBottomView()
-        
-        
-        
-        // let viewMapSize = UIScreen.main.bounds.size
-        //sliderView.backgroundColor = .white
-        
-        //  sliderView.frame = CGRect(x: 0, y: viewMapSize.height, width: viewMapSize.width, height: 250)
+        hideFilterCategoriesView()
+        isHiddenFilterCategoriesView = true
         
         mapView.alpha = 0.5
-//        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shortClickOnMap))
-//        mapView.addGestureRecognizer(tapGesture)
-        
         // show sliderBottomView with animation
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
             self.sliderBottomView.snp.updateConstraints { (make) -> Void in
@@ -218,8 +308,6 @@ extension MapViewController: MKMapViewDelegate {
             }
             self.mapView.layoutIfNeeded()
         }
-      //  createProductCategoriesButton()
-        //sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
         setupBottomViewMakerData()
     }
     
@@ -243,53 +331,55 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     //выводим название категорий для конкретного мейкера
-    private func createProductCategoriesButton() {
-       // var indexArrayButton = Int()
-       // for index in 0 .. indexAr
-        while let first = sliderBottomView.buttonStack.arrangedSubviews.first {
-            sliderBottomView.buttonStack.removeArrangedSubview(first)
-                first.removeFromSuperview()
-        }
-        productCategoriesButton.removeAll()
-        guard let productCategories = maker?.productCategoriesMaker else { return }
-       // let productCategoryButton = UIButton()
-     //   var productCategoriesButton: [UIButton] = [] // [productCategoryButton]
-        var indexArrayButton = 0
+//    private func createProductCategoriesButton() {
+//       // var indexArrayButton = Int()
+//       // for index in 0 .. indexAr
+//        while let first = sliderBottomView.buttonStack.arrangedSubviews.first {
+//            sliderBottomView.buttonStack.removeArrangedSubview(first)
+//                first.removeFromSuperview()
+//        }
+//        productCategoriesButton.removeAll()
+//        guard let productCategories = maker?.productCategoriesMaker else { return }
+//       // let productCategoryButton = UIButton()
+//     //   var productCategoriesButton: [UIButton] = [] // [productCategoryButton]
+//        var indexArrayButton = 0
+//
+//
         
-        
-        
-        for productCategory in productCategories {
-            let button = UIButton()
-            let categoryName = productCategory.category_name
-            button.setTitle(categoryName, for: .normal)
-            button.setTitleColor(Colors.activeButtonColor.colorViewUIColor, for: .normal)
-            button.backgroundColor = Colors.whiteLabel.colorViewUIColor
-            button.titleLabel?.font = Fonts.fontButton.fontsForViews
-//            switch indexArrayButton {
-//            case 0:
-//                button.backgroundColor = .yellow
-//            case 1:
-//                button.backgroundColor = .blue
-//            case 2:
-//                button.backgroundColor = .green
-//            default:
-//                button.backgroundColor = .gray
-//            }
-            productCategoriesButton.append(button)
-            sliderBottomView.buttonStack.addArrangedSubview(productCategoriesButton[indexArrayButton])
-            
-            indexArrayButton += 1
-//            productCategoriesButton[indexArrayButton].snp.makeConstraints { (make) -> Void in
-//                make.width.equalToSuperview().inset(20)
-//                make.height.equalTo(20)
-            
-        }
-            
-    }
+//        for productCategory in productCategories {
+//            let button = UIButton()
+//            let categoryName = productCategory.category_name
+//            button.setTitle(categoryName, for: .normal)
+//            button.setTitleColor(Colors.activeButtonColor.colorViewUIColor, for: .normal)
+//            button.backgroundColor = Colors.whiteLabel.colorViewUIColor
+//            button.titleLabel?.font = Fonts.fontButton.fontsForViews
+////            switch indexArrayButton {
+////            case 0:
+////                button.backgroundColor = .yellow
+////            case 1:
+////                button.backgroundColor = .blue
+////            case 2:
+////                button.backgroundColor = .green
+////            default:
+////                button.backgroundColor = .gray
+////            }
+//            productCategoriesButton.append(button)
+//            sliderBottomView.buttonStack.addArrangedSubview(productCategoriesButton[indexArrayButton])
+//
+//            indexArrayButton += 1
+////            productCategoriesButton[indexArrayButton].snp.makeConstraints { (make) -> Void in
+////                make.width.equalToSuperview().inset(20)
+////                make.height.equalTo(20)
+//
+//        }
+//
+//    }
     
-    // убираем sliderBottomView по клику на карту hide sliderBottomView
+    // убираем sliderBottomView и FilterCategoriesView по клику на карту hide sliderBottomView
     @objc func shortClickOnMap() {
         getoutSliferBottomView()
+        hideFilterCategoriesView()
+        isHiddenFilterCategoriesView = true
     }
     
     // убираем sliderBottomView
@@ -372,6 +462,14 @@ extension MapViewController: MapViewInputProtocol {
         }
     }
     
+    public func removePinMakers(pinMakers: MakerAnotation){
+       // for pinMaker in pinMakers {
+            //maker = pinMaker
+            mapView.removeAnnotation(pinMakers)
+       // }
+       // mapView.reloadInputViews()
+    }
+    
     public func setMakerImageView(imageMAker: UIImage) {
         sliderBottomView.makerImageView.image = imageMAker
     }
@@ -407,6 +505,28 @@ extension MapViewController: MapViewInputProtocol {
         setupListOfCategoryLabel()
         setupMakerLabel()
         setupMakerImageView()
+    }
+    
+    public func updateSliderFilterCategoriesView(productCategories: [(String, Bool)]) {
+       self.productCategories = productCategories
+    //   categoriesTableView.reloadData()
+   }
+    
+}
+
+extension MapViewController: UITableViewDelegate, UITableViewDataSource {
+   
+    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return presenter?.numberOfRowsInSectionCategoriesView ?? 0
+    }
+    
+    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
+        cell.textLabel?.text = productCategories?[indexPath.item].0
+        cell.accessoryType = productCategories?[indexPath.item].1 ?? false ? .checkmark : .none
+        print(indexPath.item, productCategories?[indexPath.item].0)
+        
+        return cell
     }
     
     

@@ -38,8 +38,8 @@ protocol GetProductCategoriesDelegate: AnyObject {
      lazy var imageManager = ImageManager()
      weak var view: RegistrationViewInputProtocol?
      weak var delegate: RegistrationModuleDelegate? //= MapPresenter(interactor: MapInteractor(), router: MapRouter())
-     var router: RegistrationRouterInputProtocol
-     var interactor: RegistrationInteractorInputProtocol
+      var router: RegistrationRouterInputProtocol
+      var interactor: RegistrationInteractorInputProtocol
      var touchCoordinate: CLLocationCoordinate2D
      var pathImageMaker: String?
      lazy var password = String()

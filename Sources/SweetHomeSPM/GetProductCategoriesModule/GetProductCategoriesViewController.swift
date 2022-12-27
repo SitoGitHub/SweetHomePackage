@@ -83,8 +83,6 @@ extension GetProductCategoriesViewController {
     //create categories TableView
     private func createCategoriesTableView() {
        
-       
-        
         categoriesTableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
         //menuTableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         categoriesTableView.backgroundColor = .white

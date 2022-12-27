@@ -104,10 +104,19 @@ private extension RegistrationViewController {
         createMenuTableView()
         if let navController = self.navigationController {
             self.navController = navController
+            let back = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeWindow))
+           
+
+            self.navigationItem.rightBarButtonItems = [back]
             //add button on the barButton if need
         }
         setMakerAnotation()
     }
+    
+    @objc func closeWindow() {
+        self.dismiss(animated: true)
+    }
+    
     private func setMakerAnotation() {
         presenter?.getMakerAnotation()
     }
