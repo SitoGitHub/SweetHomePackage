@@ -8,8 +8,6 @@ import UIKit
 import SnapKit
 import MapKit
 
-
-
 protocol RegistrationViewInputProtocol: AnyObject {
     func hideKeyBoard()
     func setNextTextField(textField: UITextField)
@@ -27,11 +25,10 @@ protocol RegistrationViewInputProtocol: AnyObject {
     var emailTextField: UITextField { get }
     var passwordTextField: ShowHideTextField { get }
     var confirmPasswordTextField: ShowHideTextField { get }
-   // var picker: UIImagePickerController { get set }
     var makerImageView: UIImageView { get }
     var newMakerIsSaved: Bool { get set }
     var categoriesIsSaved: Bool { get set }
-    var navController: UINavigationController { get }
+    var navController: UINavigationController? { get }
 }
 
 class RegistrationViewController: UIViewController {
@@ -65,7 +62,7 @@ class RegistrationViewController: UIViewController {
     lazy var newMakerIsSaved = false
     lazy var categoriesIsSaved = false
     
-    var navController = UINavigationController()
+    weak var navController: UINavigationController?
     
     var picker = UIImagePickerController()
     
@@ -83,13 +80,6 @@ class RegistrationViewController: UIViewController {
     deinit{
         print("RegistrationView deinit")
     }
-    
-//     override func layoutSubviews() {
-//        super.layoutSubviews()
-//
-//         makerImageView.layer.cornerRadius = makerImageView.bounds.size.width * 0.5
-//    }
-    
 }
 
 // MARK: - Private functions
@@ -102,6 +92,7 @@ private extension RegistrationViewController {
         createSaveButton()
         createMAkerImageView()
         createMenuTableView()
+    
         if let navController = self.navigationController {
             self.navController = navController
             let back = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeWindow))
@@ -123,7 +114,7 @@ private extension RegistrationViewController {
     
     //create Registration View
     private func createRegistrationView() {
-        registrationView.backgroundColor = Colors.registrationViewColor.colorViewUIColor //.lightGray
+        registrationView.backgroundColor = Colors.registrationViewColor.colorViewUIColor
         registrationView.layer.cornerRadius = 10
         view.addSubview(registrationView)
         
@@ -132,20 +123,18 @@ private extension RegistrationViewController {
             make.top.equalToSuperview().inset(20)
             make.width.equalToSuperview().inset(5)
             make.height.equalToSuperview().multipliedBy(0.55)
-            //make.height.equalTo(20)
         }
     }
     //setup Registration Label
     private func setupTopNameLabel() {
         topHeaderLabel.font = Fonts.fontTopLabel.fontsForViews
-        topHeaderLabel.textColor = Colors.headerColor.colorViewUIColor//.darkGray//Colors.headerColor.colorViewUIColor
+        topHeaderLabel.textColor = Colors.headerColor.colorViewUIColor
         topHeaderLabel.text = "Регистрация"
         registrationView.addSubview(topHeaderLabel)
         
         topHeaderLabel.snp.makeConstraints { (make) -> Void in
                    make.centerX.equalToSuperview()
                    make.top.equalToSuperview().inset(20)
-                   //make.height.equalTo(20)
                }
     }
     
@@ -154,15 +143,11 @@ private extension RegistrationViewController {
         let colorPlaceHolder = Colors.placeHolderColor.colorViewUIColor
         
         surnameTextField.becomeFirstResponder()
-        //surnameTextField.backgroundColor = .brown
         surnameTextField.font = Fonts.fontTextField.fontsForViews
         surnameTextField.textColor = Colors.textFieldColor.colorViewUIColor
         surnameTextField.attributedPlaceholder = NSAttributedString(string: "Фамилия", attributes: [NSAttributedString.Key.foregroundColor: colorPlaceHolder, NSAttributedString.Key.font: Fonts.fontTextField.fontsForViews])
         surnameTextField.textAlignment = .left
         surnameTextField.keyboardType = .namePhonePad
-        
-       // nameTextField.backgroundColor = .brown
-        
         nameTextField.font = Fonts.fontTextField.fontsForViews
         nameTextField.textColor = Colors.textFieldColor.colorViewUIColor
         nameTextField.attributedPlaceholder = NSAttributedString(string: "Имя", attributes: [NSAttributedString.Key.foregroundColor: colorPlaceHolder, NSAttributedString.Key.font: Fonts.fontTextField.fontsForViews])
@@ -173,8 +158,6 @@ private extension RegistrationViewController {
         plusLabel.font = Fonts.fontTextField.fontsForViews
         plusLabel.textColor = Colors.blackLabel.colorViewUIColor
         plusLabel.text = "+"
-        
-        //phoneTextField.backgroundColor = .brown
         phoneTextField.font = Fonts.fontTextField.fontsForViews
         phoneTextField.textColor = Colors.textFieldColor.colorViewUIColor
         phoneTextField.attributedPlaceholder = NSAttributedString(string: "Телефон", attributes: [NSAttributedString.Key.foregroundColor: colorPlaceHolder, NSAttributedString.Key.font: Fonts.fontTextField.fontsForViews])
@@ -187,21 +170,16 @@ private extension RegistrationViewController {
         emailTextField.textAlignment = .left
         emailTextField.keyboardType = .emailAddress
         
-        //phoneTextField.backgroundColor = .brown
         passwordTextField.font = Fonts.fontTextField.fontsForViews
         passwordTextField.textColor = Colors.textFieldColor.colorViewUIColor
         passwordTextField.attributedPlaceholder = NSAttributedString(string: "Пароль (не менее 6 символов", attributes: [NSAttributedString.Key.foregroundColor: colorPlaceHolder, NSAttributedString.Key.font: Fonts.fontTextField.fontsForViews])
-        //passwordTextField.isSecureTextEntry = true
         passwordTextField.textContentType = .oneTimeCode
         passwordTextField.textAlignment = .left
-        //passwordTextField.keyboardType = .
         
-        //phoneTextField.backgroundColor = .brown
         confirmPasswordTextField.font = Fonts.fontTextField.fontsForViews
         confirmPasswordTextField.textColor = Colors.textFieldColor.colorViewUIColor
         confirmPasswordTextField.attributedPlaceholder = NSAttributedString(string: "Подтверждение пароля", attributes: [NSAttributedString.Key.foregroundColor: colorPlaceHolder, NSAttributedString.Key.font: Fonts.fontTextField.fontsForViews])
         confirmPasswordTextField.textAlignment = .left
-        //confirmPasswordTextField.keyboardType = .phonePad
         
         surnameTextField.delegate = self
         nameTextField.delegate = self
@@ -216,18 +194,15 @@ private extension RegistrationViewController {
         phoneStack.alignment = .leading
         phoneStack.spacing = 1.0
         
-        
         topStack.addArrangedSubview(surnameTextField)
         topStack.addArrangedSubview(nameTextField)
         topStack.addArrangedSubview(phoneStack)
         topStack.addArrangedSubview(emailTextField)
         
-        
         passwordStack.addArrangedSubview(passwordTextField)
         passwordStack.addArrangedSubview(confirmPasswordTextField)
        
         topStack.axis = .vertical
-        //topStack.backgroundColor = .yellow
         topStack.distribution = .equalSpacing
         topStack.alignment = .leading
         topStack.spacing = 16.0
@@ -237,37 +212,10 @@ private extension RegistrationViewController {
         passwordStack.distribution = .equalSpacing
         passwordStack.alignment = .leading
         passwordStack.spacing = 16.0
-        
-       // topStack.translatesAutoresizingMaskIntoConstraints = false
-        
+           
         registrationView.addSubview(topStack)
         registrationView.addSubview(passwordStack)
         
-//        surnameTextField.snp.makeConstraints { (make) -> Void in
-//            make.width.equalToSuperview().inset(20)
-//            make.height.equalTo(20)
-//        }
-//
-//        nameTextField.snp.makeConstraints { (make) -> Void in
-//            make.width.equalToSuperview().inset(20)
-//            make.height.equalTo(20)
-//        }
-//
-//        plusLabel.snp.makeConstraints { (make) -> Void in
-//           // make.width.equalToSuperview().inset(20)
-//            make.height.equalTo(20)
-//        }
-        
-//        phoneTextField.snp.makeConstraints { (make) -> Void in
-//            make.width.equalToSuperview().inset(20)
-//            make.height.equalTo(20)
-//        }
-       
-//        emailTextField.snp.makeConstraints { (make) -> Void in
-//            make.width.equalToSuperview().inset(20)
-//            make.height.equalTo(20)
-//        }
-//
         passwordTextField.snp.makeConstraints { (make) -> Void in
             make.width.equalToSuperview().inset(20)
             make.height.equalTo(20)
@@ -302,11 +250,8 @@ private extension RegistrationViewController {
         saveButton.backgroundColor = Colors.activeButtonColor.colorViewUIColor //.darkGray//Colors.activeButtonColor.colorViewUIColor
         saveButton.titleLabel?.font = Fonts.fontButton.fontsForViews
         saveButton.layer.cornerRadius = 10
-        
-        //saveButton.isUserInteractionEnabled = false
-        //RouteButton.isEnabled = true
         saveButton.addTarget(self, action: #selector(isPressedSaveButton(sender: )), for: .touchUpInside)
-       // routeButton.frame = CGRect(x: 50, y: 50, width: 70, height: 30)
+       
         registrationView.addSubview(saveButton)
         
         saveButton.snp.makeConstraints { (make) -> Void in
@@ -315,7 +260,6 @@ private extension RegistrationViewController {
             make.width.equalToSuperview().multipliedBy(0.3)
             make.height.equalTo(30)
             make.bottom.equalToSuperview().inset(10)
-            //(passwordStack.snp.bottom).offset(15)
         }
     }
     
@@ -332,7 +276,6 @@ private extension RegistrationViewController {
         registrationView.addSubview(makerImageView)
         
         makerImageView.snp.makeConstraints { (make) -> Void in
-           // make.left.equalToSuperview().offset(60)
             make.right.equalToSuperview().inset(25)
             make.width.equalTo(65)
             make.height.equalTo(65)
@@ -349,10 +292,7 @@ private extension RegistrationViewController {
     
     private func createMenuTableView() {
        
-       // myTableView = UITableView(frame: view.bounds, style: .plain)
-        
         menuTableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
-        //menuTableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         menuTableView.backgroundColor = .white
         
         menuTableView.delegate = self
@@ -365,9 +305,7 @@ private extension RegistrationViewController {
             make.top.equalTo(registrationView.snp.bottom).offset(10)
             make.width.equalToSuperview().inset(5)
             make.height.equalTo(90)
-            //make.height.equalTo(20)
         }
-      
     }
     
     
@@ -385,8 +323,6 @@ private extension RegistrationViewController {
 }
 
 //MARK:- ImagePicker Controller Delegate
-
-
 extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
  
     //get maker's photo
@@ -396,28 +332,10 @@ extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigat
     }
 
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        
-//        
-//            if let asset = info[UIImagePickerControllerPHAsset] as? PHAsset {
-//                if let fileName = (asset.value(forKey: "filename")) as? String {
-//                    //Do your stuff here
-//                }
-//            }
-
-        //    picker.dismiss(animated: true, completion: nil)
-       // }
-        
-        
         presenter?.isTappedMakerImage(info: info)
-        
-        
-        
-        
         self.dismiss(animated: true, completion: nil)
     }
-
 }
-
 
 //MARK:- RegistrationViewController
 extension RegistrationViewController: UITextFieldDelegate {
@@ -433,17 +351,10 @@ extension RegistrationViewController: UITextFieldDelegate {
         presenter?.isFieldShouldReturn(textField: textField)
         return true
     }
-    
-    func textFieldDidEndEditing(_ textField: UITextField) {
-       // print(textField.text ?? "default")
-        //presenter?.isFieldSDidEndEditing(textField: textField)
-    }
 }
 
 // MARK: - ImageViewerViewProtocol
 extension RegistrationViewController: RegistrationViewInputProtocol {
-    
-    
     
     //hide keyboard when tap on view
     func hideKeyBoard(){
@@ -465,8 +376,6 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
     }
     
     func updateMenuTableView(newMakerIsSaved: Bool?, categoriesIsSaved: Bool?) {
-        
-        //let status = getStatusCellMenuTableView(newMakerIsSaved: newMakerIsSaved, categoriesIsSaved: categoriesIsSaved)
         var index = 0
         var status = false
         if let newMaker = newMakerIsSaved {
@@ -491,7 +400,6 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
         
         let okBtn = UIAlertAction(title: "OK",
                                   style: .default) {
-            //[weak self, weak alertController]
             _ in
             self.presenter?.isTappedEditDataMaker()
         }

@@ -8,31 +8,26 @@
 
 import Foundation
 
- protocol GetProductCategoriesInteractorOutputProtocol: AnyObject {
-     func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
-     func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker]?, error: Errors?)
-     func isWrittenMakerAnotation(makerAnotation: MakerAnotation)
+protocol GetProductCategoriesInteractorOutputProtocol: AnyObject {
+    func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
+    func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker]?, error: Errors?)
+    func isWrittenMakerAnotation(makerAnotation: MakerAnotation)
 }
 
-
- protocol GetProductCategoriesViewOutputProtocol: AnyObject {
-     func viewDidLoaded()
-     func didSelectRowAt(index: Int) -> Bool
-    // func saveDataMakerCategory()
-     func isDeinitedModule()
-     var numberOfRowsInSection: Int { get }
+protocol GetProductCategoriesViewOutputProtocol: AnyObject {
+    func viewDidLoaded()
+    func didSelectRowAt(index: Int) -> Bool
+    func isDeinitedModule()
+    var numberOfRowsInSection: Int { get }
 }
-
 
 class GetProductCategoriesPresenter {
-
+    
     // MARK: Properties
     weak var view: GetProductCategoriesViewInputProtocol?
     var router: GetProductCategoriesRouterInputProtocol
     var interactor: GetProductCategoriesInteractorInputProtocol
     weak var delegate: GetProductCategoriesDelegate?
-   // weak var delegate: GetProductMapDelegate?
-    //var maker: Maker
     var phoneMaker: String
     var emailMaker: String
     var numberOfCategories: Int?
@@ -49,7 +44,6 @@ class GetProductCategoriesPresenter {
     init(interactor: GetProductCategoriesInteractorInputProtocol, router: GetProductCategoriesRouterInputProtocol, phoneMaker: String, emailMaker: String) {
         self.interactor = interactor
         self.router = router
-        //self.maker = maker
         self.phoneMaker = phoneMaker
         self.emailMaker = emailMaker
     }
@@ -62,25 +56,25 @@ class GetProductCategoriesPresenter {
 
 extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputProtocol {
     
+    //fetched Product Categories Maker Data
     func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker]?, error: Errors?) {
         guard let productCategoriesMakers = productCategoriesMakers, error == nil else {
-                router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении списка категорий продуктов поставщика")
+            router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                      descriptionText: "Возникла ошибка при извлечении списка категорий продуктов поставщика")
             return
         }
         self.arrayCategoriesMakers = makeCategoriesMaker(productCategoriesMaker: productCategoriesMakers)
         isChangedProductCategoriesMaker = arrayCategoriesMakers.count > 0
-       // productCategoriesMakers[0].managedObjectContext?.delete(productCategoriesMakers[0])
     }
     
+    //fetched Product Categories Data
     func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?) {
         
         guard let productCategories = productCategories, error == nil else {
             switch error {
             case .loadProdactCategoryError:
                 router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении категорий продуктов")
-           
+                                          descriptionText: "Возникла ошибка при извлечении категорий продуктов")
             default:
                 return
             }
@@ -89,27 +83,20 @@ extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputPro
         numberOfCategories = productCategories.count
         self.productCategories = productCategories
         categoriesViewModel = makeCategoriesViewModel(productCategories: productCategories)
-      //  DispatchQueue.main.async { [unowned self] in
-         //   self.view?.updateViewWithProductCategories(productCategories: [productCategories])
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.view?.updateViewWithProductCategories(productCategories: self.categoriesViewModel)
             self.view?.stopActivityIndicator()
         }
-      //  }
     }
     
     //create ViewModel for tableView
     func makeCategoriesViewModel(productCategories: [ProductCategory]) -> [(String, Bool)] {
-    //    var isChanged = false
         return productCategories.map { productCategory in
             var categoryName = String()
             var check = Bool()
             if let category = productCategory.category_name {
                 categoryName = category
                 check = arrayCategoriesMakers.contains(categoryName)
-//                if check == true {
-//                    isChanged = true
-//                }
             }
             return (categoryName, check)
         }
@@ -133,8 +120,6 @@ extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputPro
 
 extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol {
     
-    
-    
     var numberOfRowsInSection: Int {
         return numberOfCategories ?? 0
     }
@@ -146,7 +131,6 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
     
     //выделение и снятие выделения ячеек check and uncheck a cell
     func didSelectRowAt(index: Int) -> Bool {
-       // let categoryName = categoriesViewModel[index].0
         let productCategory = productCategories[index]
         var check = !categoriesViewModel[index].1
         
@@ -159,9 +143,9 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
         categoriesViewModel[index].1 = check
         return check
     }
-
-//    //при деините модуля формируем новый Maker Annotation
-        func isDeinitedModule() {
-            interactor.reWriteMakerAnnotation()
-        }
+    
+    //    //при деините модуля формируем новый Maker Annotation
+    func isDeinitedModule() {
+        interactor.reWriteMakerAnnotation()
+    }
 }

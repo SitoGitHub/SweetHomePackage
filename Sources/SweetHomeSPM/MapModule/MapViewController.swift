@@ -147,7 +147,7 @@ extension MapViewController: MKMapViewDelegate {
     func createFilterCategoriesButton() {
         
         //RouteButton.layer.masksToBounds = true
-        filterCategoriesButton.setImage(UIImage(named: "layers", in: .module, compatibleWith: nil) , for: .normal)
+        //filterCategoriesButton.setImage(UIImage(named: "layers", in: .module, compatibleWith: nil) , for: .normal)
         //routeButton.setTitleColor(Colors.whiteLabel.colorViewUIColor, for: .normal)
         filterCategoriesButton.backgroundColor = .clear //Colors.activeButtonColor.colorViewUIColor
         //routeButton.titleLabel?.font = Fonts.fontButton.fontsForViews
@@ -174,15 +174,17 @@ extension MapViewController: MKMapViewDelegate {
     
     @objc func isClickedFilterCategoriesButton() {
         
-        if isHiddenFilterCategoriesView {
-            showFilterCategoriesView()
-            isHiddenFilterCategoriesView = false
-            //скрываем Slider Bottom View
-            getoutSliferBottomView()
-        } else {
-            hideFilterCategoriesView()
-            isHiddenFilterCategoriesView = true
-        }
+        presenter?.isClickedFilterCategoriesButton()
+        
+//        if isHiddenFilterCategoriesView {
+//            showFilterCategoriesView()
+//            isHiddenFilterCategoriesView = false
+//            //скрываем Slider Bottom View
+//            getoutSliferBottomView()
+//        } else {
+//            hideFilterCategoriesView()
+//            isHiddenFilterCategoriesView = true
+//        }
         
     }
     

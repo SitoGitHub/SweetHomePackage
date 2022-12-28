@@ -15,7 +15,7 @@ protocol RegistrationRouterInputProtocol {
 
 class RegistrationRouter: RegistrationRouterInputProtocol {
     weak var viewController: RegistrationViewController?
-    var navigationController: UINavigationController?
+    weak var navigationController: UINavigationController?
     
     deinit{
         print("RegistrationRouter deinit")

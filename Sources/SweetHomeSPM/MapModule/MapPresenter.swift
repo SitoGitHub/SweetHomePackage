@@ -27,6 +27,7 @@ public protocol MapViewOutputProtocol: AnyObject {
     func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
     func getMakerImage(pathImage: String?)
     func isLongTappedOnMapView(sender: UIGestureRecognizer)
+    func isClickedFilterCategoriesButton()
     var numberOfRowsInSectionCategoriesView: Int { get }
 }
 
@@ -179,6 +180,10 @@ extension MapPresenter: MapViewOutputProtocol {
             
             view?.showAlertLocation(title: "Регистрация", message: "Хотите добавить нового поставщика услуг?", url: nil, titleAction: "Да", touchCoordinate: touchCoordinate)
         }
+    }
+    
+    public func isClickedFilterCategoriesButton() {
+        router.openFilterCategoriesScreen()
     }
 }
 

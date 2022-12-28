@@ -49,7 +49,7 @@ protocol GetProductCategoriesDelegate: AnyObject {
      var surnameMaker = String()
      var nameMaker = String()
      let makerAnotation: MakerAnotation? //данные из MapView
-    
+     weak var navigatController: UINavigationController?
      
      init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol,/* mapPresenter: RegistrationPresenterOutputProtocol,*/ touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
         self.interactor = interactor
@@ -247,7 +247,9 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
     func isSelectedRowMenuTableView(indexRow: Int) {
         print("This cell was selected: \(indexRow)")
         //      router.openScreen(for: touchCoordinate)
-        guard let navigationController = view?.navController else { return }
+       
+        guard let navigationController = //self.navigationController else { return }
+                view?.navController else { return }
         switch indexRow {
         case 0:
             router.pushGetProductCategoriesViewController(to: navigationController, animated: true, phoneMaker: self.phoneMaker, emailMaker: self.email)

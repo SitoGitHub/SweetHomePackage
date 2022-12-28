@@ -5,8 +5,6 @@
 //  Created by Aleksei Grachev on 21/12/22.
 //  
 //
-
-import Foundation
 import UIKit
 
 protocol GetProductCategoriesRouterInputProtocol {
@@ -33,7 +31,7 @@ class GetProductCategoriesRouter: GetProductCategoriesRouterInputProtocol {
         alertController.addAction(okBtn)
         
         viewController?.present(alertController,
-                animated: true,
-                completion: nil)
+                                animated: true,
+                                completion: nil)
     }
 }

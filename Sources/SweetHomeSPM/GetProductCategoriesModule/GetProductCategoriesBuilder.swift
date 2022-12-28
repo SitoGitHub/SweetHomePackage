@@ -8,7 +8,6 @@
 
 
  class GetProductCategoriesBuilder {
-    //@discardableResult
      public static func build(phoneMaker: String, emailMaker: String, delegate: GetProductCategoriesDelegate?) -> GetProductCategoriesViewController {
         let view = GetProductCategoriesViewController()
         let interactor = GetProductCategoriesInteractor()

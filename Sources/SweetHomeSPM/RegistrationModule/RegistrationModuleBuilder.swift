@@ -10,7 +10,7 @@ import MapKit
     //@discardableResult
      static func build(factory: NavigationFactory, delegate: RegistrationModuleDelegate?, touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) ->
      UINavigationController
-     //RegistrationViewController
+    // RegistrationViewController
      {
         let view = RegistrationViewController()
         let interactor = RegistrationInteractor()
@@ -28,8 +28,9 @@ import MapKit
         // presenter.mapPresenter = mapPresenter
         interactor.presenter = presenter
         router.viewController = view
-        return factory(view)
+        return //factory(view)
          //view
+         UINavigationController(rootViewController: view)
     }
 }
 
