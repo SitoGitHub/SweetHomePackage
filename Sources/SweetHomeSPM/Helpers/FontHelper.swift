@@ -29,7 +29,6 @@ enum Fonts {
             return UIFont(name: "PingFang HK", size: 33) ?? UIFont.italicSystemFont(ofSize: 33)
         case .fontButton:
             return UIFont(name: "SF", size: 17) ?? UIFont.italicSystemFont(ofSize: 17)
-            
         }
     }
 }

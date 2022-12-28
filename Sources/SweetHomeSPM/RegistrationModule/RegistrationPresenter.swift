@@ -13,7 +13,6 @@ protocol RegistrationViewOutputProtocol: AnyObject {
     func isPressedSaveButton()
     func isSelectedRowMenuTableView(indexRow: Int)
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any])
-    //func isFieldSDidEndEditing(textField: UITextField)
     func isTappedEditDataMaker()
     func getMakerAnotation()
     func getMakerImage(pathImage: String?)
@@ -24,7 +23,7 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(maker: MakerAnotation?, error: Errors?)
     func isNeedEditMaker(phoneNumberMaker: String, email: String)
     func isSavedData()
-    func isEditedData() 
+    func isEditedData()
 }
 
 protocol GetProductCategoriesDelegate: AnyObject {
@@ -33,35 +32,29 @@ protocol GetProductCategoriesDelegate: AnyObject {
 }
 
 // MARK: -  RegistrationPresenter
- class RegistrationPresenter {
-     let validData = ValidData()
-     lazy var imageManager = ImageManager()
-     weak var view: RegistrationViewInputProtocol?
-     weak var delegate: RegistrationModuleDelegate? //= MapPresenter(interactor: MapInteractor(), router: MapRouter())
-      var router: RegistrationRouterInputProtocol
-      var interactor: RegistrationInteractorInputProtocol
-     var touchCoordinate: CLLocationCoordinate2D
-     var pathImageMaker: String?
-     lazy var password = String()
-    // lazy var maker = Maker()
-     var phoneMaker = String()
-     var email = String()
-     var surnameMaker = String()
-     var nameMaker = String()
-     let makerAnotation: MakerAnotation? //данные из MapView
-     weak var navigatController: UINavigationController?
-     
-     init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol,/* mapPresenter: RegistrationPresenterOutputProtocol,*/ touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
+class RegistrationPresenter {
+    let validData = ValidData()
+    lazy var imageManager = ImageManager()
+    weak var view: RegistrationViewInputProtocol?
+    weak var delegate: RegistrationModuleDelegate?
+    var router: RegistrationRouterInputProtocol
+    var interactor: RegistrationInteractorInputProtocol
+    var touchCoordinate: CLLocationCoordinate2D
+    var pathImageMaker: String?
+    lazy var password = String()
+    var phoneMaker = String()
+    var email = String()
+    var surnameMaker = String()
+    var nameMaker = String()
+    let makerAnotation: MakerAnotation?
+    weak var navigatController: UINavigationController?
+    
+    init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol, touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
         self.interactor = interactor
         self.router = router
-         //self.mapPresenter = mapPresenter
         self.touchCoordinate = touchCoordinate
-         self.makerAnotation = makerAnotation
+        self.makerAnotation = makerAnotation
     }
-     
-     deinit{
-         print("RegistrationPresenter deinit")
-     }
 }
 
 // MARK: - RegistrationViewOutputProtocol
@@ -115,7 +108,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
               let nameMaker = view?.nameTextField.text,
               let phoneNumberMaker = view?.phoneTextField.text,
               let emailMaker = view?.emailTextField.text
-              //let passwordMaker = password
+                //let passwordMaker = password
         else { return }
         
         self.surnameMaker = surnameMaker
@@ -188,46 +181,19 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
     
     // Helper function inserted by Swift 4.2 migrator. For imagePickerController
     fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
-
+        
         return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
-
     }
     
-    // Helper function inserted by Swift 4.2 migrator.
     fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
-
         return input.rawValue
-
     }
     
     //выбор фото нового makera
     func isTappedMakerImage(info: [UIImagePickerController.InfoKey : Any]) {
-        // interactor.getImageForMakerImageView(info: info)
-       // var fileName = String()
         if let chosenImage = info[.originalImage] as? UIImage {
-            // imgPhoto.contentMode = .scaleToFill
-            var fileName = String()
             view?.makerImageView.image = chosenImage
-            
-            // info: Local variable inserted by Swift 4.2 migrator.
-                  let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 
-                  if let url = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.imageURL)] as? URL {
-                      fileName = url.lastPathComponent
-                      
-                  }
-            
-            
-//            if let asset = info[UIImagePickerControllerPHAsset] as? PHAsset {
-//                   if let fileName = (asset.value(forKey: "filename")) as? String {
-                       //Do your stuff here
-              //     }
-              // }
-            //interactor.getImageForMakerImageView(forSaveImage: UIImage)
-            
-            //сохраняем фото юзера в файл
-            //            let path = "photo/temp/album1/img.jpg"
-            
             //generate unique filname
             let name = ProcessInfo.processInfo.globallyUniqueString
             let path = "photo/temp/sweethome2/maker/\(name).jpeg"
@@ -235,19 +201,12 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
             guard let url = chosenImage.save(at: tempDirectoryUrl) else { return }
             print(url)
             pathImageMaker = path//url
-            //            guard
-            //                    let url = chosenImage.save(at: .documentDirectory,
-            //                                       pathAndImageName: path) else { return }
-            //            print(url)
         } else{
             print("Something went wrong")
         }
     }
     
     func isSelectedRowMenuTableView(indexRow: Int) {
-        print("This cell was selected: \(indexRow)")
-        //      router.openScreen(for: touchCoordinate)
-       
         guard let navigationController = //self.navigationController else { return }
                 view?.navController else { return }
         switch indexRow {
@@ -267,7 +226,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
               let nameMaker = view?.nameTextField.text,
               let phoneNumberMaker = view?.phoneTextField.text,
               let emailMaker = view?.emailTextField.text
-              //let passwordMaker = password
+                //let passwordMaker = password
         else { return }
         
         interactor.editDataMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, pathImageMaker: pathImageMaker, touchCoordinateMaker: touchCoordinate)
@@ -283,9 +242,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
                 imageMaker = image
             }
         }
-        
         view?.setMakerImageView(imageMAker: imageMaker)
-        
     }
 }
 
@@ -299,13 +256,13 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
             switch error {
             case .loadCountriesError:
                 router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении названий стран")
+                                          descriptionText: "Возникла ошибка при извлечении названий стран")
             case .loadCitiesError:
                 router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении названий городов")
+                                          descriptionText: "Возникла ошибка при извлечении названий городов")
             case .loadMakersError:
                 router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                         descriptionText: "Возникла ошибка при извлечении поставщиков услуг")
+                                          descriptionText: "Возникла ошибка при извлечении поставщиков услуг")
             default:
                 return
             }
@@ -315,35 +272,30 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
         view?.updateMenuTableView(newMakerIsSaved: true, categoriesIsSaved: nil)
         //передаем в map модуль данные для пина
         self.delegate?.fetchedNewMakerData(pinMakers: [maker])
-        
     }
     
     // оповещение, если такой Maker в системе уже есть
     func existAlreadyMaker(phoneNumberMaker: String, email: String) {
         router.presentWarnMessage(title: "Внимание",
-                                 descriptionText: "Поставщик услуг с номером \(phoneNumberMaker) или email \(email) уже зарегестрирован ранее. Проверьте данные.")
+                                  descriptionText: "Поставщик услуг с номером \(phoneNumberMaker) или email \(email) уже зарегестрирован ранее. Проверьте данные.")
     }
     // оповещение, если данные успешно сохранились
     func isSavedData() {
         router.presentWarnMessage(title: "Внимание",
-                                 descriptionText: "Данные успешно сохранены.")
+                                  descriptionText: "Данные успешно сохранены.")
         view?.changetitleButton()
-        
     }
     
     func isEditedData() {
         router.presentWarnMessage(title: "Внимание",
-                                 descriptionText: "Данные успешно изменены.")
+                                  descriptionText: "Данные успешно изменены.")
         view?.changetitleButton()
-        
     }
     
     func isNeedEditMaker(phoneNumberMaker: String, email: String) {
         view?.presentEditMessage(title: "Внимание",
                                  descriptionText: "Хотите внести изменения?")
     }
-    
-
 }
 
 extension RegistrationPresenter: GetProductCategoriesDelegate {
@@ -352,7 +304,7 @@ extension RegistrationPresenter: GetProductCategoriesDelegate {
         //активируем ячейку таблицы для выбора категорий продуктов мейкера
         view?.updateMenuTableView(newMakerIsSaved: true, categoriesIsSaved: isChanged)
     }
-    
+    //    обноляем данне на карте, refresh data on the map
     func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation]) {
         self.delegate?.fetchedNewMakerData(pinMakers: pinMakers)
     }

@@ -7,23 +7,16 @@
 //  Created by Aleksei Grachev on 28/11/22.
 //
 
-public protocol MapInteractorInputProtocol: AnyObject {
-   func fetchMakerData()
+protocol MapInteractorInputProtocol: AnyObject {
+    func fetchMakerData()
     func fetchCategoriesData ()
 }
 
-public class MapInteractor: MapInteractorInputProtocol {
+class MapInteractor: MapInteractorInputProtocol {
     weak var presenter: MapInteractorOutputProtocol?
-    let modelUser = ModelUser()
-    var users = [[User]]()
-    let coreDataManager = CoreDataManager.shared
-   // var maker = Maker()
+    let coreDataManager: CoreDataManagerDelegate = CoreDataManager.shared
     
-    deinit{
-        print("MapInteractor deinit")
-    }
-    
-    public func fetchMakerData() {
+    func fetchMakerData() {
         let pinMakers = coreDataManager.getPinMaker()
         switch pinMakers {
         case.success(let pinMakers):
@@ -35,8 +28,8 @@ public class MapInteractor: MapInteractorInputProtocol {
     }
     
     //получение общего списка категорий продуктов
-    public func fetchCategoriesData () {
-        let productCategories = coreDataManager.getProductCategories(category: nil)
+    func fetchCategoriesData () {
+        let productCategories = coreDataManager.getProductCategories()
         switch productCategories {
         case.success(let productCategories):
             self.presenter?.fetchedProductCategoriesData(productCategories: productCategories, error: nil)
@@ -44,7 +37,7 @@ public class MapInteractor: MapInteractorInputProtocol {
         case .failure(let error):
             self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
         }
-  
+        
     }
     
 }

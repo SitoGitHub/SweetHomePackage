@@ -28,9 +28,6 @@ class AddProductPresenter {
         self.router = router
     }
     
-    deinit{
-        print("AddProductPresenter deinit")
-    }
 }
 // MARK: - AddProductViewOutputProtocol
 extension AddProductPresenter: AddProductViewOutputProtocol {

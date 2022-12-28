@@ -5,11 +5,11 @@
 //
 //  Created by Aleksei Grachev on 28/11/22.
 //
-
+import UIKit
 
 public class MapModuleBuilder {
     //@discardableResult
-    public static func build() -> MapViewController {
+    public static func build() -> UIViewController {
         let view = MapViewController()
         let interactor = MapInteractor()
         let router = MapRouter()

@@ -11,7 +11,4 @@ protocol FilterCategoriesInteractorInputProtocol: AnyObject {
 class FilterCategoriesInteractor: FilterCategoriesInteractorInputProtocol {
     weak var presenter: FilterCategoriesInteractorOutputProtocol?
     
-    deinit{
-        print("FilterCategoriesInteractor deinit")
-    }
 }

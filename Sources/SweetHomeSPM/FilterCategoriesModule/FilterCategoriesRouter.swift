@@ -10,8 +10,5 @@ protocol FilterCategoriesRouterInputProtocol {
 
 class FilterCategoriesRouter: FilterCategoriesRouterInputProtocol {
     weak var viewController: FilterCategoriesViewController?
-    
-    deinit{
-        print("FilterCategoriesRouter deinit")
-    }
+  
 }

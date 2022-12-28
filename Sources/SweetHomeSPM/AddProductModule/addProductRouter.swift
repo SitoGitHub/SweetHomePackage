@@ -11,7 +11,4 @@ protocol AddProductRouterInputProtocol {
 class AddProductRouter: AddProductRouterInputProtocol {
     weak var view: AddProductViewController?
     
-    deinit{
-        print("AddProductRouter deinit")
-    }
 }

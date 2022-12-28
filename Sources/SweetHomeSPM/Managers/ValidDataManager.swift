@@ -36,8 +36,7 @@ class ValidData {
         
         var returnValue = true
         let mobileRegEx = "^[789][0-9]{9,11}$"
-        //let mobileRegEx = "^[0-9]{10}$"
-        
+   
         do {
             let regex = try NSRegularExpression(pattern: mobileRegEx)
             let nsString = phoneNumberString as NSString

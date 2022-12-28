@@ -11,7 +11,5 @@ protocol AddProductInteractorInputProtocol: AnyObject {
 class AddProductInteractor: AddProductInteractorInputProtocol {
     weak var presenter: AddProductInteractorOutputProtocol?
     
-    deinit{
-        print("AddProductInteractor deinit")
-    }
+    
 }

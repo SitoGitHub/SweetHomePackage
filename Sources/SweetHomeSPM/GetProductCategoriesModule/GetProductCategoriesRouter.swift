@@ -14,10 +14,6 @@ protocol GetProductCategoriesRouterInputProtocol {
 class GetProductCategoriesRouter: GetProductCategoriesRouterInputProtocol {
     weak var viewController: GetProductCategoriesViewController?
     
-    deinit{
-        print("GetProductCategoriesRouter deinit")
-    }
-    
     func presentWarnMessage(title: String?, descriptionText: String?) {
         
         let alertController = UIAlertController(title: title,

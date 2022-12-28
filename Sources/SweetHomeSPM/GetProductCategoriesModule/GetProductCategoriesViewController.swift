@@ -42,11 +42,7 @@ class GetProductCategoriesViewController: UIViewController {
             presenter?.isDeinitedModule()
         }
     }
-    
-    deinit{
-        print("GetProductCategoriesViewController deinit")
-    }
-    
+  
 }
 
 // MARK: - Private functions

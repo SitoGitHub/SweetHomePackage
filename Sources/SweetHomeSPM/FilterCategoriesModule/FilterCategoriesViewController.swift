@@ -20,9 +20,6 @@ class FilterCategoriesViewController: UIViewController {
         initialize()
     }
     
-    deinit{
-        print("FilterCategoriesViewController deinit")
-    }
 }
 
 // MARK: - Private functions

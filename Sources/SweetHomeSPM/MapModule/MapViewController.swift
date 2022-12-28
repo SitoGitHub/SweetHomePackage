@@ -11,7 +11,7 @@ import MapKit
 
 
 
-public protocol MapViewInputProtocol: AnyObject {
+ protocol MapViewInputProtocol: AnyObject {
     func showDate(pinMakers: [MakerAnotation])
     func setMakerImageView(imageMAker: UIImage)
     func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?)
@@ -22,9 +22,8 @@ public protocol MapViewInputProtocol: AnyObject {
     
 }
 
-public class MapViewController: UIViewController {
-    public var mapView = MKMapView()
-    //var annotationView: MKAnnotationView?
+ class MapViewController: UIViewController {
+     var mapView = MKMapView()
     var maker: MakerAnotation?
     let locationManager = CLLocationManager()
     
@@ -33,9 +32,6 @@ public class MapViewController: UIViewController {
     let identifier = "MyCell"
     
     let sliderBottomView = SliderBottomView()
-    
-    
-//    let buttonStack = UIStackView()
     var productCategoriesButton: [UIButton] = []
     let filterCategoriesButton = UIButton()
     lazy var viewHeight = CGFloat()
@@ -48,31 +44,22 @@ public class MapViewController: UIViewController {
             categoriesTableView.reloadData()
         }
     }
-    
     lazy var isHiddenFilterCategoriesView = true
-    // MARK: - Public
+    
     var presenter: MapViewOutputProtocol?
     
-    
-    
     // MARK: - View lifecycle
-    public override func viewDidLoad() {
+     override func viewDidLoad() {
         super.viewDidLoad()
         initialize()
         addGestureRecognizerOnMap()
     }
     
-    public override func viewDidAppear(_ animated: Bool) {
+     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(true)
         checkLocationAnabled()
     }
-    
-    deinit{
-        print("MapView deinit")
-    }
 }
-
-
 
 // MARK: - Private functions
 extension MapViewController: MKMapViewDelegate {
@@ -86,7 +73,6 @@ extension MapViewController: MKMapViewDelegate {
         //let sliderFilterCategoriesView = SliderFilterCategoriesView(tableView: categoriesTableView)
         categoriesTableView.delegate = self
         categoriesTableView.dataSource = self
-        //  checkLocationAnabled()
     }
     private func createMApView(){
         mapView.delegate = self
@@ -94,54 +80,33 @@ extension MapViewController: MKMapViewDelegate {
         mapView.isZoomEnabled = true
         mapView.isScrollEnabled = true
         
-        //mapView.center = view.center
-        
         view.addSubview(mapView)
         
         mapView.snp.makeConstraints { (make) -> Void in
             make.edges.equalTo(self.view)
-            //make.right.equalTo(self.view)
-            // make.top.bottom.equalTo(self.view.snp.top)
-            //make.bottom.equalTo(self.view.safeAreaLayoutGuide.snp.bottom)
         }
-       // mapView.layoutIfNeeded()
-       
     }
     
     func setupSliderButtonView() {
         mapView.addSubview(sliderBottomView)
         viewHeight = view.bounds.height
-            //.bounds.size
         sliderBottomView.snp.makeConstraints { (make) -> Void in
             make.left.right.equalTo(mapView)
             make.height.equalTo(heightSliderView)
             make.top.equalTo(viewHeight)
         }
-        //sliderBottomView.layoutIfNeeded()
         sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
-        
-      //  createbuttonStack()
     }
     
     func setupSliderFilterCategoriesView() {
         mapView.addSubview(sliderFilterCategoriesView)
         viewWidth = view.bounds.width
-        //.bounds.size
         sliderFilterCategoriesView.snp.makeConstraints { (make) -> Void in
-           // make.left.equalToSuperview()
-            //make.right.equalTo(mapView.snp.left)
-            //make.right.equalTo(viewWidth - viewWidth)
             make.left.equalTo(-viewWidth)
-            
-           // make.right.equalTo(viewWidth + indentOfRightForSliderFilterCategoriesView)
-            //make.left.equalTo(mapView.snp.left)
-            // make.width.equalToSuperview().multipliedBy(0.7)
             make.width.equalTo(viewWidth - indentOfRightForSliderFilterCategoriesView)
             make.top.equalTo(filterCategoriesButton.snp.bottom)
-            
             make.bottom.equalToSuperview()
         }
-       // sliderFilterCategoriesView.layoutIfNeeded()
     }
     
     func createFilterCategoriesButton() {
@@ -158,8 +123,6 @@ extension MapViewController: MKMapViewDelegate {
         mapView.addSubview(filterCategoriesButton)
         
         filterCategoriesButton.snp.makeConstraints { (make) -> Void in
-            // make.left.equalToSuperview().offset(60)
-           // make.centerX.equalToSuperview()
             make.width.equalTo(37)
             make.height.equalTo(37)
             make.top.equalTo(mapView.safeAreaInsets.top).inset(60)
@@ -167,51 +130,42 @@ extension MapViewController: MKMapViewDelegate {
             
         }
         filterCategoriesButton.layoutIfNeeded()
-        //filterCategoriesButton.layoutIfNeeded()
-       // filterCategoriesButton.layer.cornerRadius = 0.5 * filterCategoriesButton.bounds.size.width
-        
     }
     
     @objc func isClickedFilterCategoriesButton() {
         
         presenter?.isClickedFilterCategoriesButton()
         
-//        if isHiddenFilterCategoriesView {
-//            showFilterCategoriesView()
-//            isHiddenFilterCategoriesView = false
-//            //скрываем Slider Bottom View
-//            getoutSliferBottomView()
-//        } else {
-//            hideFilterCategoriesView()
-//            isHiddenFilterCategoriesView = true
-//        }
+        //        if isHiddenFilterCategoriesView {
+        //            showFilterCategoriesView()
+        //            isHiddenFilterCategoriesView = false
+        //            //скрываем Slider Bottom View
+        //            getoutSliferBottomView()
+        //        } else {
+        //            hideFilterCategoriesView()
+        //            isHiddenFilterCategoriesView = true
+        //        }
         
     }
     
     //показываем
     func showFilterCategoriesView() {
         mapView.alpha = 0.5
-        
-       // self.sliderFilterCategoriesView.layoutIfNeeded()
-        
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
             self.sliderFilterCategoriesView.snp.updateConstraints { (make) -> Void in
                 make.left.equalTo(self.viewWidth - self.viewWidth)
-             
             }
-           self.mapView.layoutIfNeeded()
+            self.mapView.layoutIfNeeded()
         }
-        
     }
     
     func hideFilterCategoriesView() {
         mapView.alpha = 1
-        
         UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
             self.sliderFilterCategoriesView.snp.updateConstraints { (make) -> Void in
                 make.left.equalTo(-self.viewWidth)
             }
-           self.mapView.layoutIfNeeded()
+            self.mapView.layoutIfNeeded()
         }
     }
     
@@ -222,19 +176,17 @@ extension MapViewController: MKMapViewDelegate {
         sliderBottomView.recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
     }
     
-    
     //обработка клика на makerImageFiew action when makerImageFiew is pressed
     @objc func tapForMakerImageAction (_ gestureRecognizer: UITapGestureRecognizer){
         guard let coordinate = maker?.coordinate else { return }
         presenter?.isTappedMakerImageView(touchCoordinate: coordinate, makerAnotation: maker)
-      
     }
     
     //add Gesture Recognizer on the map
     func addGestureRecognizerOnMap() {
         let longTapGesture = UILongPressGestureRecognizer(target: self, action: #selector(longTap))
         mapView.addGestureRecognizer(longTapGesture)
-
+        
         let tapGesture = UITapGestureRecognizer(target: self, action: #selector(shortClickOnMap))
         mapView.addGestureRecognizer(tapGesture)
     }
@@ -273,12 +225,9 @@ extension MapViewController: MKMapViewDelegate {
         @unknown default:
             fatalError()
         }
-        
     }
     
-    
-    
-    public func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
+     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         guard let annotation = annotation as? MakerAnotation else {return nil}
         var viewMarker: MKMarkerAnnotationView
         let idView = "marker"
@@ -291,12 +240,11 @@ extension MapViewController: MKMapViewDelegate {
             viewMarker.calloutOffset = CGPoint(x: 0, y: 6)
             viewMarker.rightCalloutAccessoryView = UIButton(type: .detailDisclosure)
         }
-        
         return viewMarker
     }
     
     //callout AccessoryControl Tapped обработка нажатия на кнопку в аннотации
-    public func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
+     func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, calloutAccessoryControlTapped control: UIControl) {
         maker = view.annotation as? MakerAnotation
         
         hideFilterCategoriesView()
@@ -331,51 +279,6 @@ extension MapViewController: MKMapViewDelegate {
         }
         sliderBottomView.listOfCategoryLabel.text = text
     }
-    
-    //выводим название категорий для конкретного мейкера
-//    private func createProductCategoriesButton() {
-//       // var indexArrayButton = Int()
-//       // for index in 0 .. indexAr
-//        while let first = sliderBottomView.buttonStack.arrangedSubviews.first {
-//            sliderBottomView.buttonStack.removeArrangedSubview(first)
-//                first.removeFromSuperview()
-//        }
-//        productCategoriesButton.removeAll()
-//        guard let productCategories = maker?.productCategoriesMaker else { return }
-//       // let productCategoryButton = UIButton()
-//     //   var productCategoriesButton: [UIButton] = [] // [productCategoryButton]
-//        var indexArrayButton = 0
-//
-//
-        
-//        for productCategory in productCategories {
-//            let button = UIButton()
-//            let categoryName = productCategory.category_name
-//            button.setTitle(categoryName, for: .normal)
-//            button.setTitleColor(Colors.activeButtonColor.colorViewUIColor, for: .normal)
-//            button.backgroundColor = Colors.whiteLabel.colorViewUIColor
-//            button.titleLabel?.font = Fonts.fontButton.fontsForViews
-////            switch indexArrayButton {
-////            case 0:
-////                button.backgroundColor = .yellow
-////            case 1:
-////                button.backgroundColor = .blue
-////            case 2:
-////                button.backgroundColor = .green
-////            default:
-////                button.backgroundColor = .gray
-////            }
-//            productCategoriesButton.append(button)
-//            sliderBottomView.buttonStack.addArrangedSubview(productCategoriesButton[indexArrayButton])
-//
-//            indexArrayButton += 1
-////            productCategoriesButton[indexArrayButton].snp.makeConstraints { (make) -> Void in
-////                make.width.equalToSuperview().inset(20)
-////                make.height.equalTo(20)
-//
-//        }
-//
-//    }
     
     // убираем sliderBottomView и FilterCategoriesView по клику на карту hide sliderBottomView
     @objc func shortClickOnMap() {
@@ -412,13 +315,10 @@ extension MapViewController: MKMapViewDelegate {
                 self.mapView.addOverlay(route.polyline)
             }
         }
-//        self.sliderBottomView.snp.updateConstraints { (make) -> Void in
-//            make.top.equalTo(self.viewHeight)
-//        }
     }
     
     //настройка линий маршрута
-    public func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
+     func mapView(_ mapView: MKMapView, rendererFor overlay: MKOverlay) -> MKOverlayRenderer {
         let render = MKPolylineRenderer(overlay: overlay)
         render.strokeColor = .blue
         render.lineWidth = 4
@@ -443,41 +343,37 @@ extension MapViewController: MKMapViewDelegate {
 
 //отслеживание месторасположения (изменение)
 extension MapViewController: CLLocationManagerDelegate {
-    public func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last?.coordinate{
             let region = MKCoordinateRegion(center: location, latitudinalMeters: 5000, longitudinalMeters: 5000)
             mapView.setRegion(region, animated: true)
         }
     }
     //при смене статуса авторизации
-    public func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         checkAutorization()
     }
 }
 
 // MARK: - MapViewProtocol
 extension MapViewController: MapViewInputProtocol {
-    public func showDate(pinMakers: [MakerAnotation]){
+     func showDate(pinMakers: [MakerAnotation]){
         for pinMaker in pinMakers {
             maker = pinMaker
             mapView.addAnnotation(pinMaker)
         }
     }
     
-    public func removePinMakers(pinMakers: MakerAnotation){
-       // for pinMaker in pinMakers {
-            //maker = pinMaker
-            mapView.removeAnnotation(pinMakers)
-       // }
-       // mapView.reloadInputViews()
+     func removePinMakers(pinMakers: MakerAnotation){
+        mapView.removeAnnotation(pinMakers)
     }
     
-    public func setMakerImageView(imageMAker: UIImage) {
+     func setMakerImageView(imageMAker: UIImage) {
         sliderBottomView.makerImageView.image = imageMAker
     }
     
     //Алерт
-    public func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?){
+     func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?){
         var anyAction: UIAlertAction
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         switch titleAction {
@@ -503,33 +399,28 @@ extension MapViewController: MapViewInputProtocol {
     }
     
     //обновляем данные на Makerа на bottomView
-    public func setupBottomViewMakerData() {
+     func setupBottomViewMakerData() {
         setupListOfCategoryLabel()
         setupMakerLabel()
         setupMakerImageView()
     }
     
-    public func updateSliderFilterCategoriesView(productCategories: [(String, Bool)]) {
-       self.productCategories = productCategories
-    //   categoriesTableView.reloadData()
-   }
-    
+     func updateSliderFilterCategoriesView(productCategories: [(String, Bool)]) {
+        self.productCategories = productCategories
+    }
 }
 
 extension MapViewController: UITableViewDelegate, UITableViewDataSource {
-   
-    public func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    
+     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return presenter?.numberOfRowsInSectionCategoriesView ?? 0
     }
     
-    public func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         cell.textLabel?.text = productCategories?[indexPath.item].0
         cell.accessoryType = productCategories?[indexPath.item].1 ?? false ? .checkmark : .none
-        print(indexPath.item, productCategories?[indexPath.item].0)
         
         return cell
     }
-    
-    
 }

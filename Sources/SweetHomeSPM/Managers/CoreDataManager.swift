@@ -8,13 +8,11 @@
 import Foundation
 import CoreData
 
+
+
 class CoreDataManager {
     
     static let shared = CoreDataManager()
-    
- //   init() {
-        
- //   }
     
     func entityForName(entityName: String) -> NSEntityDescription {
         return NSEntityDescription.entity(forEntityName: entityName, in: self.managedObjectContext)!
@@ -28,22 +26,17 @@ class CoreDataManager {
         guard let modelURL = bundle.url(forResource: "SweetHomeMap_1_2", withExtension: ".momd"), let model = NSManagedObjectModel(contentsOf: modelURL) else { return (NSPersistentContainer())
         }
           let container = NSPersistentCloudKitContainer(name: "SweetHomeMap_1_2", managedObjectModel: model)
-        
-        //let container = NSPersistentContainer(name: "SweetHomeMap_1_2")
-        
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
             if let error = error as NSError? {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
-        
         return container
     }()
     
     lazy var managedObjectContext: NSManagedObjectContext = persistentContainer.viewContext
 
     // MARK: - Core Data Saving support
-
     func saveContext () {
         if managedObjectContext.hasChanges {
             do {
@@ -54,5 +47,4 @@ class CoreDataManager {
             }
         }
     }
-    
 }

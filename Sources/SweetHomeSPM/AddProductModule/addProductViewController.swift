@@ -21,9 +21,6 @@ class AddProductViewController: UIViewController {
         initialize()
     }
     
-    deinit{
-        print("AddProductViewController deinit")
-    }
 }
 
 // MARK: - Private functions

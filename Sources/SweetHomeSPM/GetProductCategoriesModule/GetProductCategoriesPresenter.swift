@@ -9,9 +9,11 @@
 import Foundation
 
 protocol GetProductCategoriesInteractorOutputProtocol: AnyObject {
-    func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
-    func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker]?, error: Errors?)
+    func fetchedProductCategoriesData(productCategories: [ProductCategory])
+    func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker])
     func isWrittenMakerAnotation(makerAnotation: MakerAnotation)
+    func getErrorWhenFetchedProductCategoriesData(error: Errors)
+    func getErrorWhenFetchedProductCategoriesMakerData(error: Errors)
 }
 
 protocol GetProductCategoriesViewOutputProtocol: AnyObject {
@@ -48,38 +50,30 @@ class GetProductCategoriesPresenter {
         self.emailMaker = emailMaker
     }
     
-    deinit{
-        print("GetProductCategoriesPresenter deinit")
-    }
-    
 }
 
 extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputProtocol {
     
     //fetched Product Categories Maker Data
-    func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker]?, error: Errors?) {
-        guard let productCategoriesMakers = productCategoriesMakers, error == nil else {
-            router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                      descriptionText: "Возникла ошибка при извлечении списка категорий продуктов поставщика")
-            return
-        }
+    func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker]) {
         self.arrayCategoriesMakers = makeCategoriesMaker(productCategoriesMaker: productCategoriesMakers)
         isChangedProductCategoriesMaker = arrayCategoriesMakers.count > 0
     }
     
-    //fetched Product Categories Data
-    func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?) {
-        
-        guard let productCategories = productCategories, error == nil else {
-            switch error {
-            case .loadProdactCategoryError:
-                router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                          descriptionText: "Возникла ошибка при извлечении категорий продуктов")
-            default:
-                return
-            }
+    //get error when fetched Product Categories Maker Data
+    func getErrorWhenFetchedProductCategoriesMakerData(error: Errors) {
+        switch error {
+        case .loadProdactCategoryError:
+            router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                      descriptionText: "Возникла ошибка при извлечении списка категорий продуктов поставщика")
+        default:
             return
         }
+    }
+    
+    //fetched Product Categories Data
+    func fetchedProductCategoriesData(productCategories: [ProductCategory]) {
+        
         numberOfCategories = productCategories.count
         self.productCategories = productCategories
         categoriesViewModel = makeCategoriesViewModel(productCategories: productCategories)
@@ -89,6 +83,16 @@ extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputPro
         }
     }
     
+    //get error when fetched Product Categories Data
+    func getErrorWhenFetchedProductCategoriesData(error: Errors) {
+        switch error {
+        case .loadProdactCategoryError:
+            router.presentWarnMessage(title: "Возникла ошибка базы данных",
+                                      descriptionText: "Возникла ошибка при извлечении категорий продуктов")
+        default:
+            return
+        }
+    }
     //create ViewModel for tableView
     func makeCategoriesViewModel(productCategories: [ProductCategory]) -> [(String, Bool)] {
         return productCategories.map { productCategory in

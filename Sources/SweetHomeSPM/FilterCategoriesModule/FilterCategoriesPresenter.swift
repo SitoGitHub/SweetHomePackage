@@ -29,9 +29,6 @@ class FilterCategoriesPresenter {
         self.router = router
     }
     
-    deinit{
-        print("FilterCategoriesPresenter deinit")
-    }
 }
 
 extension FilterCategoriesPresenter: FilterCategoriesViewOutputProtocol {

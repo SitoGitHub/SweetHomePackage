@@ -32,7 +32,7 @@ protocol RegistrationViewInputProtocol: AnyObject {
 }
 
 class RegistrationViewController: UIViewController {
-
+    
     let makerAnotation: MakerAnotation? = nil
     
     let registrationView = UIView()
@@ -76,10 +76,6 @@ class RegistrationViewController: UIViewController {
         super.viewDidLoad()
         initialize()
     }
-    
-    deinit{
-        print("RegistrationView deinit")
-    }
 }
 
 // MARK: - Private functions
@@ -92,12 +88,12 @@ private extension RegistrationViewController {
         createSaveButton()
         createMAkerImageView()
         createMenuTableView()
-    
+        
         if let navController = self.navigationController {
             self.navController = navController
             let back = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeWindow))
-           
-
+            
+            
             self.navigationItem.rightBarButtonItems = [back]
             //add button on the barButton if need
         }
@@ -120,7 +116,7 @@ private extension RegistrationViewController {
         
         registrationView.snp.makeConstraints { (make) -> Void in
             make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(20)
+            make.top.equalToSuperview().inset(50)
             make.width.equalToSuperview().inset(5)
             make.height.equalToSuperview().multipliedBy(0.55)
         }
@@ -133,9 +129,9 @@ private extension RegistrationViewController {
         registrationView.addSubview(topHeaderLabel)
         
         topHeaderLabel.snp.makeConstraints { (make) -> Void in
-                   make.centerX.equalToSuperview()
-                   make.top.equalToSuperview().inset(20)
-               }
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().inset(20)
+        }
     }
     
     //configure TextView
@@ -201,7 +197,7 @@ private extension RegistrationViewController {
         
         passwordStack.addArrangedSubview(passwordTextField)
         passwordStack.addArrangedSubview(confirmPasswordTextField)
-       
+        
         topStack.axis = .vertical
         topStack.distribution = .equalSpacing
         topStack.alignment = .leading
@@ -212,7 +208,7 @@ private extension RegistrationViewController {
         passwordStack.distribution = .equalSpacing
         passwordStack.alignment = .leading
         passwordStack.spacing = 16.0
-           
+        
         registrationView.addSubview(topStack)
         registrationView.addSubview(passwordStack)
         
@@ -220,7 +216,7 @@ private extension RegistrationViewController {
             make.width.equalToSuperview().inset(20)
             make.height.equalTo(20)
         }
-
+        
         confirmPasswordTextField.snp.makeConstraints { (make) -> Void in
             make.width.equalToSuperview().inset(20)
             make.height.equalTo(20)
@@ -251,11 +247,11 @@ private extension RegistrationViewController {
         saveButton.titleLabel?.font = Fonts.fontButton.fontsForViews
         saveButton.layer.cornerRadius = 10
         saveButton.addTarget(self, action: #selector(isPressedSaveButton(sender: )), for: .touchUpInside)
-       
+        
         registrationView.addSubview(saveButton)
         
         saveButton.snp.makeConstraints { (make) -> Void in
-           // make.left.equalToSuperview().offset(60)
+            // make.left.equalToSuperview().offset(60)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.3)
             make.height.equalTo(30)
@@ -291,7 +287,7 @@ private extension RegistrationViewController {
     }
     
     private func createMenuTableView() {
-       
+        
         menuTableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
         menuTableView.backgroundColor = .white
         
@@ -318,19 +314,19 @@ private extension RegistrationViewController {
     @objc func tapForMakerImageAction (_ gestureRecognizer: UITapGestureRecognizer){
         picker.allowsEditing = false
         picker.sourceType = UIImagePickerController.SourceType.photoLibrary
-       present(picker, animated: true, completion: nil)
+        present(picker, animated: true, completion: nil)
     }
 }
 
 //MARK:- ImagePicker Controller Delegate
 extension RegistrationViewController: UIImagePickerControllerDelegate, UINavigationControllerDelegate {
- 
+    
     //get maker's photo
     func imagePickerControllerDidCancel(_ picker:
-    UIImagePickerController) {
+                                        UIImagePickerController) {
         dismiss(animated: true, completion: nil)
     }
-
+    
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         presenter?.isTappedMakerImage(info: info)
         self.dismiss(animated: true, completion: nil)
@@ -342,7 +338,7 @@ extension RegistrationViewController: UITextFieldDelegate {
     
     // скрыть клавиатуру после редактирования remove keyboard after edititng by tupping on view
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-       
+        
         presenter?.isTouchesBegan(touches: touches)
     }
     
@@ -358,14 +354,14 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
     
     //hide keyboard when tap on view
     func hideKeyBoard(){
-            view.endEditing(true)
+        view.endEditing(true)
     }
     
     //set Next Text Field
     func setNextTextField(textField: UITextField) {
         textField.becomeFirstResponder()
     }
-
+    
     func alertWithTitle(title: String, message: String, toFocus:UITextField) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: "Ok", style: UIAlertAction.Style.cancel,handler: {_ in
@@ -404,15 +400,15 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
             self.presenter?.isTappedEditDataMaker()
         }
         let cancelBtn = UIAlertAction(title: "Отмена",
-                                        style: .cancel,
-                                        handler: nil)
+                                      style: .cancel,
+                                      handler: nil)
         
         alertController.addAction(okBtn)
         alertController.addAction(cancelBtn)
         
         present(alertController,
-                                animated: true,
-                                completion: nil)
+                animated: true,
+                completion: nil)
         
     }
     
@@ -442,13 +438,11 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
 // MARK: - UITableViewDelegate, UITableViewDataSource
 extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource {
     
-    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listMenu.listMenu.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         cell.textLabel?.text = listMenu.listMenu[indexPath.item]
         switch indexPath {
@@ -465,12 +459,10 @@ extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource
         }
         cell.accessoryType = .disclosureIndicator
         
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         presenter?.isSelectedRowMenuTableView(indexRow: indexPath.row)
-        
     }
 }

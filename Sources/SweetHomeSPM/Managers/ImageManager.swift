@@ -8,7 +8,6 @@ import UIKit
 
 class ImageManager {
     
-    
     //get image from path
     func getImage(pathImage: String?) -> UIImage? {
         var image: UIImage?

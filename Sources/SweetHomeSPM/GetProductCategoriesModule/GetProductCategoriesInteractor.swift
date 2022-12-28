@@ -18,12 +18,8 @@ protocol GetProductCategoriesInteractorInputProtocol: AnyObject {
 class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtocol {
     
     weak var presenter: GetProductCategoriesInteractorOutputProtocol?
-    let coreDataManager = CoreDataManager.shared
+    let coreDataManager: CoreDataManagerDelegate = CoreDataManager.shared
     var maker = Maker()
-    
-    deinit{
-        print("GetProductCategoriesInteractor deinit")
-    }
     
     func fetchCategoriesData (phoneMaker: String, emailMaker: String) {
         
@@ -36,27 +32,27 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
                 self.maker = maker
             }
         case .failure(let error):
-            self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
+            self.presenter?.getErrorWhenFetchedProductCategoriesMakerData(error: error)
         }
         
-        let productCategoriesMakers = coreDataManager.getProductCategoriesMakers(categoryName: nil, maker: maker)
+        let productCategoriesMakers = coreDataManager.getAllProductCategoriesMakers(maker: maker)
         switch productCategoriesMakers {
         case.success(let productCategoriesMakers):
-            self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: productCategoriesMakers, error: nil)
+            self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: productCategoriesMakers)
             
         case .failure(let error):
-            self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
+            self.presenter?.getErrorWhenFetchedProductCategoriesMakerData(error: error)
         }
         
         
         //получение общего списка категорий продуктов
-        let productCategories = coreDataManager.getProductCategories(category: nil)
+        let productCategories = coreDataManager.getProductCategories()
         switch productCategories {
         case.success(let productCategories):
-            self.presenter?.fetchedProductCategoriesData(productCategories: productCategories, error: nil)
+            self.presenter?.fetchedProductCategoriesData(productCategories: productCategories)
             
         case .failure(let error):
-            self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
+            self.presenter?.getErrorWhenFetchedProductCategoriesData(error: error)
         }
     }
     
@@ -76,7 +72,7 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
                     coreDataManager.saveContext()
                 }
             case .failure(let error):
-                self.presenter?.fetchedProductCategoriesMakerData(productCategoriesMakers: nil, error: error)
+                self.presenter?.getErrorWhenFetchedProductCategoriesMakerData(error: error)
             }
             
             productCategory.addToProduct_categorie_maker(newCategoryProductMaker)
@@ -92,7 +88,7 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
             case.success(let result):
                 resultModifyCategory = result
             case .failure(let error):
-                self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
+                self.presenter?.getErrorWhenFetchedProductCategoriesData(error: error)
             }
             coreDataManager.saveContext()
         }
@@ -102,12 +98,12 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
     //обновляем maker annotation для карты (список категорий)
     func reWriteMakerAnnotation() {
         var productCategoriesMaker: [ProductCategoryMaker] = []
-        let productCategories = coreDataManager.getProductCategoriesMakers(categoryName: nil, maker: maker)
+        let productCategories = coreDataManager.getAllProductCategoriesMakers(maker: maker)
         switch productCategories {
         case.success(let productCategories):
             productCategoriesMaker = productCategories
         case .failure(let error):
-            self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
+            self.presenter?.getErrorWhenFetchedProductCategoriesData(error: error)
         }
         //данные для созданияя пина на карте
         guard let name = maker.maker_name, let surname = maker.maker_surname, let phoneNumber = maker.phone_number, let email = maker.email, let password = maker.password else { return }

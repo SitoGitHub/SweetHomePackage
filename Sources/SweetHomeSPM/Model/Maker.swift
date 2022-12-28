@@ -7,14 +7,7 @@
 
 import Foundation
 import MapKit
-
-
-public enum Gender{
-    case female
-    case male
-}
-
-
+// инфо для вывода пина на карту
 public class MakerAnotation: NSObject, MKAnnotation{
     public var coordinate: CLLocationCoordinate2D
     public var nameMaker: String
@@ -36,25 +29,5 @@ public class MakerAnotation: NSObject, MKAnnotation{
         self.pathImageMaker = pathImageMaker
         self.title = surnameMaker + " " + nameMaker
         self.productCategoriesMaker = productCategoriesMaker
-    }
-}
-
-public class User: NSObject, MKAnnotation{
-    public var coordinate: CLLocationCoordinate2D
-    public var name: String
-    public var city: String
-    //public var image: UIImage
-    public var gender: Gender
-    public var title: String?{
-        return name
-    }
-    public init (name: String, city: String,
-                // image: UIImage,
-                 gender: Gender, coordinate: CLLocationCoordinate2D){
-        self.name = name
-        self.city = city
-        self.gender = gender
-       // self.image = image
-        self.coordinate = coordinate
     }
 }
