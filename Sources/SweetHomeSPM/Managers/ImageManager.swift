@@ -9,8 +9,11 @@ import UIKit
 protocol ImageManagerProtocol: AnyObject {
     func getImage(pathImage: String?) -> UIImage?
 }
-final class ImageManager: ImageManagerProtocol {
+final class ImageManager {
     
+}
+
+extension ImageManager: ImageManagerProtocol {
     //get image from path
     func getImage(pathImage: String?) -> UIImage? {
         var image: UIImage?

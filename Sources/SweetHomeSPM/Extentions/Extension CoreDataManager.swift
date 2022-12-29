@@ -5,7 +5,6 @@
 //  Created by Aleksei Grachev on 7/12/22.
 //
 
-import Foundation
 import CoreData
 import MapKit
 

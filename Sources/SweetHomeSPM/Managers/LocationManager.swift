@@ -12,7 +12,11 @@ protocol LocationManagerProtocol: AnyObject {
     func geocode(latitude: Double, longitude: Double, completion: @escaping (_ placemark: [CLPlacemark]?, _ error: Error?) -> Void)
 }
 
-final class LocationManager: LocationManagerProtocol {
+final class LocationManager {
+    
+}
+
+extension LocationManager: LocationManagerProtocol{
     
     func geocode(latitude: Double, longitude: Double, completion: @escaping (_ placemark: [CLPlacemark]?, _ error: Error?) -> Void)  {
         CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: latitude, longitude: longitude)) { placemark, error in

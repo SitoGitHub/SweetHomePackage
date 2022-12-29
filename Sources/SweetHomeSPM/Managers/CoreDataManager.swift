@@ -3,9 +3,7 @@
 //  SweetHomeMap 1.2
 //
 //  Created by Aleksei Grachev on 7/12/22.
-//
 
-import Foundation
 import CoreData
 
 protocol CoreDataManagerProtocol: AnyObject {
@@ -23,16 +21,11 @@ protocol CoreDataManagerProtocol: AnyObject {
     func saveContext ()
 }
 
-final class CoreDataManager: CoreDataManagerProtocol {
+final class CoreDataManager {
     
     static let shared = CoreDataManager()
-    
-    func entityForName(entityName: String) -> NSEntityDescription {
-        return NSEntityDescription.entity(forEntityName: entityName, in: self.managedObjectContext)!
-    }
-    
+   
     // MARK: - Core Data stack
-
     lazy var persistentContainer: NSPersistentContainer = {
 
         let bundle = Bundle.module
@@ -48,6 +41,13 @@ final class CoreDataManager: CoreDataManagerProtocol {
     }()
     
     lazy var managedObjectContext: NSManagedObjectContext = persistentContainer.viewContext
+    
+}
+extension CoreDataManager: CoreDataManagerProtocol {
+    
+    func entityForName(entityName: String) -> NSEntityDescription {
+        return NSEntityDescription.entity(forEntityName: entityName, in: self.managedObjectContext)!
+    }
 
     // MARK: - Core Data Saving support
     func saveContext () {

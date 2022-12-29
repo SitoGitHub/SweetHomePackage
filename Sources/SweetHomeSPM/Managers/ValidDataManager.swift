@@ -12,7 +12,11 @@ protocol ValidDataManagerProtocol: AnyObject {
     func isValidPhoneNumber(_ phoneNumberString: String) -> Bool
 }
 
-final class ValidDataManager: ValidDataManagerProtocol {
+final class ValidDataManager {
+    
+}
+
+extension ValidDataManager: ValidDataManagerProtocol {
     //verify correct email
     func isValidEmailAddress(emailAddressString: String) -> Bool {
         var returnValue = true
