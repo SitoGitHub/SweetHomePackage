@@ -12,9 +12,16 @@ protocol MapInteractorInputProtocol: AnyObject {
     func fetchCategoriesData ()
 }
 
-class MapInteractor: MapInteractorInputProtocol {
+final class MapInteractor {
     weak var presenter: MapInteractorOutputProtocol?
-    let coreDataManager: CoreDataManagerDelegate = CoreDataManager.shared
+    let coreDataManager: CoreDataManagerProtocol
+    
+    init(coreDataManager: CoreDataManagerProtocol) {
+        self.coreDataManager = coreDataManager
+    }
+}
+
+extension MapInteractor: MapInteractorInputProtocol {
     
     func fetchMakerData() {
         let pinMakers = coreDataManager.getPinMaker()
@@ -37,7 +44,5 @@ class MapInteractor: MapInteractorInputProtocol {
         case .failure(let error):
             self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
         }
-        
     }
-    
 }

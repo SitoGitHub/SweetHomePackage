@@ -22,7 +22,6 @@ extension UIImage {
                     createSubdirectoriesIfNeed: createSubdirectoriesIfNeed,
                     compressionQuality: compressionQuality)
         } catch {
-            print("-- Error: \(error)")
             return nil
         }
     }
@@ -54,7 +53,6 @@ extension UIImage {
             let data = try Data(contentsOf: url)
             self.init(data: data, scale: scale)
         } catch {
-            print("-- Error: \(error)")
             return nil
         }
     }

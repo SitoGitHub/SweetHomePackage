@@ -8,7 +8,7 @@
 protocol AddProductInteractorInputProtocol: AnyObject {
 }
 
-class AddProductInteractor: AddProductInteractorInputProtocol {
+final class AddProductInteractor: AddProductInteractorInputProtocol {
     weak var presenter: AddProductInteractorOutputProtocol?
     
     

@@ -7,7 +7,12 @@
 
 import Foundation
 
-class ValidData {
+protocol ValidDataManagerProtocol: AnyObject {
+    func isValidEmailAddress(emailAddressString: String) -> Bool
+    func isValidPhoneNumber(_ phoneNumberString: String) -> Bool
+}
+
+final class ValidDataManager: ValidDataManagerProtocol {
     //verify correct email
     func isValidEmailAddress(emailAddressString: String) -> Bool {
         var returnValue = true

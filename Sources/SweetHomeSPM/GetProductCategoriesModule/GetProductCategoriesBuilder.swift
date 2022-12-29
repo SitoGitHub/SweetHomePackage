@@ -7,12 +7,13 @@
 //
 
 
- class GetProductCategoriesBuilder {
-     public static func build(phoneMaker: String, emailMaker: String, delegate: GetProductCategoriesDelegate?) -> GetProductCategoriesViewController {
+final class GetProductCategoriesBuilder {
+    static func build(phoneMaker: String, emailMaker: String, delegate: GetProductCategoriesDelegate?) -> GetProductCategoriesViewController {
+        let coreDataManager = CoreDataManager.shared
         let view = GetProductCategoriesViewController()
-        let interactor = GetProductCategoriesInteractor()
+        let interactor = GetProductCategoriesInteractor(coreDataManager: coreDataManager)
         let router = GetProductCategoriesRouter()
-         let presenter = GetProductCategoriesPresenter(interactor: interactor, router: router, phoneMaker: phoneMaker, emailMaker: emailMaker)
+        let presenter = GetProductCategoriesPresenter(interactor: interactor, router: router, phoneMaker: phoneMaker, emailMaker: emailMaker)
         view.presenter = presenter
         presenter.view = view
         presenter.delegate = delegate

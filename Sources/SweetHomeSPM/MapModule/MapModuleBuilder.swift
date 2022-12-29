@@ -7,13 +7,15 @@
 //
 import UIKit
 
-public class MapModuleBuilder {
+public final class MapModuleBuilder {
     //@discardableResult
     public static func build() -> UIViewController {
         let view = MapViewController()
-        let interactor = MapInteractor()
+        let coreDataManager = CoreDataManager.shared
+        let interactor = MapInteractor(coreDataManager: coreDataManager)
         let router = MapRouter()
-        let presenter = MapPresenter(interactor: interactor, router: router)
+        let imageManager = ImageManager()
+        let presenter = MapPresenter(interactor: interactor, router: router, imageManager: imageManager)
         view.presenter = presenter
         presenter.view = view
         interactor.presenter = presenter

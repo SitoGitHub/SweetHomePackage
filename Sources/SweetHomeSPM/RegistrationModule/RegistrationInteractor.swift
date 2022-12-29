@@ -13,17 +13,23 @@ protocol RegistrationInteractorInputProtocol: AnyObject {
     func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D)
 }
 
-class RegistrationInteractor: RegistrationInteractorInputProtocol {
+final class RegistrationInteractor {
     weak var presenter: RegistrationInteractorOutputProtocol?
+    let coreDataManager: CoreDataManagerProtocol
+    let locationManager: LocationManagerProtocol
     var maker = Maker()
-    let coreDataManager: CoreDataManagerDelegate = CoreDataManager.shared
     var lat = Double()
     var long = Double()
     
+    init(coreDataManager: CoreDataManagerProtocol, locationManager: LocationManagerProtocol) {
+        self.coreDataManager = coreDataManager
+        self.locationManager = locationManager
+    }
+}
+
+extension RegistrationInteractor: RegistrationInteractorInputProtocol {
     //save New Maker Data
     func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D) {
-        
-        let locationManager = LocationManager()
         
         locationManager.geocode(latitude: touchCoordinateMaker.latitude, longitude: touchCoordinateMaker.longitude) { placemarks, error in
             
@@ -57,14 +63,12 @@ class RegistrationInteractor: RegistrationInteractorInputProtocol {
             guard let placeMark = placemarks?.first else { return }
             // Country
             if let country = placeMark.country {
-                print(country)
                 countryMaker = country
                 
             }
             // City
             if let city = placeMark.subAdministrativeArea {
                 cityMaker = city
-                print(city)
             }
             if let country = countryMaker {
                 let countryExist = self.self.coreDataManager.getCountry(country: country)

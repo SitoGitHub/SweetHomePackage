@@ -12,9 +12,12 @@ protocol RegistrationRouterInputProtocol {
     func pushAddProductViewController(to navigationController: UINavigationController, animated: Bool)
 }
 
-class RegistrationRouter: RegistrationRouterInputProtocol {
+final class RegistrationRouter {
     weak var viewController: RegistrationViewController?
     weak var navigationController: UINavigationController?
+}
+
+extension RegistrationRouter: RegistrationRouterInputProtocol {
     
     func pushGetProductCategoriesViewController(to navigationController: UINavigationController, animated: Bool, phoneMaker: String, emailMaker: String) {
         self.navigationController = navigationController

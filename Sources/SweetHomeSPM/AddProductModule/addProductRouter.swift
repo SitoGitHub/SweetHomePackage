@@ -8,7 +8,6 @@
 protocol AddProductRouterInputProtocol {
 }
 
-class AddProductRouter: AddProductRouterInputProtocol {
+final class AddProductRouter: AddProductRouterInputProtocol {
     weak var view: AddProductViewController?
-    
 }

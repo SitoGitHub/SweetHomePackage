@@ -8,7 +8,12 @@
 protocol FilterCategoriesInteractorInputProtocol: AnyObject {
 }
 
-class FilterCategoriesInteractor: FilterCategoriesInteractorInputProtocol {
+final class FilterCategoriesInteractor {
     weak var presenter: FilterCategoriesInteractorOutputProtocol?
+    
+}
+
+extension FilterCategoriesInteractor: FilterCategoriesInteractorInputProtocol {
+    
     
 }

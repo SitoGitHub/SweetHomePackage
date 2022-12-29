@@ -9,22 +9,7 @@ import Foundation
 import CoreData
 import MapKit
 
-protocol CoreDataManagerDelegate: AnyObject {
-    func getCountry(country: String) -> Result<[CountryMaker], Errors>
-    func getCity() -> Result<[CityMaker], Errors>
-    func getMaker() -> Result<[Maker], Errors>
-    func getPinMaker() -> Result<[MakerAnotation], Errors>
-    func getMakerWithPhoneAndEmail(phoneNumber: String, email: String) -> Result<[Maker], Errors>
-    func getMakerWithCoordinate(latitude: Double, long: Double)  -> Result<[Maker], Errors>
-    func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors>
-    func getProductCategories() -> Result<[ProductCategory], Errors>
-    func getProductCategoriesMakers(categoryName: String, maker: Maker) -> Result<[ProductCategoryMaker], Errors>
-    func getAllProductCategoriesMakers(maker: Maker) -> Result<[ProductCategoryMaker], Errors>
-    func deleteProductCategoriesMakers(categoryName: String?, maker: Maker, productCategory: ProductCategory) -> Result<Bool, Errors>
-    func saveContext ()
-}
-
-extension CoreDataManager: CoreDataManagerDelegate {
+extension CoreDataManager {
     
     func getCountry(country: String) -> Result<[CountryMaker], Errors> {
         let fetchRequest: NSFetchRequest<CountryMaker> = CountryMaker.fetchRequest()

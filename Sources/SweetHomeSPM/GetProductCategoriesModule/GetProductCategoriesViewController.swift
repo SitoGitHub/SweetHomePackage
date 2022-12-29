@@ -7,14 +7,14 @@
 //
 
 import UIKit
+import SnapKit
 
 protocol GetProductCategoriesViewInputProtocol: AnyObject {
-    // func updateViewWithProductCategories(productCategories: [ProductCategory])
     func stopActivityIndicator()
     func updateViewWithProductCategories(productCategories: [(String, Bool)])
 }
 
-class GetProductCategoriesViewController: UIViewController {
+final class GetProductCategoriesViewController: UIViewController {
     // MARK: - Properties
     var presenter: GetProductCategoriesViewOutputProtocol?
     
@@ -42,7 +42,6 @@ class GetProductCategoriesViewController: UIViewController {
             presenter?.isDeinitedModule()
         }
     }
-  
 }
 
 // MARK: - Private functions
@@ -54,29 +53,19 @@ extension GetProductCategoriesViewController {
         presenter?.viewDidLoaded()
         createCategoriesTableView()
         configureActivityIndicator()
+        addViewConstraints()
     }
     
     private func configureActivityIndicator() {
         view.addSubview(activityIndicator)
-        activityIndicator.snp.makeConstraints { (make) -> Void in
-            // make.centerX.equalToSuperview()
-            make.centerX.equalToSuperview()
-            make.centerY.equalToSuperview().inset(100)
-        }
         
         activityIndicator.color = Colors.activeButtonColor.colorViewUIColor
-    }
-    
-    // stop activityIndicator
-    func stopActivityIndicator() {
-        activityIndicator.stopAnimating()
     }
     
     //create Categories TableView
     private func createCategoriesTableView() {
         
         categoriesTableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
-        //menuTableView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         categoriesTableView.backgroundColor = .white
         
         categoriesTableView.delegate = self
@@ -84,13 +73,21 @@ extension GetProductCategoriesViewController {
         
         view.addSubview(categoriesTableView)
         
+        activityIndicator.startAnimating()
+    }
+    
+    private func addViewConstraints() {
+       
+        activityIndicator.snp.makeConstraints { (make) -> Void in
+            make.centerX.equalToSuperview()
+            make.centerY.equalToSuperview().inset(100)
+        }
+        
         categoriesTableView.snp.makeConstraints { (make) -> Void in
-            // make.centerX.equalToSuperview()
             make.top.equalToSuperview()
             make.width.equalToSuperview().inset(5)
             make.bottom.equalToSuperview().inset(80)
         }
-        activityIndicator.startAnimating()
     }
 }
 
@@ -99,7 +96,11 @@ extension GetProductCategoriesViewController: GetProductCategoriesViewInputProto
     
     func updateViewWithProductCategories(productCategories: [(String, Bool)]) {
         self.productCategories = productCategories
-        //   categoriesTableView.reloadData()
+    }
+    
+    // stop activityIndicator
+    func stopActivityIndicator() {
+        activityIndicator.stopAnimating()
     }
     
 }

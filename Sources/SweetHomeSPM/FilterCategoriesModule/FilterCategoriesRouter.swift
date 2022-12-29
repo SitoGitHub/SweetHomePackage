@@ -8,7 +8,11 @@
 protocol FilterCategoriesRouterInputProtocol {
 }
 
-class FilterCategoriesRouter: FilterCategoriesRouterInputProtocol {
+final class FilterCategoriesRouter {
     weak var viewController: FilterCategoriesViewController?
   
+}
+
+extension FilterCategoriesRouter: FilterCategoriesRouterInputProtocol {
+    
 }

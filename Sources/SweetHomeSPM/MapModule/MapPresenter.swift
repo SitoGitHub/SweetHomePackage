@@ -30,39 +30,23 @@ protocol MapViewOutputProtocol: AnyObject {
     var numberOfRowsInSectionCategoriesView: Int { get }
 }
 
-class MapPresenter {
+final class MapPresenter {
     weak var view: MapViewInputProtocol?
     var router: MapRouterInputProtocol
     var interactor: MapInteractorInputProtocol
-    lazy var imageManager = ImageManager()
-    // var numberOfRowsInSectionCategoriesView: Int?
+    var imageManager: ImageManagerProtocol
     lazy var productCategories = [ProductCategory]()
     var numberOfCategories: Int?
-    var categoriesViewModel: [(String, Bool)] = []
+    lazy var categoriesViewModel: [(String, Bool)] = []
     lazy var touchCoordinateTappedImageMaker = CLLocationCoordinate2D()
     var makerAnotationTappedImageMaker: MakerAnotation?
     
-    init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol) {
+    init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol, imageManager: ImageManagerProtocol) {
         self.interactor = interactor
         self.router = router
+        self.imageManager = imageManager
     }
     
-    //create ViewModel for tableView    -ТУТ НУЖНО ПРОВЕРКУ ДЕЛАТЬ, КАКИЕ ПУНКТЫ РАНЕЕ ВЫБИРАЛ ПОЛЬЗОВАТЕЛЬ
-    func makeCategoriesViewModel(productCategories: [ProductCategory]) -> [(String, Bool)] {
-        //    var isChanged = false
-        return productCategories.map { productCategory in
-            var categoryName = String()
-            var check = false//Bool()
-            //            if let category = productCategory.category_name {
-            //                categoryName = category
-            //                check = arrayCategoriesMakers.contains(categoryName)
-            ////                if check == true {
-            ////                    isChanged = true
-            ////                }
-            //            }
-            return (categoryName, check)
-        }
-    }
     //обновляем данные на карте
     func refreshMakerData(pinMakers: [MakerAnotation]) {
         if let makerAnotation = makerAnotationTappedImageMaker {
@@ -112,13 +96,11 @@ extension MapPresenter: MapInteractorOutputProtocol {
         }
         numberOfCategories = productCategories.count
         self.productCategories = productCategories
-        categoriesViewModel = makeCategoriesViewModel(productCategories: productCategories)
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
             self.view?.updateSliderFilterCategoriesView(productCategories: self.categoriesViewModel)
         }
     }
-    
 }
 
 extension MapPresenter: MapViewOutputProtocol {

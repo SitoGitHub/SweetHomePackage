@@ -20,7 +20,7 @@ enum Fonts {
         case .fontTextField:
             return UIFont.systemFont(ofSize: 17)
         case .fontNameMakerLabelSlideView:
-            return UIFont.systemFont(ofSize: 25) //(name: "SF", size: 37) ?? UIFont.italicSystemFont(ofSize: 37)
+            return UIFont.systemFont(ofSize: 25) 
         case .fontLabel:
             return UIFont.systemFont(ofSize: 17)
         case .fontTopLabel:

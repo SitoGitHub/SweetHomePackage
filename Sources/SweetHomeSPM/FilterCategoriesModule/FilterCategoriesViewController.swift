@@ -6,10 +6,12 @@
 //
 
 import UIKit
+import SnapKit
+
 protocol FilterCategoriesViewInputProtocol: AnyObject {
 }
 
-class FilterCategoriesViewController: UIViewController {
+final class FilterCategoriesViewController: UIViewController {
     // MARK: - Public
     var presenter: FilterCategoriesViewOutputProtocol?
     var registrationView = UIView()
@@ -26,28 +28,27 @@ class FilterCategoriesViewController: UIViewController {
 private extension FilterCategoriesViewController {
     func initialize() {
         view.backgroundColor = .clear
-        view.snp.makeConstraints { (make) -> Void in
-           // make.centerX.equalToSuperview()
-           // make.top.equalToSuperview().inset(20)
-           // make.width.equalToSuperview().inset(5)
-           // make.height.equalToSuperview().multipliedBy(0.55)
-            make.height.equalTo(20)
-            
-            createRegistrationView()
-        }
+        addViewConstraints()
     }
     //create Registration View
     private func createRegistrationView() {
         registrationView.backgroundColor = Colors.registrationViewColor.colorViewUIColor //.lightGray
         registrationView.layer.cornerRadius = 10
+        
         view.addSubview(registrationView)
+    }
+    
+    private func addViewConstraints() {
+        view.snp.makeConstraints { (make) -> Void in
+            make.height.equalTo(20)
+            createRegistrationView()
+        }
         
         registrationView.snp.makeConstraints { (make) -> Void in
             make.centerX.equalToSuperview()
             make.top.equalToSuperview().inset(20)
             make.width.equalToSuperview().inset(5)
             make.height.equalToSuperview().multipliedBy(0.55)
-            //make.height.equalTo(20)
         }
     }
 }

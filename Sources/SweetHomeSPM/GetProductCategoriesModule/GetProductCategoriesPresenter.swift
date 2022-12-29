@@ -23,7 +23,7 @@ protocol GetProductCategoriesViewOutputProtocol: AnyObject {
     var numberOfRowsInSection: Int { get }
 }
 
-class GetProductCategoriesPresenter {
+final class GetProductCategoriesPresenter {
     
     // MARK: Properties
     weak var view: GetProductCategoriesViewInputProtocol?
@@ -148,7 +148,7 @@ extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol 
         return check
     }
     
-    //    //при деините модуля формируем новый Maker Annotation
+    // при деините модуля формируем новый Maker Annotation
     func isDeinitedModule() {
         interactor.reWriteMakerAnnotation()
     }

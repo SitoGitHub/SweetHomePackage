@@ -19,7 +19,7 @@ protocol FilterCategoriesDelegate: AnyObject {
 }
 
 
-class FilterCategoriesPresenter {
+final class FilterCategoriesPresenter {
     weak var view: FilterCategoriesViewInputProtocol?
     var router: FilterCategoriesRouterInputProtocol
     var interactor: FilterCategoriesInteractorInputProtocol
@@ -28,11 +28,13 @@ class FilterCategoriesPresenter {
         self.interactor = interactor
         self.router = router
     }
-    
 }
 
 extension FilterCategoriesPresenter: FilterCategoriesViewOutputProtocol {
 }
 
 extension FilterCategoriesPresenter: FilterCategoriesInteractorOutputProtocol {
+}
+
+extension FilterCategoriesPresenter: FilterCategoriesDelegate {
 }

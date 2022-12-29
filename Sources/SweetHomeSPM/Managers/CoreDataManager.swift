@@ -8,9 +8,22 @@
 import Foundation
 import CoreData
 
+protocol CoreDataManagerProtocol: AnyObject {
+    func getCountry(country: String) -> Result<[CountryMaker], Errors>
+    func getCity() -> Result<[CityMaker], Errors>
+    func getMaker() -> Result<[Maker], Errors>
+    func getPinMaker() -> Result<[MakerAnotation], Errors>
+    func getMakerWithPhoneAndEmail(phoneNumber: String, email: String) -> Result<[Maker], Errors>
+    func getMakerWithCoordinate(latitude: Double, long: Double)  -> Result<[Maker], Errors>
+    func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors>
+    func getProductCategories() -> Result<[ProductCategory], Errors>
+    func getProductCategoriesMakers(categoryName: String, maker: Maker) -> Result<[ProductCategoryMaker], Errors>
+    func getAllProductCategoriesMakers(maker: Maker) -> Result<[ProductCategoryMaker], Errors>
+    func deleteProductCategoriesMakers(categoryName: String?, maker: Maker, productCategory: ProductCategory) -> Result<Bool, Errors>
+    func saveContext ()
+}
 
-
-class CoreDataManager {
+final class CoreDataManager: CoreDataManagerProtocol {
     
     static let shared = CoreDataManager()
     

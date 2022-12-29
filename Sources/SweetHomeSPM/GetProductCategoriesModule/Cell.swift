@@ -8,14 +8,11 @@
 
 import UIKit
 
-class Cell: UITableViewCell {
+final class Cell: UITableViewCell {
 
     var label = UILabel()
     var checkBox = CheckBoxButton()
-    override func awakeFromNib() {
-        super.awakeFromNib()
-        // Initialization code
-    }
+    
     override func setSelected(_ selected: Bool, animated: Bool) {
         super.setSelected(selected, animated: animated)
     }

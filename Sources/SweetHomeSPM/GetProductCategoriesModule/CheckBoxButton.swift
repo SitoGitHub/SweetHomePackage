@@ -7,7 +7,7 @@
 //
 
 import UIKit
-class CheckBoxButton: UIButton {
+final class CheckBoxButton: UIButton {
     
     // Images
     let checkedImage = UIImage(named: "CheckBoxChecked")! as UIImage

@@ -15,11 +15,18 @@ protocol GetProductCategoriesInteractorInputProtocol: AnyObject {
     func reWriteMakerAnnotation()
 }
 
-class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtocol {
+final class GetProductCategoriesInteractor {
     
     weak var presenter: GetProductCategoriesInteractorOutputProtocol?
-    let coreDataManager: CoreDataManagerDelegate = CoreDataManager.shared
+    let coreDataManager: CoreDataManagerProtocol
     var maker = Maker()
+    
+    init(coreDataManager: CoreDataManagerProtocol) {
+        self.coreDataManager = coreDataManager
+    }
+}
+
+extension GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtocol {
     
     func fetchCategoriesData (phoneMaker: String, emailMaker: String) {
         
@@ -28,7 +35,6 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
         switch makers {
         case.success(let makers):
             for maker in makers{
-                //  maker.addToMaker_product_categories(newCategoryProductMaker)
                 self.maker = maker
             }
         case .failure(let error):
@@ -43,7 +49,6 @@ class GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtoco
         case .failure(let error):
             self.presenter?.getErrorWhenFetchedProductCategoriesMakerData(error: error)
         }
-        
         
         //получение общего списка категорий продуктов
         let productCategories = coreDataManager.getProductCategories()

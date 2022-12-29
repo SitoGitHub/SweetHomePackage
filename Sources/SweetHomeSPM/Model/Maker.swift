@@ -5,10 +5,9 @@
 //  Created by Aleksei Grachev on 28/11/22.
 //
 
-import Foundation
 import MapKit
 // инфо для вывода пина на карту
-public class MakerAnotation: NSObject, MKAnnotation{
+final class MakerAnotation: NSObject, MKAnnotation{
     public var coordinate: CLLocationCoordinate2D
     public var nameMaker: String
     public var surnameMaker: String

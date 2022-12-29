@@ -31,7 +31,7 @@ protocol RegistrationViewInputProtocol: AnyObject {
     var navController: UINavigationController? { get }
 }
 
-class RegistrationViewController: UIViewController {
+final class RegistrationViewController: UIViewController {
     
     let makerAnotation: MakerAnotation? = nil
     
@@ -83,20 +83,14 @@ private extension RegistrationViewController {
     func initialize() {
         view.backgroundColor = .white
         createRegistrationView()
+        setupBarButtonItem()
         setupTopNameLabel()
-        setupNameTextField()
+        setupTextFields()
         createSaveButton()
         createMAkerImageView()
         createMenuTableView()
-        
-        if let navController = self.navigationController {
-            self.navController = navController
-            let back = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeWindow))
-            
-            
-            self.navigationItem.rightBarButtonItems = [back]
-            //add button on the barButton if need
-        }
+        addViewConstraints()
+        setupMakerImageView()
         setMakerAnotation()
     }
     
@@ -113,29 +107,26 @@ private extension RegistrationViewController {
         registrationView.backgroundColor = Colors.registrationViewColor.colorViewUIColor
         registrationView.layer.cornerRadius = 10
         view.addSubview(registrationView)
-        
-        registrationView.snp.makeConstraints { (make) -> Void in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(50)
-            make.width.equalToSuperview().inset(5)
-            make.height.equalToSuperview().multipliedBy(0.55)
+    }
+    //add button on the barButton
+    private func setupBarButtonItem(){
+        if let navController = self.navigationController {
+            self.navController = navController
+            let back = UIBarButtonItem(barButtonSystemItem: .close, target: self, action: #selector(closeWindow))
+            self.navigationItem.rightBarButtonItems = [back]
         }
     }
+        
     //setup Registration Label
     private func setupTopNameLabel() {
         topHeaderLabel.font = Fonts.fontTopLabel.fontsForViews
         topHeaderLabel.textColor = Colors.headerColor.colorViewUIColor
         topHeaderLabel.text = "Регистрация"
         registrationView.addSubview(topHeaderLabel)
-        
-        topHeaderLabel.snp.makeConstraints { (make) -> Void in
-            make.centerX.equalToSuperview()
-            make.top.equalToSuperview().inset(20)
-        }
     }
     
     //configure TextView
-    private func setupNameTextField(){
+    private func setupTextFields(){
         let colorPlaceHolder = Colors.placeHolderColor.colorViewUIColor
         
         surnameTextField.becomeFirstResponder()
@@ -211,6 +202,63 @@ private extension RegistrationViewController {
         
         registrationView.addSubview(topStack)
         registrationView.addSubview(passwordStack)
+    }
+    
+    private func createSaveButton(){
+        //RouteButton.layer.masksToBounds = true
+        saveButton.setTitle("Сохранить", for: .normal)
+        saveButton.setTitleColor(Colors.whiteLabel.colorViewUIColor, for: .normal)
+        saveButton.backgroundColor = Colors.activeButtonColor.colorViewUIColor
+        saveButton.titleLabel?.font = Fonts.fontButton.fontsForViews
+        saveButton.layer.cornerRadius = 10
+        saveButton.addTarget(self, action: #selector(isPressedSaveButton(sender: )), for: .touchUpInside)
+        
+        registrationView.addSubview(saveButton)
+    }
+    
+    private func createMAkerImageView(){
+        if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil){
+            makerImageView.image = image
+        }
+        registrationView.addSubview(makerImageView)
+    }
+   
+    private func setupMakerImageView(){
+        makerImageView.layer.cornerRadius = makerImageView.frame.width / 2
+        makerImageView.layer.masksToBounds = false
+        makerImageView.clipsToBounds = true
+        picker.delegate = self
+        makerImageView.contentMode = .scaleAspectFill
+        makerImageView.layer.cornerRadius = makerImageView.frame.width / 2
+        makerImageView.isUserInteractionEnabled = true
+        let recognizer = UITapGestureRecognizer()
+        recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
+        makerImageView.addGestureRecognizer(recognizer)
+    }
+    private func createMenuTableView() {
+        
+        menuTableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
+        menuTableView.backgroundColor = .white
+        
+        menuTableView.delegate = self
+        menuTableView.dataSource = self
+        
+        view.addSubview(menuTableView)
+    }
+    
+    private func addViewConstraints() {
+        
+        registrationView.snp.makeConstraints { (make) -> Void in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().inset(50)
+            make.width.equalToSuperview().inset(5)
+            make.height.equalToSuperview().multipliedBy(0.55)
+        }
+        
+        topHeaderLabel.snp.makeConstraints { (make) -> Void in
+            make.centerX.equalToSuperview()
+            make.top.equalToSuperview().inset(20)
+        }
         
         passwordTextField.snp.makeConstraints { (make) -> Void in
             make.width.equalToSuperview().inset(20)
@@ -225,30 +273,14 @@ private extension RegistrationViewController {
         topStack.snp.makeConstraints { (make) -> Void in
             make.left.equalToSuperview().inset(20)
             make.width.equalToSuperview().multipliedBy(0.6)
-            
             make.top.equalTo(topHeaderLabel).inset(50)
-            //make.width.equalToSuperview().multipliedBy(0.6)
         }
         
         passwordStack.snp.makeConstraints { (make) -> Void in
             make.left.equalToSuperview().inset(20)
             make.width.equalToSuperview().inset(20)
-            
             make.top.equalTo(topStack.snp.bottom).offset(16)
-            //make.width.equalToSuperview().multipliedBy(0.6)
         }
-    }
-    
-    private func createSaveButton(){
-        //RouteButton.layer.masksToBounds = true
-        saveButton.setTitle("Сохранить", for: .normal)
-        saveButton.setTitleColor(Colors.whiteLabel.colorViewUIColor, for: .normal)
-        saveButton.backgroundColor = Colors.activeButtonColor.colorViewUIColor //.darkGray//Colors.activeButtonColor.colorViewUIColor
-        saveButton.titleLabel?.font = Fonts.fontButton.fontsForViews
-        saveButton.layer.cornerRadius = 10
-        saveButton.addTarget(self, action: #selector(isPressedSaveButton(sender: )), for: .touchUpInside)
-        
-        registrationView.addSubview(saveButton)
         
         saveButton.snp.makeConstraints { (make) -> Void in
             // make.left.equalToSuperview().offset(60)
@@ -257,19 +289,6 @@ private extension RegistrationViewController {
             make.height.equalTo(30)
             make.bottom.equalToSuperview().inset(10)
         }
-    }
-    
-    private func createMAkerImageView(){
-        makerImageView.layer.cornerRadius = makerImageView.frame.width / 2
-        makerImageView.layer.masksToBounds = false
-        makerImageView.clipsToBounds = true
-        picker.delegate = self
-        
-        makerImageView.contentMode = .scaleAspectFill
-        if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil){
-            makerImageView.image = image
-        }
-        registrationView.addSubview(makerImageView)
         
         makerImageView.snp.makeConstraints { (make) -> Void in
             make.right.equalToSuperview().inset(25)
@@ -278,23 +297,6 @@ private extension RegistrationViewController {
             make.top.equalTo(topHeaderLabel).inset(25)
         }
         makerImageView.layoutIfNeeded()
-        makerImageView.layer.cornerRadius = makerImageView.frame.width / 2
-        
-        makerImageView.isUserInteractionEnabled = true
-        let recognizer = UITapGestureRecognizer()
-        recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
-        makerImageView.addGestureRecognizer(recognizer)
-    }
-    
-    private func createMenuTableView() {
-        
-        menuTableView.register(UITableViewCell.self, forCellReuseIdentifier: identifier)
-        menuTableView.backgroundColor = .white
-        
-        menuTableView.delegate = self
-        menuTableView.dataSource = self
-        
-        view.addSubview(menuTableView)
         
         menuTableView.snp.makeConstraints { (make) -> Void in
             make.centerX.equalToSuperview()
@@ -303,7 +305,6 @@ private extension RegistrationViewController {
             make.height.equalTo(90)
         }
     }
-    
     
     //обработка нажатия кнопки Сохранить action when save button is pressed
     @objc func isPressedSaveButton (sender: UIButton){

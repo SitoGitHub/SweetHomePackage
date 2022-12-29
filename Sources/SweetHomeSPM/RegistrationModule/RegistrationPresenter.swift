@@ -32,8 +32,8 @@ protocol GetProductCategoriesDelegate: AnyObject {
 }
 
 // MARK: -  RegistrationPresenter
-class RegistrationPresenter {
-    let validData = ValidData()
+final class RegistrationPresenter {
+    let validData: ValidDataManagerProtocol
     lazy var imageManager = ImageManager()
     weak var view: RegistrationViewInputProtocol?
     weak var delegate: RegistrationModuleDelegate?
@@ -49,9 +49,10 @@ class RegistrationPresenter {
     let makerAnotation: MakerAnotation?
     weak var navigatController: UINavigationController?
     
-    init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol, touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
+    init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol, validData: ValidDataManagerProtocol, touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
         self.interactor = interactor
         self.router = router
+        self.validData = validData
         self.touchCoordinate = touchCoordinate
         self.makerAnotation = makerAnotation
     }
@@ -178,8 +179,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
         }
         return errors
     }
-    
-    // Helper function inserted by Swift 4.2 migrator. For imagePickerController
+
     fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
         
         return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
@@ -197,10 +197,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
             //generate unique filname
             let name = ProcessInfo.processInfo.globallyUniqueString
             let path = "photo/temp/sweethome2/maker/\(name).jpeg"
-            let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
-            guard let url = chosenImage.save(at: tempDirectoryUrl) else { return }
-            print(url)
-            pathImageMaker = path//url
+            pathImageMaker = path
         } else{
             print("Something went wrong")
         }

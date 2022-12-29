@@ -4,11 +4,9 @@
 //
 //  Created by Aleksei Grachev on 26/12/22.
 //
-
-import Foundation
 import UIKit
 
-class SliderFilterCategoriesView: UIView {
+final class SliderFilterCategoriesView: UIView {
     
     let categoriesTableView: UITableView
     let identifier = "MyCell"
@@ -19,6 +17,7 @@ class SliderFilterCategoriesView: UIView {
         super.init(frame: .zero)
         setupView()
         createCategoriesTableView()
+        addViewConstraints()
     }
     
     required init?(coder: NSCoder) {
@@ -36,7 +35,9 @@ class SliderFilterCategoriesView: UIView {
         categoriesTableView.backgroundColor = .white
         
         self.addSubview(categoriesTableView)
-        
+    }
+    
+    private func addViewConstraints() {
         categoriesTableView.snp.makeConstraints { (make) -> Void in
             make.edges.equalToSuperview()
         }

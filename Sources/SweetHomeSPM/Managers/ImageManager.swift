@@ -6,7 +6,10 @@
 //
 import UIKit
 
-class ImageManager {
+protocol ImageManagerProtocol: AnyObject {
+    func getImage(pathImage: String?) -> UIImage?
+}
+final class ImageManager: ImageManagerProtocol {
     
     //get image from path
     func getImage(pathImage: String?) -> UIImage? {

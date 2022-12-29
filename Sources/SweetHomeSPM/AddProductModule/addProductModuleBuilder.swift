@@ -7,7 +7,7 @@
 
 import UIKit
 
-class AddProductModuleBuilder {
+final class AddProductModuleBuilder {
     static func build() -> AddProductViewController {
         let interactor = AddProductInteractor()
         let router = AddProductRouter()

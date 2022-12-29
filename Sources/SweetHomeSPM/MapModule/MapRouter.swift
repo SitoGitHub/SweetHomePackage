@@ -8,22 +8,25 @@
 import MapKit
 import UIKit
 
- protocol MapRouterInputProtocol {
+protocol MapRouterInputProtocol {
     func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
     func presentWarnMessage(title: String?, descriptionText: String?)
     func openFilterCategoriesScreen()
 }
 
- class MapRouter: MapRouterInputProtocol {
+final class MapRouter {
     weak var viewController: MapViewController?
-   
-     func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
+    
+}
+extension MapRouter: MapRouterInputProtocol {
+    
+    func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
         let vc = RegistrationModuleBuilder.build(factory: NavigationBuilder.build, delegate: viewController?.presenter as? RegistrationModuleDelegate, touchCoordinate: touchCoordinate, makerAnotation: makerAnotation)
         viewController?.present(vc, animated: true, completion: nil)
         
     }
     
-     func openFilterCategoriesScreen() {
+    func openFilterCategoriesScreen() {
         let vc = FilterCategoriesModuleBuilder.build()
         vc.providesPresentationContextTransitionStyle = true
         vc.definesPresentationContext = true
@@ -32,7 +35,7 @@ import UIKit
         
     }
     
-     func presentWarnMessage(title: String?, descriptionText: String?) {
+    func presentWarnMessage(title: String?, descriptionText: String?) {
         
         let alertController = UIAlertController(title: title,
                                                 message: descriptionText,

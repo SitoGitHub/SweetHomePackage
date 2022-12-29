@@ -7,7 +7,7 @@
 
 import UIKit
 
-class FilterCategoriesModuleBuilder {
+final class FilterCategoriesModuleBuilder {
     static func build() -> FilterCategoriesViewController {
         let interactor = FilterCategoriesInteractor()
         let router = FilterCategoriesRouter()

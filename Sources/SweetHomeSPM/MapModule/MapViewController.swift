@@ -22,10 +22,10 @@ import MapKit
     
 }
 
- class MapViewController: UIViewController {
+ final class MapViewController: UIViewController {
      var mapView = MKMapView()
     var maker: MakerAnotation?
-    let locationManager = CLLocationManager()
+     let locationManager = CLLocationManager()
     
     lazy var sliderFilterCategoriesView = SliderFilterCategoriesView(tableView: categoriesTableView)
     let categoriesTableView = UITableView()
@@ -65,12 +65,12 @@ import MapKit
 extension MapViewController: MKMapViewDelegate {
     func initialize() {
         createMApView()
-        createFilterCategoriesButton()
         setupSliderButtonView()
+        createFilterCategoriesButton()
         setupSliderFilterCategoriesView()
+        addViewConstraints()
         presenter?.viewDidLoaded()
-        
-        //let sliderFilterCategoriesView = SliderFilterCategoriesView(tableView: categoriesTableView)
+        addViewConstraints()
         categoriesTableView.delegate = self
         categoriesTableView.dataSource = self
     }
@@ -81,71 +81,53 @@ extension MapViewController: MKMapViewDelegate {
         mapView.isScrollEnabled = true
         
         view.addSubview(mapView)
-        
-        mapView.snp.makeConstraints { (make) -> Void in
-            make.edges.equalTo(self.view)
-        }
     }
     
     func setupSliderButtonView() {
         mapView.addSubview(sliderBottomView)
+        sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
+    }
+    
+    func setupSliderFilterCategoriesView() {
+        mapView.addSubview(sliderFilterCategoriesView)
+    }
+    
+    func createFilterCategoriesButton() {
+        
+        filterCategoriesButton.backgroundColor = .clear //Colors.activeButtonColor.colorViewUIColor
+        
+        filterCategoriesButton.addTarget(self, action: #selector(isClickedFilterCategoriesButton), for: .touchUpInside)
+        // routeButton.frame = CGRect(x: 50, y: 50, width: 70, height: 30)
+        mapView.addSubview(filterCategoriesButton)
+    }
+    
+    private func addViewConstraints() {
+        mapView.snp.makeConstraints { (make) -> Void in
+            make.edges.equalTo(self.view)
+        }
         viewHeight = view.bounds.height
         sliderBottomView.snp.makeConstraints { (make) -> Void in
             make.left.right.equalTo(mapView)
             make.height.equalTo(heightSliderView)
             make.top.equalTo(viewHeight)
         }
-        sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
-    }
-    
-    func setupSliderFilterCategoriesView() {
-        mapView.addSubview(sliderFilterCategoriesView)
-        viewWidth = view.bounds.width
         sliderFilterCategoriesView.snp.makeConstraints { (make) -> Void in
             make.left.equalTo(-viewWidth)
             make.width.equalTo(viewWidth - indentOfRightForSliderFilterCategoriesView)
             make.top.equalTo(filterCategoriesButton.snp.bottom)
             make.bottom.equalToSuperview()
         }
-    }
-    
-    func createFilterCategoriesButton() {
-        
-        //RouteButton.layer.masksToBounds = true
-        //filterCategoriesButton.setImage(UIImage(named: "layers", in: .module, compatibleWith: nil) , for: .normal)
-        //routeButton.setTitleColor(Colors.whiteLabel.colorViewUIColor, for: .normal)
-        filterCategoriesButton.backgroundColor = .clear //Colors.activeButtonColor.colorViewUIColor
-        //routeButton.titleLabel?.font = Fonts.fontButton.fontsForViews
-        
-        //RouteButton.isEnabled = true
-        filterCategoriesButton.addTarget(self, action: #selector(isClickedFilterCategoriesButton), for: .touchUpInside)
-        // routeButton.frame = CGRect(x: 50, y: 50, width: 70, height: 30)
-        mapView.addSubview(filterCategoriesButton)
-        
         filterCategoriesButton.snp.makeConstraints { (make) -> Void in
             make.width.equalTo(37)
             make.height.equalTo(37)
             make.top.equalTo(mapView.safeAreaInsets.top).inset(60)
             make.left.equalTo(mapView.safeAreaInsets.left).inset(25)
-            
         }
-        filterCategoriesButton.layoutIfNeeded()
     }
     
     @objc func isClickedFilterCategoriesButton() {
         
         presenter?.isClickedFilterCategoriesButton()
-        
-        //        if isHiddenFilterCategoriesView {
-        //            showFilterCategoriesView()
-        //            isHiddenFilterCategoriesView = false
-        //            //скрываем Slider Bottom View
-        //            getoutSliferBottomView()
-        //        } else {
-        //            hideFilterCategoriesView()
-        //            isHiddenFilterCategoriesView = true
-        //        }
-        
     }
     
     //показываем
@@ -326,7 +308,6 @@ extension MapViewController: MKMapViewDelegate {
     }
     //add new location on the map
     @objc func longTap(sender: UIGestureRecognizer){
-        print("long tap")
         getoutSliferBottomView()
         presenter?.isLongTappedOnMapView(sender: sender)
     }
@@ -341,9 +322,9 @@ extension MapViewController: MKMapViewDelegate {
     
 }
 
-//отслеживание месторасположения (изменение)
 extension MapViewController: CLLocationManagerDelegate {
-     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+    //отслеживание месторасположения (изменение)
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         if let location = locations.last?.coordinate{
             let region = MKCoordinateRegion(center: location, latitudinalMeters: 5000, longitudinalMeters: 5000)
             mapView.setRegion(region, animated: true)
@@ -385,7 +366,6 @@ extension MapViewController: MapViewInputProtocol {
             }
         case "Да":
             anyAction = UIAlertAction(title: titleAction, style: .default) { (alert) in
-                print("регистрация")
                 guard let touchCoordinate = touchCoordinate else { return }
                 self.presenter?.newRegistrationIsTapped(touchCoordinate: touchCoordinate)
             }
