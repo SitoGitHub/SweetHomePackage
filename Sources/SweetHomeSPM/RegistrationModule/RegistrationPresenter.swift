@@ -6,7 +6,7 @@
 //
 //import Foundation
 import MapKit
-
+// MARK: - RegistrationViewOutputProtocol
 protocol RegistrationViewOutputProtocol: AnyObject {
     func isTouchesBegan(touches: Set<UITouch>)
     func isFieldShouldReturn(textField: UITextField)
@@ -17,7 +17,7 @@ protocol RegistrationViewOutputProtocol: AnyObject {
     func getMakerAnotation()
     func getMakerImage(pathImage: String?)
 }
-
+// MARK: - RegistrationInteractorOutputProtocol
 protocol RegistrationInteractorOutputProtocol: AnyObject {
     func existAlreadyMaker(phoneNumberMaker: String, email: String)
     func fetchedMakerData(maker: MakerAnotation?, error: Errors?)
@@ -25,7 +25,7 @@ protocol RegistrationInteractorOutputProtocol: AnyObject {
     func isSavedData()
     func isEditedData()
 }
-
+// MARK: - GetProductCategoriesDelegate
 protocol GetProductCategoriesDelegate: AnyObject {
     func isChangedProductCategoriesMakers(isChanged: Bool)
     func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation])
@@ -33,6 +33,7 @@ protocol GetProductCategoriesDelegate: AnyObject {
 
 // MARK: -  RegistrationPresenter
 final class RegistrationPresenter {
+    // MARK: - Properties
     let validData: ValidDataManagerProtocol
     lazy var imageManager = ImageManager()
     weak var view: RegistrationViewInputProtocol?
@@ -48,7 +49,7 @@ final class RegistrationPresenter {
     var nameMaker = String()
     let makerAnotation: MakerAnotation?
     weak var navigatController: UINavigationController?
-    
+    // MARK: - init
     init(interactor: RegistrationInteractorInputProtocol, router: RegistrationRouterInputProtocol, validData: ValidDataManagerProtocol, touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {
         self.interactor = interactor
         self.router = router
@@ -294,7 +295,7 @@ extension RegistrationPresenter: RegistrationInteractorOutputProtocol {
                                  descriptionText: "Хотите внести изменения?")
     }
 }
-
+// MARK: - GetProductCategoriesDelegate
 extension RegistrationPresenter: GetProductCategoriesDelegate {
     
     func isChangedProductCategoriesMakers(isChanged: Bool) {

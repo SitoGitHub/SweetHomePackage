@@ -8,24 +8,24 @@
 
 import Foundation
 import MapKit
-
+// MARK: - GetProductCategoriesInteractorInputProtocol
 protocol GetProductCategoriesInteractorInputProtocol: AnyObject {
     func fetchCategoriesData(phoneMaker: String, emailMaker: String)
     func modifyCategoryProductMaker(check: Bool, index: Int, productCategory: ProductCategory, phoneMaker: String, emailMaker: String) -> Bool
     func reWriteMakerAnnotation()
 }
-
+// MARK: - GetProductCategoriesInteractor
 final class GetProductCategoriesInteractor {
-    
+    // MARK: - Properties
     weak var presenter: GetProductCategoriesInteractorOutputProtocol?
     let coreDataManager: CoreDataManagerProtocol
     var maker = Maker()
-    
+    // MARK: - init
     init(coreDataManager: CoreDataManagerProtocol) {
         self.coreDataManager = coreDataManager
     }
 }
-
+// MARK: - GetProductCategoriesInteractorInputProtocol
 extension GetProductCategoriesInteractor: GetProductCategoriesInteractorInputProtocol {
     
     func fetchCategoriesData (phoneMaker: String, emailMaker: String) {

@@ -7,17 +7,18 @@
 
 import MapKit
 import UIKit
-
+// MARK: - MapRouterInputProtocol
 protocol MapRouterInputProtocol {
     func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
     func presentWarnMessage(title: String?, descriptionText: String?)
     func openFilterCategoriesScreen()
 }
-
+// MARK: - MapRouter
 final class MapRouter {
     weak var viewController: MapViewController?
     
 }
+// MARK: - MapRouterInputProtocol
 extension MapRouter: MapRouterInputProtocol {
     
     func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) {

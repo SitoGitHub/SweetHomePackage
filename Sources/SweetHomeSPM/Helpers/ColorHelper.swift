@@ -7,8 +7,7 @@
 //
 
 import UIKit
-
-//цвета для view фона
+// MARK: - Colors цвета для view фона
 enum Colors {
     case headerColor
     case activeButtonColor

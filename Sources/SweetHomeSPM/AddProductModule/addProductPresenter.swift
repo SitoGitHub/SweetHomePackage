@@ -5,26 +5,27 @@
 //  Created by Aleksei Grachev on 24/12/22
 //
 import UIKit
-
+// MARK: - AddProductViewOutputProtocol
 protocol AddProductViewOutputProtocol: AnyObject {
     func viewDidLoaded()
 }
-
+// MARK: - AddProductInteractorOutputProtocol
 protocol AddProductInteractorOutputProtocol: AnyObject {
     
     
 }
-
+// MARK: - AddProductCategoriesDelegate
 protocol AddProductCategoriesDelegate: AnyObject {
     
 }
 
-
+// MARK: - AddProductPresenter
 final class AddProductPresenter {
+    // MARK: - Properties
     weak var view: AddProductViewInputProtocol?
     var router: AddProductRouterInputProtocol
     var interactor: AddProductInteractorInputProtocol
-
+    // MARK: - init
     init(interactor: AddProductInteractorInputProtocol, router: AddProductRouterInputProtocol) {
         self.interactor = interactor
         self.router = router

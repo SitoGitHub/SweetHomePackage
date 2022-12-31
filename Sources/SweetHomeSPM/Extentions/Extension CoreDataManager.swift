@@ -8,10 +8,27 @@
 import CoreData
 import MapKit
 
-extension CoreDataManager {
-    
+// MARK: - CoreDataManagerProtocol
+protocol CoreDataManagerProtocol: AnyObject {
+    func getCountry(country: String) -> Result<[CountryMaker], Errors>
+    func getCity() -> Result<[CityMaker], Errors>
+    func getAllCountry() -> Result<[CountryMaker], Errors>
+    func getMaker() -> Result<[Maker], Errors>
+    func getPinMaker() -> Result<[MakerAnotation], Errors>
+    func getMakerWithPhoneAndEmail(phoneNumber: String, email: String) -> Result<[Maker], Errors>
+    func getMakerWithCoordinate(latitude: Double, long: Double)  -> Result<[Maker], Errors>
+    func getCityWithName(cityName: String, country: String) -> Result<[CityMaker], Errors>
+    func getProductCategories() -> Result<[ProductCategory], Errors>
+    func getProductCategoriesMakers(categoryName: String, maker: Maker) -> Result<[ProductCategoryMaker], Errors>
+    func getAllProductCategoriesMakers(maker: Maker) -> Result<[ProductCategoryMaker], Errors>
+    func deleteProductCategoriesMakers(categoryName: String?, maker: Maker, productCategory: ProductCategory) -> Result<Bool, Errors>
+    func saveContext ()
+}
+// MARK: - extension CoreDataManager CoreDataManagerProtocol
+extension CoreDataManager: CoreDataManagerProtocol {
+    //get Country
     func getCountry(country: String) -> Result<[CountryMaker], Errors> {
-        let fetchRequest: NSFetchRequest<CountryMaker> = CountryMaker.fetchRequest()
+        let fetchRequest = CountryMaker.fetchRequest()
         
             let predicate = NSPredicate(format: "%K == %@", #keyPath(CountryMaker.country_name), country)
             fetchRequest.predicate = predicate
@@ -23,7 +40,7 @@ extension CoreDataManager {
             return .failure(Errors.loadCountriesError)
         }
     }
-    
+    //get All Country
     func getAllCountry() -> Result<[CountryMaker], Errors> {
         let fetchRequest: NSFetchRequest<CountryMaker> = CountryMaker.fetchRequest()
         
@@ -34,7 +51,7 @@ extension CoreDataManager {
             return .failure(Errors.loadCountriesError)
         }
     }
-    
+    //get City
     func getCity() -> Result<[CityMaker], Errors> {
         var allCities: [CityMaker] = []
         let countries = getAllCountry()
@@ -57,7 +74,7 @@ extension CoreDataManager {
             return .failure(error)
         }
     }
-    
+    //get Maker
     func getMaker() -> Result<[Maker], Errors> {
         var allMakers: [Maker] = []
         let cities = getCity()
@@ -80,7 +97,7 @@ extension CoreDataManager {
             return .failure(error)
         }
     }
-    
+    //get Pin Maker
     func getPinMaker() -> Result<[MakerAnotation], Errors> {
         var allMakersAnotation: [MakerAnotation] = []
         let cities = getCity()
@@ -156,7 +173,7 @@ extension CoreDataManager {
             return .failure(Errors.loadMakersError)
         }
     }
-    
+    //get Maker With Coordinate
     func getMakerWithCoordinate(latitude: Double, long: Double)  -> Result<[Maker], Errors> {
         let fetchRequest: NSFetchRequest<Maker> = Maker.fetchRequest()
         let predicateLong = NSPredicate(format: "%K == %lf", #keyPath(Maker.long), long)
@@ -201,9 +218,6 @@ extension CoreDataManager {
     //список категорий продуктов
     func getProductCategories() -> Result<[ProductCategory], Errors> {
         let fetchRequest: NSFetchRequest<ProductCategory> = ProductCategory.fetchRequest()
-
-        //    let predicate = NSPredicate(format: "%K == %@", #keyPath(ProductCategory.category_name), productCategory)
-        //    fetchRequest.predicate = predicate
         
         do {
             let result = try managedObjectContext.fetch(fetchRequest)

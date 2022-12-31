@@ -6,21 +6,22 @@
 //
 //  Created by Aleksei Grachev on 28/11/22.
 //
-
+// MARK: - MapInteractorInputProtocol
 protocol MapInteractorInputProtocol: AnyObject {
     func fetchMakerData()
     func fetchCategoriesData ()
 }
-
+// MARK: - MapInteractor
 final class MapInteractor {
+    // MARK: - properties
     weak var presenter: MapInteractorOutputProtocol?
     let coreDataManager: CoreDataManagerProtocol
-    
+    // MARK: - init
     init(coreDataManager: CoreDataManagerProtocol) {
         self.coreDataManager = coreDataManager
     }
 }
-
+// MARK: - MapInteractorInputProtocol
 extension MapInteractor: MapInteractorInputProtocol {
     
     func fetchMakerData() {

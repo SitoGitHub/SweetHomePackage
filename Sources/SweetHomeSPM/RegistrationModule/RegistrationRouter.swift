@@ -5,18 +5,18 @@
 //  Created by Aleksei Grachev on 13/12/22.
 //
 import UIKit
-
+// MARK: - RegistrationRouterInputProtocol
 protocol RegistrationRouterInputProtocol {
     func presentWarnMessage(title: String?, descriptionText: String?)
     func pushGetProductCategoriesViewController(to navigationController: UINavigationController, animated: Bool, phoneMaker: String, emailMaker: String)
     func pushAddProductViewController(to navigationController: UINavigationController, animated: Bool)
 }
-
+// MARK: - RegistrationRouter
 final class RegistrationRouter {
     weak var viewController: RegistrationViewController?
     weak var navigationController: UINavigationController?
 }
-
+// MARK: - RegistrationRouterInputProtocol
 extension RegistrationRouter: RegistrationRouterInputProtocol {
     
     func pushGetProductCategoriesViewController(to navigationController: UINavigationController, animated: Bool, phoneMaker: String, emailMaker: String) {

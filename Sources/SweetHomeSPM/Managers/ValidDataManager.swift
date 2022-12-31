@@ -6,16 +6,16 @@
 //
 
 import Foundation
-
+// MARK: - ValidDataManagerProtocol
 protocol ValidDataManagerProtocol: AnyObject {
     func isValidEmailAddress(emailAddressString: String) -> Bool
     func isValidPhoneNumber(_ phoneNumberString: String) -> Bool
 }
-
+// MARK: - ValidDataManager
 final class ValidDataManager {
     
 }
-
+// MARK: - ValidDataManager
 extension ValidDataManager: ValidDataManagerProtocol {
     //verify correct email
     func isValidEmailAddress(emailAddressString: String) -> Bool {

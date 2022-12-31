@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+// MARK: - Fonts
 enum Fonts {
     case fontTextField
     case fontNameMakerLabelSlideView

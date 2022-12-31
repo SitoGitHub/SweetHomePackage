@@ -8,6 +8,7 @@
 import Contacts
 import MapKit
 
+// MARK: - extension Formatter
 extension Formatter {
     static let mailingAddress: CNPostalAddressFormatter = {
         let formatter = CNPostalAddressFormatter()
@@ -15,13 +16,13 @@ extension Formatter {
         return formatter
     }()
 }
-
+// MARK: - extension CLPlacemark
 extension CLPlacemark {
     var mailingAddress: String? {
         postalAddress?.mailingAddress
     }
 }
-
+// MARK: - extension CNPostalAddress
 extension CNPostalAddress {
     var mailingAddress: String {
         Formatter.mailingAddress.string(from: self)

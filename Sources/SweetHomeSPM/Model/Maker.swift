@@ -6,7 +6,7 @@
 //
 
 import MapKit
-// инфо для вывода пина на карту
+// MARK: - MakerAnotation инфо для вывода пина на карту
 final class MakerAnotation: NSObject, MKAnnotation{
     public var coordinate: CLLocationCoordinate2D
     public var nameMaker: String
@@ -17,7 +17,7 @@ final class MakerAnotation: NSObject, MKAnnotation{
     public var pathImageMaker: String?
     public var title: String?
     public var productCategoriesMaker: [ProductCategoryMaker]?
-    
+    // MARK: - init
     init (surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, coordinate: CLLocationCoordinate2D, productCategoriesMaker: [ProductCategoryMaker]?){
         self.coordinate = coordinate
         self.nameMaker = nameMaker

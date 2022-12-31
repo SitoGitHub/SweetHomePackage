@@ -8,12 +8,12 @@
 
 import UIKit
 import SnapKit
-
+// MARK: - GetProductCategoriesViewInputProtocol
 protocol GetProductCategoriesViewInputProtocol: AnyObject {
     func stopActivityIndicator()
     func updateViewWithProductCategories(productCategories: [(String, Bool)])
 }
-
+// MARK: - GetProductCategoriesViewController
 final class GetProductCategoriesViewController: UIViewController {
     // MARK: - Properties
     var presenter: GetProductCategoriesViewOutputProtocol?
@@ -46,7 +46,7 @@ final class GetProductCategoriesViewController: UIViewController {
 
 // MARK: - Private functions
 extension GetProductCategoriesViewController {
-    func initialize() {
+    private func initialize() {
         self.title = "Категории"
         
         view.backgroundColor = .white

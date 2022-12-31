@@ -8,14 +8,14 @@
 import UIKit
 import SnapKit
 
-
+// MARK: - AddProductViewInputProtocol
 protocol AddProductViewInputProtocol: AnyObject {
     func showMainImageView(image: UIImage)
     func showCongratImageView(image: UIImage)
 }
-
+// MARK: - AddProductViewController
 final class AddProductViewController: UIViewController {
-    // MARK: - Public
+    // MARK: - Properties
     var presenter: AddProductViewOutputProtocol?
     var mainImageView = UIImageView()
     var congratImageView = UIImageView()
@@ -31,16 +31,17 @@ final class AddProductViewController: UIViewController {
 
 // MARK: - Private functions
 private extension AddProductViewController {
-    func initialize() {
+    private func initialize() {
         presenter?.viewDidLoaded()
         createImageView()
         addViewConstraints()
     }
     
     private func createImageView() {
-            view.addSubview(mainImageView)
+        view.addSubview(mainImageView)
         view.addSubview(congratImageView)
-        }
+    }
+    
     private func addViewConstraints() {
         viewHeight = view.bounds.height
         let heightImageView = viewHeight / 2

@@ -7,6 +7,7 @@
 
 import UIKit
 
+// MARK: - FilterCategoriesModuleBuilder
 final class FilterCategoriesModuleBuilder {
     static func build() -> FilterCategoriesViewController {
         let interactor = FilterCategoriesInteractor()

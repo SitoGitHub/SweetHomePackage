@@ -8,7 +8,7 @@
 
 import CoreData
 
-
+// MARK: - extension CityMaker
 extension CityMaker {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CityMaker> {

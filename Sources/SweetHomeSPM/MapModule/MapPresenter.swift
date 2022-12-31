@@ -6,20 +6,20 @@
 //
 import Foundation
 import MapKit
-
+// MARK: - MapInteractorOutputProtocol
 protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
     func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
 }
-
+// MARK: - RegistrationModuleDelegate
 protocol RegistrationModuleDelegate: AnyObject {
     func fetchedNewMakerData(pinMakers: [MakerAnotation])
 }
-
+// MARK: - GetProductMapDelegate
 protocol GetProductMapDelegate: AnyObject {
     func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation])
 }
-
+// MARK: - MapViewOutputProtocol
 protocol MapViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)
@@ -29,8 +29,9 @@ protocol MapViewOutputProtocol: AnyObject {
     func isClickedFilterCategoriesButton()
     var numberOfRowsInSectionCategoriesView: Int { get }
 }
-
+// MARK: - MapPresenter
 final class MapPresenter {
+    // MARK: - properties
     weak var view: MapViewInputProtocol?
     var router: MapRouterInputProtocol
     var interactor: MapInteractorInputProtocol
@@ -40,13 +41,13 @@ final class MapPresenter {
     lazy var categoriesViewModel: [(String, Bool)] = []
     lazy var touchCoordinateTappedImageMaker = CLLocationCoordinate2D()
     var makerAnotationTappedImageMaker: MakerAnotation?
-    
+    // MARK: - init
     init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol, imageManager: ImageManagerProtocol) {
         self.interactor = interactor
         self.router = router
         self.imageManager = imageManager
     }
-    
+    // MARK: - functions
     //обновляем данные на карте
     func refreshMakerData(pinMakers: [MakerAnotation]) {
         if let makerAnotation = makerAnotationTappedImageMaker {
@@ -57,7 +58,7 @@ final class MapPresenter {
         view?.setupBottomViewMakerData()
     }
 }
-
+// MARK: - MapInteractorOutputProtocol
 extension MapPresenter: MapInteractorOutputProtocol {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?) {
         
@@ -102,7 +103,7 @@ extension MapPresenter: MapInteractorOutputProtocol {
         }
     }
 }
-
+// MARK: - MapViewOutputProtocol
 extension MapPresenter: MapViewOutputProtocol {
     
     var numberOfRowsInSectionCategoriesView: Int {
@@ -131,7 +132,6 @@ extension MapPresenter: MapViewOutputProtocol {
                 imageMaker = image
             }
         }
-        
         else {
             if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil) {
                 imageMaker = image
@@ -159,14 +159,14 @@ extension MapPresenter: MapViewOutputProtocol {
         router.openFilterCategoriesScreen()
     }
 }
-
+// MARK: - RegistrationModuleDelegate
 extension MapPresenter: RegistrationModuleDelegate{
     //обновляем данные на карте
     func fetchedNewMakerData(pinMakers: [MakerAnotation]) {
         refreshMakerData(pinMakers: pinMakers)
     }
 }
-
+// MARK: - GetProductMapDelegate
 extension MapPresenter: GetProductMapDelegate{
     //обновляем на карте данные
     func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation]) {

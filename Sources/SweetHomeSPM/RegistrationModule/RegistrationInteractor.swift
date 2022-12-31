@@ -7,26 +7,27 @@
 
 import Foundation
 import MapKit
-
+// MARK: - RegistrationInteractorInputProtocol
 protocol RegistrationInteractorInputProtocol: AnyObject {
     func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D)
     func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D)
 }
-
+// MARK: - RegistrationInteractor
 final class RegistrationInteractor {
+    // MARK: - Properties
     weak var presenter: RegistrationInteractorOutputProtocol?
     let coreDataManager: CoreDataManagerProtocol
     let locationManager: LocationManagerProtocol
     var maker = Maker()
     var lat = Double()
     var long = Double()
-    
+    // MARK: - init
     init(coreDataManager: CoreDataManagerProtocol, locationManager: LocationManagerProtocol) {
         self.coreDataManager = coreDataManager
         self.locationManager = locationManager
     }
 }
-
+// MARK: - RegistrationInteractorInputProtocol
 extension RegistrationInteractor: RegistrationInteractorInputProtocol {
     //save New Maker Data
     func saveDataNewMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D) {
@@ -136,7 +137,7 @@ extension RegistrationInteractor: RegistrationInteractorInputProtocol {
             }
         }
     }
-    
+    // edit Data Maker
     func editDataMaker(surnameMaker: String, nameMaker: String, phoneNumberMaker: String, emailMaker: String, passwordMaker: String, pathImageMaker: String?, touchCoordinateMaker: CLLocationCoordinate2D) {
         let lat = Double(touchCoordinateMaker.latitude)
         let long = Double(touchCoordinateMaker.longitude)

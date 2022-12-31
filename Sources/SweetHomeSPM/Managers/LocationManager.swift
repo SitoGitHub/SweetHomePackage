@@ -7,15 +7,15 @@
 
 //import Foundation
 import MapKit
-
+// MARK: - LocationManagerProtocol
 protocol LocationManagerProtocol: AnyObject {
     func geocode(latitude: Double, longitude: Double, completion: @escaping (_ placemark: [CLPlacemark]?, _ error: Error?) -> Void)
 }
-
+// MARK: - LocationManager
 final class LocationManager {
     
 }
-
+// MARK: - LocationManagerProtocol
 extension LocationManager: LocationManagerProtocol{
     
     func geocode(latitude: Double, longitude: Double, completion: @escaping (_ placemark: [CLPlacemark]?, _ error: Error?) -> Void)  {

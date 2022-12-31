@@ -5,7 +5,7 @@
 //
 
 import Foundation
-
+// MARK: - Errors
 public enum Errors: Error {
     case loadCountriesError
     case loadCitiesError

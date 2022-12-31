@@ -7,7 +7,7 @@
 //
 
 import CoreData
-
+// MARK: - CountryMaker
 @objc(CountryMaker)
 public class CountryMaker: NSManagedObject {
     convenience init() {

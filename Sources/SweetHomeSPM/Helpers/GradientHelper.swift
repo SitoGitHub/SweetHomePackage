@@ -7,7 +7,7 @@
 //
 
 import UIKit
-
+// MARK: - CAGradientPoint
 //data for gradient
 public enum CAGradientPoint {
     case topLeft

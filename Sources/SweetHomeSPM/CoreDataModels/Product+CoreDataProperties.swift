@@ -8,7 +8,7 @@
 
 import CoreData
 
-
+// MARK: - extension Product
 extension Product {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<Product> {

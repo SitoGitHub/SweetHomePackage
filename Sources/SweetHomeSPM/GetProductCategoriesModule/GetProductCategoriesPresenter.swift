@@ -7,7 +7,7 @@
 //
 
 import Foundation
-
+// MARK: - GetProductCategoriesInteractorOutputProtocol
 protocol GetProductCategoriesInteractorOutputProtocol: AnyObject {
     func fetchedProductCategoriesData(productCategories: [ProductCategory])
     func fetchedProductCategoriesMakerData(productCategoriesMakers: [ProductCategoryMaker])
@@ -15,17 +15,17 @@ protocol GetProductCategoriesInteractorOutputProtocol: AnyObject {
     func getErrorWhenFetchedProductCategoriesData(error: Errors)
     func getErrorWhenFetchedProductCategoriesMakerData(error: Errors)
 }
-
+// MARK: - GetProductCategoriesViewOutputProtocol
 protocol GetProductCategoriesViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func didSelectRowAt(index: Int) -> Bool
     func isDeinitedModule()
     var numberOfRowsInSection: Int { get }
 }
-
+// MARK: - GetProductCategoriesPresenter
 final class GetProductCategoriesPresenter {
     
-    // MARK: Properties
+    // MARK: - Properties
     weak var view: GetProductCategoriesViewInputProtocol?
     var router: GetProductCategoriesRouterInputProtocol
     var interactor: GetProductCategoriesInteractorInputProtocol
@@ -42,7 +42,7 @@ final class GetProductCategoriesPresenter {
             delegate?.isChangedProductCategoriesMakers(isChanged: isChangedProductCategoriesMaker)
         }
     }
-    
+    // MARK: - init
     init(interactor: GetProductCategoriesInteractorInputProtocol, router: GetProductCategoriesRouterInputProtocol, phoneMaker: String, emailMaker: String) {
         self.interactor = interactor
         self.router = router
@@ -51,7 +51,7 @@ final class GetProductCategoriesPresenter {
     }
     
 }
-
+// MARK: - GetProductCategoriesInteractorOutputProtocol
 extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputProtocol {
     
     //fetched Product Categories Maker Data
@@ -121,7 +121,7 @@ extension GetProductCategoriesPresenter: GetProductCategoriesInteractorOutputPro
         self.delegate?.IsWrittenMakerAnnotation(pinMakers: [makerAnotation])
     }
 }
-
+// MARK: - GetProductCategoriesViewOutputProtocol
 extension GetProductCategoriesPresenter: GetProductCategoriesViewOutputProtocol {
     
     var numberOfRowsInSection: Int {

@@ -7,9 +7,9 @@
 
 import UIKit
 import SnapKit
-
+// MARK: - SliderBottomView
 final class SliderBottomView: UIView {
-   
+    // MARK: - properties
     let routeButton = UIButton()
     let makerLabel = UILabel()
     let categoryLabel = UILabel()
@@ -17,7 +17,7 @@ final class SliderBottomView: UIView {
     let recognizer = UITapGestureRecognizer()
     let buttonStack = UIStackView()
     let listOfCategoryLabel = UILabel()
-    
+    // MARK: - init
     init() {
         super.init(frame: .zero)
         setupView()
@@ -26,8 +26,8 @@ final class SliderBottomView: UIView {
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
-    func setupView() {
+    // MARK: - private functions
+    private func setupView() {
         self.backgroundColor = .white
         self.layer.cornerRadius = 20
         createRouteButton()

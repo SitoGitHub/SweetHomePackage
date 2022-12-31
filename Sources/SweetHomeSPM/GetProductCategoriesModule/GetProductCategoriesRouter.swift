@@ -6,16 +6,15 @@
 //  
 //
 import UIKit
-
+// MARK: - GetProductCategoriesRouterInputProtocol
 protocol GetProductCategoriesRouterInputProtocol {
     func presentWarnMessage(title: String?, descriptionText: String?)
 }
-
+// MARK: - class GetProductCategoriesRouter
 final class GetProductCategoriesRouter {
     weak var viewController: GetProductCategoriesViewController?
-    
 }
-
+// MARK: - GetProductCategoriesRouterInputProtocol
 extension GetProductCategoriesRouter: GetProductCategoriesRouterInputProtocol {
     
     func presentWarnMessage(title: String?, descriptionText: String?) {

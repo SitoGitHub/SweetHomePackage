@@ -6,7 +6,7 @@
 //  Created by Aleksei Grachev on 28/11/22.
 //
 import UIKit
-
+// MARK: - MapModuleBuilder
 public final class MapModuleBuilder {
     //@discardableResult
     public static func build() -> UIViewController {

@@ -5,7 +5,7 @@
 //  Created by Aleksei Grachev on 13/12/22.
 //
 import MapKit
-
+// MARK: -  RegistrationModuleBuilder
 final class RegistrationModuleBuilder {
     //@discardableResult
     static func build(factory: NavigationFactory, delegate: RegistrationModuleDelegate?, touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?) ->

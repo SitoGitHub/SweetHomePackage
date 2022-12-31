@@ -8,7 +8,7 @@
 
 import CoreData
 
-
+// MARK: - extension ProductCategoryMaker
 extension ProductCategoryMaker {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<ProductCategoryMaker> {

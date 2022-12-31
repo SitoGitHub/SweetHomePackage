@@ -7,7 +7,7 @@
 //
 
 import CoreData
-
+// MARK: - class Product
 @objc(Product)
 public class Product: NSManagedObject {
     convenience init() {

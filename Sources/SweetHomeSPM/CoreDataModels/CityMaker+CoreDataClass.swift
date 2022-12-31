@@ -8,7 +8,7 @@
 
 
 import CoreData
-
+// MARK: - class CityMaker
 @objc(CityMaker)
 public class CityMaker: NSManagedObject {
     convenience init() {

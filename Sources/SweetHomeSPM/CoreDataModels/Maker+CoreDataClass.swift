@@ -8,6 +8,7 @@
 
 import CoreData
 
+// MARK: - Maker
 @objc(Maker)
 public class Maker: NSManagedObject {
     convenience init() {

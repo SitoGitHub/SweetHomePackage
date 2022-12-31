@@ -7,12 +7,12 @@
 
 import UIKit
 import SnapKit
-
+// MARK: - FilterCategoriesViewInputProtocol
 protocol FilterCategoriesViewInputProtocol: AnyObject {
 }
-
+// MARK: - FilterCategoriesViewController
 final class FilterCategoriesViewController: UIViewController {
-    // MARK: - Public
+    // MARK: - Properties
     var presenter: FilterCategoriesViewOutputProtocol?
     var registrationView = UIView()
 
@@ -26,7 +26,7 @@ final class FilterCategoriesViewController: UIViewController {
 
 // MARK: - Private functions
 private extension FilterCategoriesViewController {
-    func initialize() {
+    private func initialize() {
         view.backgroundColor = .clear
         addViewConstraints()
     }

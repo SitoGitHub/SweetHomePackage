@@ -7,9 +7,9 @@
 
 //import Foundation
 import UIKit
-
+// MARK: - extension UIImage. Save
 extension UIImage {
-
+    // save from directory
     func save(at directory: FileManager.SearchPathDirectory,
               pathAndImageName: String,
               createSubdirectoriesIfNeed: Bool = true,
@@ -25,7 +25,7 @@ extension UIImage {
             return nil
         }
     }
-
+    // save from URL
     func save(at url: URL,
               createSubdirectoriesIfNeed: Bool = true,
               compressionQuality: CGFloat = 1.0)  -> URL? {
@@ -45,8 +45,7 @@ extension UIImage {
     }
 }
 
-// load from path
-
+// MARK: - extension UIImage. Load from path
 extension UIImage {
     convenience init?(fileURLWithPath url: URL, scale: CGFloat = 1.0) {
         do {

@@ -7,7 +7,7 @@
 import UIKit
 import SnapKit
 import MapKit
-
+// MARK: - RegistrationViewInputProtocol
 protocol RegistrationViewInputProtocol: AnyObject {
     func hideKeyBoard()
     func setNextTextField(textField: UITextField)
@@ -30,9 +30,9 @@ protocol RegistrationViewInputProtocol: AnyObject {
     var categoriesIsSaved: Bool { get set }
     var navController: UINavigationController? { get }
 }
-
+// MARK: - RegistrationViewController
 final class RegistrationViewController: UIViewController {
-    
+    // MARK: - Properties
     let makerAnotation: MakerAnotation? = nil
     
     let registrationView = UIView()
@@ -80,7 +80,7 @@ final class RegistrationViewController: UIViewController {
 
 // MARK: - Private functions
 private extension RegistrationViewController {
-    func initialize() {
+    private func initialize() {
         view.backgroundColor = .white
         createRegistrationView()
         setupBarButtonItem()

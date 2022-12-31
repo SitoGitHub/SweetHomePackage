@@ -2,11 +2,11 @@
 //  addProductModuleBuilder.swift
 //  Super easy dev
 //
-//  Created by Aleksei Grachev on 24/12/22
+//   Created by Aleksei Grachev on 21/12/22.
 //
 
 import UIKit
-
+// MARK: - AddProductModuleBuilder
 final class AddProductModuleBuilder {
     static func build() -> AddProductViewController {
         let interactor = AddProductInteractor()

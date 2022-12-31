@@ -7,6 +7,7 @@
 
 import Foundation
 
+// MARK: - extension String
 extension String {
     
     /**
