@@ -93,6 +93,8 @@ extension MapViewController: MKMapViewDelegate {
     private func setupSliderButtonView() {
         mapView.addSubview(sliderBottomView)
         sliderBottomView.routeButton.addTarget(self, action: #selector(routeToMaker), for: .touchUpInside)
+        sliderBottomView.phoneButton.addTarget(self, action: #selector(isClickedphoneButton), for: .touchUpInside)
+        sliderBottomView.emailButton.addTarget(self, action: #selector(isClickeEmailButton), for: .touchUpInside)
     }
     
     private func setupSliderFilterCategoriesView() {
@@ -111,7 +113,7 @@ extension MapViewController: MKMapViewDelegate {
         zoomInButton.backgroundColor = .clear
         zoomInButton.setImage(UIImage(named: "zoom-in", in: .module, compatibleWith: nil), for: .normal)
         zoomInButton.addTarget(self, action: #selector(isClickedFZoomInButton), for: .touchUpInside)
-       
+        
         zoomOutButton.backgroundColor = .clear
         zoomOutButton.setImage(UIImage(named: "zoom-out", in: .module, compatibleWith: nil), for: .normal)
         zoomOutButton.addTarget(self, action: #selector(isClickedFZoomOutButton), for: .touchUpInside)
@@ -179,7 +181,7 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     private func hideFilterCategoriesView() {
-
+        
         presenter?.isShortViewMapTapped()
     }
     
@@ -305,6 +307,17 @@ extension MapViewController: MKMapViewDelegate {
         }
     }
     
+    // make phone call
+    @objc func isClickedphoneButton() {
+        guard let maker = maker else { return }
+        presenter?.isClickedPhoneButton(makerAnotation: maker)
+    }
+    // send email
+    @objc func isClickeEmailButton(){
+        guard let maker = maker else { return }
+        presenter?.isClickedEmailButton(makerAnotation: maker)
+    }
+
     //add new location on the map
     @objc func longTap(sender: UIGestureRecognizer){
         getoutSliferBottomView()

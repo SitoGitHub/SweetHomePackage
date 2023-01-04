@@ -6,6 +6,8 @@
 //
 import Foundation
 import MapKit
+import MessageUI
+
 // MARK: - MapInteractorOutputProtocol
 protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
@@ -35,6 +37,9 @@ protocol MapViewOutputProtocol: AnyObject {
     func isLongTappedOnMapView(sender: UIGestureRecognizer)
     func isClickedFilterCategoriesButton()
     func isShortViewMapTapped()
+    func isClickedPhoneButton(makerAnotation: MakerAnotation)
+    func isClickedEmailButton(makerAnotation: MakerAnotation)
+    
     var numberOfRowsInSectionCategoriesView: Int { get }
 }
 // MARK: - MapPresenter
@@ -177,6 +182,10 @@ extension MapPresenter: MapViewOutputProtocol {
         if let path = pathImage {
             if let image = imageManager.getImage(pathImage: path) {
                 imageMaker = image
+            } else {
+                if let image = UIImage(named: "undefinedImage", in: .module, compatibleWith: nil) {
+                    imageMaker = image
+                }
             }
         }
         else {
@@ -235,6 +244,25 @@ extension MapPresenter: MapViewOutputProtocol {
                 view.mapView.setRegion(region, animated: true)
             }
             isShortViewMapTapped()
+        }
+    }
+    //делаем исходящий звонок
+    func isClickedPhoneButton(makerAnotation: MakerAnotation) {
+        
+        if let url = URL(string: "tel://\(makerAnotation.phoneNumberMaker)"),
+           UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
+            
+        } else {
+            print("This app is not allowed to query for scheme tel")
+        }
+    }
+    
+    //отправляем email
+    func isClickedEmailButton(makerAnotation: MakerAnotation) {
+        if let emailURL = URL(string: "mailto:\(makerAnotation.emailMaker)"), UIApplication.shared.canOpenURL(emailURL)
+        {
+            UIApplication.shared.open(emailURL, options: [:], completionHandler: nil)
         }
     }
 }

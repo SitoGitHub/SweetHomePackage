@@ -198,7 +198,11 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
             //generate unique filname
             let name = ProcessInfo.processInfo.globallyUniqueString
             let path = "photo/temp/sweethome2/maker/\(name).jpeg"
-            pathImageMaker = path
+            
+            let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent(path)
+            if chosenImage.save(at: tempDirectoryUrl) != nil {
+                pathImageMaker = path
+            }
         } else{
             print("Something went wrong")
         }

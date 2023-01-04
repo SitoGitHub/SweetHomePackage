@@ -11,6 +11,8 @@ import SnapKit
 final class SliderBottomView: UIView {
     // MARK: - properties
     let routeButton = UIButton()
+    let phoneButton = UIButton()
+    let emailButton = UIButton()
     let makerLabel = UILabel()
     let categoryLabel = UILabel()
     let makerImageView = UIImageView()
@@ -35,6 +37,8 @@ final class SliderBottomView: UIView {
         setupMakerLabel()
         createCategoryLabel()
         createListOfCategoryLabel()
+        createPhoneButton()
+        createEmailButton()
         addViewConstraints()
         setupMakerImageView()
     }
@@ -89,9 +93,21 @@ final class SliderBottomView: UIView {
         self.addSubview(listOfCategoryLabel)
     }
     
+    private func createPhoneButton() {
+        phoneButton.backgroundColor = .clear
+        phoneButton.setImage(UIImage(named: "call", in: .module, compatibleWith: nil), for: .normal)
+        self.addSubview(phoneButton)
+    }
+    
+    private func createEmailButton() {
+        emailButton.backgroundColor = .clear
+        emailButton.setImage(UIImage(named: "email", in: .module, compatibleWith: nil), for: .normal)
+        self.addSubview(emailButton)
+    }
+    
     private func addViewConstraints() {
         routeButton.snp.makeConstraints { (make) -> Void in
-            make.centerX.equalToSuperview()
+            make.centerX.equalToSuperview().offset(-60)
             make.width.equalToSuperview().multipliedBy(0.3)
             make.height.equalToSuperview().multipliedBy(0.15)
             make.bottom.equalToSuperview().inset(30)
@@ -119,6 +135,18 @@ final class SliderBottomView: UIView {
         listOfCategoryLabel.snp.makeConstraints { (make) -> Void in
             make.width.equalToSuperview().inset(5)
             make.top.equalTo(categoryLabel.snp.bottom).offset(10)
+        }
+        phoneButton.snp.makeConstraints { (make) -> Void in
+            make.right.equalTo(emailButton.snp.left).offset(-15)
+            make.centerY.equalTo(routeButton.snp.centerY)
+            make.height.equalToSuperview().multipliedBy(0.20)
+            make.width.equalTo(phoneButton.snp.height)
+        }
+        emailButton.snp.makeConstraints { (make) -> Void in
+            make.right.equalToSuperview().inset(20)
+            make.centerY.equalTo(routeButton.snp.centerY)
+            make.height.equalTo(phoneButton.snp.height)
+            make.width.equalTo(emailButton.snp.height)
         }
     }
 }
