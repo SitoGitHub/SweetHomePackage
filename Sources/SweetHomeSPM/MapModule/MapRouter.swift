@@ -12,10 +12,14 @@ protocol MapRouterInputProtocol {
     func openRegistrtionScreen(for touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
     func presentWarnMessage(title: String?, descriptionText: String?)
     func openFilterCategoriesScreen()
+    func removeFilterCategoriesScreen()
 }
 // MARK: - MapRouter
 final class MapRouter {
     weak var viewController: MapViewController?
+    lazy var filterCategoriesViewController = FilterCategoriesModuleBuilder.build(delegate: viewController?.presenter as? FilterCategoriesModuleDelegate)
+    
+    lazy var indentOfRightForSliderFilterCategoriesView: CGFloat = 80
     
 }
 // MARK: - MapRouterInputProtocol
@@ -28,12 +32,25 @@ extension MapRouter: MapRouterInputProtocol {
     }
     
     func openFilterCategoriesScreen() {
-        let vc = FilterCategoriesModuleBuilder.build()
-        vc.providesPresentationContextTransitionStyle = true
-        vc.definesPresentationContext = true
-        vc.modalPresentationStyle=UIModalPresentationStyle.overCurrentContext
-        viewController?.present(vc, animated: true, completion: nil)
-        
+
+        viewController?.addChild(filterCategoriesViewController)
+        viewController?.view.addSubview(filterCategoriesViewController.view)
+        filterCategoriesViewController.didMove(toParent: viewController)
+        let viewWidth = viewController?.view.bounds.width
+        if let parentVC = viewController {
+            filterCategoriesViewController.view.snp.makeConstraints { (make) -> Void in
+                make.left.equalToSuperview()
+                make.top.equalTo(parentVC.filterCategoriesButton.snp.bottom)
+                make.bottom.equalToSuperview()
+                make.width.equalTo(viewWidth! - indentOfRightForSliderFilterCategoriesView)
+            }
+        }
+    }
+    
+    func removeFilterCategoriesScreen() {
+        filterCategoriesViewController.willMove(toParent: nil)
+        filterCategoriesViewController.view.removeFromSuperview()
+        filterCategoriesViewController.removeFromParent()
     }
     
     func presentWarnMessage(title: String?, descriptionText: String?) {

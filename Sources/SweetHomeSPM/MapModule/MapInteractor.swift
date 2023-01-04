@@ -23,7 +23,7 @@ final class MapInteractor {
 }
 // MARK: - MapInteractorInputProtocol
 extension MapInteractor: MapInteractorInputProtocol {
-    
+
     func fetchMakerData() {
         let pinMakers = coreDataManager.getPinMaker()
         switch pinMakers {
@@ -34,7 +34,7 @@ extension MapInteractor: MapInteractorInputProtocol {
             self.presenter?.fetchedMakerData(pinMakers: nil, error: error)
         }
     }
-    
+   
     //получение общего списка категорий продуктов
     func fetchCategoriesData () {
         let productCategories = coreDataManager.getProductCategories()

@@ -35,6 +35,11 @@ import MapKit
     let sliderBottomView = SliderBottomView()
     var productCategoriesButton: [UIButton] = []
     let filterCategoriesButton = UIButton()
+    let zoomInButton = UIButton()
+    let zoomOutButton = UIButton()
+     
+    let zoomButtonStack = UIStackView()
+     
     lazy var viewHeight = CGFloat()
     lazy var viewWidth = CGFloat()
     lazy var heightSliderView: CGFloat = 250
@@ -67,11 +72,12 @@ extension MapViewController: MKMapViewDelegate {
     private func initialize() {
         createMApView()
         setupSliderButtonView()
+        createZoomInOutButton()
         createFilterCategoriesButton()
         setupSliderFilterCategoriesView()
         addViewConstraints()
         presenter?.viewDidLoaded()
-        addViewConstraints()
+        //addViewConstraints()
         categoriesTableView.delegate = self
         categoriesTableView.dataSource = self
     }
@@ -94,10 +100,31 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     private func createFilterCategoriesButton() {
-        filterCategoriesButton.backgroundColor = .clear //Colors.activeButtonColor.colorViewUIColor
+        filterCategoriesButton.backgroundColor = .clear//Colors.activeButtonColor.colorViewUIColor
+        filterCategoriesButton.setImage(UIImage(named: "layers", in: .module, compatibleWith: nil), for: .normal)
         filterCategoriesButton.addTarget(self, action: #selector(isClickedFilterCategoriesButton), for: .touchUpInside)
-        // routeButton.frame = CGRect(x: 50, y: 50, width: 70, height: 30)
         mapView.addSubview(filterCategoriesButton)
+    }
+    
+    private func createZoomInOutButton() {
+        
+        zoomInButton.backgroundColor = .clear
+        zoomInButton.setImage(UIImage(named: "zoom-in", in: .module, compatibleWith: nil), for: .normal)
+        zoomInButton.addTarget(self, action: #selector(isClickedFZoomInButton), for: .touchUpInside)
+       
+        zoomOutButton.backgroundColor = .clear
+        zoomOutButton.setImage(UIImage(named: "zoom-out", in: .module, compatibleWith: nil), for: .normal)
+        zoomOutButton.addTarget(self, action: #selector(isClickedFZoomOutButton), for: .touchUpInside)
+        
+        zoomButtonStack.axis = .vertical
+        zoomButtonStack.distribution = .equalSpacing
+        zoomButtonStack.alignment = .leading
+        zoomButtonStack.spacing = 6.0
+        
+        zoomButtonStack.addArrangedSubview(zoomInButton)
+        zoomButtonStack.addArrangedSubview(zoomOutButton)
+        
+        view.addSubview(zoomButtonStack)
     }
     
     private func addViewConstraints() {
@@ -122,6 +149,18 @@ extension MapViewController: MKMapViewDelegate {
             make.top.equalTo(mapView.safeAreaInsets.top).inset(60)
             make.left.equalTo(mapView.safeAreaInsets.left).inset(25)
         }
+        zoomInButton.snp.makeConstraints { (make) -> Void in
+            make.width.equalTo(37)
+            make.height.equalTo(37)
+        }
+        zoomOutButton.snp.makeConstraints { (make) -> Void in
+            make.width.equalTo(37)
+            make.height.equalTo(37)
+        }
+        zoomButtonStack.snp.makeConstraints { (make) -> Void in
+            make.right.equalTo(mapView.safeAreaInsets.right).inset(20)
+            make.centerY.equalTo(mapView.snp.centerY)
+        }
     }
     
     @objc func isClickedFilterCategoriesButton() {
@@ -140,19 +179,23 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     private func hideFilterCategoriesView() {
-        mapView.alpha = 1
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
-            self.sliderFilterCategoriesView.snp.updateConstraints { (make) -> Void in
-                make.left.equalTo(-self.viewWidth)
-            }
-            self.mapView.layoutIfNeeded()
-        }
+
+        presenter?.isShortViewMapTapped()
     }
     
     private func setupMakerImageView() {
         let pathImageMaker = maker?.pathImageMaker
         presenter?.getMakerImage(pathImage: pathImageMaker)
         sliderBottomView.recognizer.addTarget(self, action: #selector(tapForMakerImageAction(_:)))
+    }
+    
+    //обработка клика на ZoomInButton
+    @objc func isClickedFZoomInButton() {
+        presenter?.isClickedFZoomInButton()
+    }
+    
+    @objc func isClickedFZoomOutButton() {
+        presenter?.isClickedFZoomOutButton()
     }
     
     //обработка клика на makerImageFiew action when makerImageFiew is pressed
@@ -399,7 +442,6 @@ extension MapViewController: UITableViewDelegate, UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         cell.textLabel?.text = productCategories?[indexPath.item].0
         cell.accessoryType = productCategories?[indexPath.item].1 ?? false ? .checkmark : .none
-        
         return cell
     }
 }

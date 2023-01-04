@@ -10,10 +10,15 @@ import MapKit
 protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
     func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
+   // func fetchedAnnotationData(pinMakers: [MakerAnotation]?, error: Errors?)
 }
 // MARK: - RegistrationModuleDelegate
 protocol RegistrationModuleDelegate: AnyObject {
     func fetchedNewMakerData(pinMakers: [MakerAnotation])
+}
+// MARK: - FilterCategoriesModuleDelegate
+protocol FilterCategoriesModuleDelegate: AnyObject {
+    func fetchedFilterCategoriesData(filterListCategories: [String])
 }
 // MARK: - GetProductMapDelegate
 protocol GetProductMapDelegate: AnyObject {
@@ -24,9 +29,12 @@ protocol MapViewOutputProtocol: AnyObject {
     func viewDidLoaded()
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D)
     func isTappedMakerImageView(touchCoordinate: CLLocationCoordinate2D, makerAnotation: MakerAnotation?)
+    func isClickedFZoomInButton()
+    func isClickedFZoomOutButton()
     func getMakerImage(pathImage: String?)
     func isLongTappedOnMapView(sender: UIGestureRecognizer)
     func isClickedFilterCategoriesButton()
+    func isShortViewMapTapped()
     var numberOfRowsInSectionCategoriesView: Int { get }
 }
 // MARK: - MapPresenter
@@ -41,13 +49,17 @@ final class MapPresenter {
     lazy var categoriesViewModel: [(String, Bool)] = []
     lazy var touchCoordinateTappedImageMaker = CLLocationCoordinate2D()
     var makerAnotationTappedImageMaker: MakerAnotation?
+    var filterCategoriesViewIsOpened = false
+    var filterListCategories: [String] = []
+    
     // MARK: - init
     init(interactor: MapInteractorInputProtocol, router: MapRouterInputProtocol, imageManager: ImageManagerProtocol) {
         self.interactor = interactor
         self.router = router
         self.imageManager = imageManager
     }
-    // MARK: - functions
+    
+    // MARK: - Private functions
     //обновляем данные на карте
     func refreshMakerData(pinMakers: [MakerAnotation]) {
         if let makerAnotation = makerAnotationTappedImageMaker {
@@ -56,6 +68,25 @@ final class MapPresenter {
         
         self.view?.showDate(pinMakers: pinMakers)
         view?.setupBottomViewMakerData()
+    }
+    
+    func getZoom() -> Double {
+        if let view = view {
+            var angleCamera = view.mapView.camera.heading
+            if angleCamera > 270 {
+                angleCamera = 360 - angleCamera
+            } else if angleCamera > 90 {
+                angleCamera = fabs(angleCamera - 180)
+            }
+            let angleRad = Double.pi * angleCamera / 180
+            let width = Double(view.mapView.frame.size.width)
+            let height = Double(view.mapView.frame.size.height)
+            let heightOffset : Double = 20
+            let spanStraight = width * view.mapView.region.span.longitudeDelta / (width * cos(angleRad) + (height - heightOffset) * sin(angleRad))
+            return log2(360 * ((width / 256) / spanStraight)) + 1;
+        } else {
+            return 0
+        }
     }
 }
 // MARK: - MapInteractorOutputProtocol
@@ -78,8 +109,24 @@ extension MapPresenter: MapInteractorOutputProtocol {
             }
             return
         }
+        var pin: [MakerAnotation] = []
+        if self.filterListCategories.isEmpty {
+            pin = pinMakers
+        } else {
+            for anotation in pinMakers {
+                guard let productCategoriesMaker = anotation.productCategoriesMaker else { return }
+                for productCategory in productCategoriesMaker {
+                    guard let productCategoryName = productCategory.category_name else { return }
+                    if self.filterListCategories.contains(productCategoryName) {
+                        pin.append(anotation)
+                        break
+                    }
+                }
+            }
+        }
+        
         DispatchQueue.main.async { [unowned self] in
-            self.view?.showDate(pinMakers: pinMakers)
+            self.view?.showDate(pinMakers: pin)
         }
     }
     
@@ -156,7 +203,39 @@ extension MapPresenter: MapViewOutputProtocol {
     }
     
     func isClickedFilterCategoriesButton() {
-        router.openFilterCategoriesScreen()
+        if !filterCategoriesViewIsOpened {
+            view?.mapView.alpha = 0.5
+            router.openFilterCategoriesScreen()
+        } else {
+            view?.mapView.alpha = 1
+            router.removeFilterCategoriesScreen()
+        }
+        filterCategoriesViewIsOpened = !filterCategoriesViewIsOpened
+    }
+    //скрываем filterCategoriesView
+    func isShortViewMapTapped() {
+        view?.mapView.alpha = 1
+        router.removeFilterCategoriesScreen()
+        filterCategoriesViewIsOpened = !filterCategoriesViewIsOpened
+    }
+    
+    func isClickedFZoomInButton() {
+        if let view = view {
+            let region = MKCoordinateRegion(center: view.mapView.region.center, span: MKCoordinateSpan(latitudeDelta: view.mapView.region.span.latitudeDelta*0.7, longitudeDelta: view.mapView.region.span.longitudeDelta*0.7))
+            view.mapView.setRegion(region, animated: true)
+            isShortViewMapTapped()
+        }
+    }
+    func isClickedFZoomOutButton() {
+        if let view = view {
+            let zoom = getZoom() // to get the value of zoom of your map.
+            if zoom > 3.5{ // **here i have used the condition that avoid the mapview to zoom less then 3.5 to avoid crash.**
+                
+                let region = MKCoordinateRegion(center: view.mapView.region.center, span: MKCoordinateSpan(latitudeDelta: view.mapView.region.span.latitudeDelta/0.7, longitudeDelta: view.mapView.region.span.longitudeDelta/0.7))
+                view.mapView.setRegion(region, animated: true)
+            }
+            isShortViewMapTapped()
+        }
     }
 }
 // MARK: - RegistrationModuleDelegate
@@ -171,5 +250,19 @@ extension MapPresenter: GetProductMapDelegate{
     //обновляем на карте данные
     func IsWrittenMakerAnnotation(pinMakers: [MakerAnotation]) {
         refreshMakerData(pinMakers: pinMakers)
+    }
+}
+
+// MARK: - FilterCategoriesDelegate
+extension MapPresenter: FilterCategoriesModuleDelegate{
+   
+    //обновляем на карте данные
+    func fetchedFilterCategoriesData(filterListCategories: [String]) {
+    
+        self.filterListCategories = filterListCategories
+        if let view = view {
+            view.mapView.removeAnnotations(view.mapView.annotations)
+        }
+        interactor.fetchMakerData()
     }
 }
