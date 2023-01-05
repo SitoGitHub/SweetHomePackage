@@ -70,9 +70,21 @@ extension FilterCategoriesViewController: FilterCategoriesViewInputProtocol {
     }
 }
 
-// MARK: - UITableViewDelegate, UITableViewDataSource
-extension FilterCategoriesViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDelegate
+extension FilterCategoriesViewController: UITableViewDelegate {
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard let cell = tableView.cellForRow(at: indexPath)
+        else { return }
+        let index = indexPath.row
+        let check = presenter?.didSelectRowAt(index: index)
+        cell.accessoryType = check ?? false ? .checkmark : .none
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension FilterCategoriesViewController: UITableViewDataSource {
+
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return presenter?.numberOfRowsInSectionCategoriesView ?? 0
     }
@@ -81,15 +93,6 @@ extension FilterCategoriesViewController: UITableViewDelegate, UITableViewDataSo
         let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
         cell.textLabel?.text = productCategories?[indexPath.item].0
         cell.accessoryType = productCategories?[indexPath.item].1 ?? false ? .checkmark : .none
-        
         return cell
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) //as? MyCustomCell
-        else { return }
-        let index = indexPath.row
-        let check = presenter?.didSelectRowAt(index: index)
-        cell.accessoryType = check ?? false ? .checkmark : .none
     }
 }

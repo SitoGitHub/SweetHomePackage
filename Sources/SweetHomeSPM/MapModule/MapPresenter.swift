@@ -11,8 +11,7 @@ import MessageUI
 // MARK: - MapInteractorOutputProtocol
 protocol MapInteractorOutputProtocol: AnyObject {
     func fetchedMakerData(pinMakers: [MakerAnotation]?, error: Errors?)
-    func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?)
-   // func fetchedAnnotationData(pinMakers: [MakerAnotation]?, error: Errors?)
+    
 }
 // MARK: - RegistrationModuleDelegate
 protocol RegistrationModuleDelegate: AnyObject {
@@ -49,7 +48,6 @@ final class MapPresenter {
     var router: MapRouterInputProtocol
     var interactor: MapInteractorInputProtocol
     var imageManager: ImageManagerProtocol
-    lazy var productCategories = [ProductCategory]()
     var numberOfCategories: Int?
     lazy var categoriesViewModel: [(String, Bool)] = []
     lazy var touchCoordinateTappedImageMaker = CLLocationCoordinate2D()
@@ -135,25 +133,6 @@ extension MapPresenter: MapInteractorOutputProtocol {
         }
     }
     
-    func fetchedProductCategoriesData(productCategories: [ProductCategory]?, error: Errors?) {
-        
-        guard let productCategories = productCategories, error == nil else {
-            switch error {
-            case .loadProdactCategoryError:
-                router.presentWarnMessage(title: "Возникла ошибка базы данных",
-                                          descriptionText: "Возникла ошибка при извлечении категорий продуктов")
-            default:
-                return
-            }
-            return
-        }
-        numberOfCategories = productCategories.count
-        self.productCategories = productCategories
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) {
-            self.view?.updateSliderFilterCategoriesView(productCategories: self.categoriesViewModel)
-        }
-    }
 }
 // MARK: - MapViewOutputProtocol
 extension MapPresenter: MapViewOutputProtocol {
@@ -164,11 +143,6 @@ extension MapPresenter: MapViewOutputProtocol {
     
     func viewDidLoaded() {
         interactor.fetchMakerData()
-    }
-    
-    //запрос данных
-    func ispressedProductCategoriesButton() {
-        interactor.fetchCategoriesData()
     }
     
     func newRegistrationIsTapped(touchCoordinate: CLLocationCoordinate2D) {

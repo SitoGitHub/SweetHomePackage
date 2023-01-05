@@ -98,15 +98,14 @@ extension GetProductCategoriesViewController: GetProductCategoriesViewInputProto
         self.productCategories = productCategories
     }
     
-    // stop activityIndicator
     func stopActivityIndicator() {
         activityIndicator.stopAnimating()
     }
     
 }
 
-// MARK: - UITableViewDelegate, UITableViewDataSource
-extension GetProductCategoriesViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDataSource
+extension GetProductCategoriesViewController: UITableViewDataSource {
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -120,9 +119,14 @@ extension GetProductCategoriesViewController: UITableViewDelegate, UITableViewDa
         cell.accessoryType = productCategories?[indexPath.item].1 ?? false ? .checkmark : .none
         return cell
     }
+}
+
+
+// MARK: - UITableViewDelegate
+extension GetProductCategoriesViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard let cell = tableView.cellForRow(at: indexPath) //as? MyCustomCell
+        guard let cell = tableView.cellForRow(at: indexPath)
         else { return }
         let index = indexPath.row
         let check = presenter?.didSelectRowAt(index: index)

@@ -9,7 +9,6 @@
 // MARK: - MapInteractorInputProtocol
 protocol MapInteractorInputProtocol: AnyObject {
     func fetchMakerData()
-    func fetchCategoriesData ()
 }
 // MARK: - MapInteractor
 final class MapInteractor {
@@ -32,18 +31,6 @@ extension MapInteractor: MapInteractorInputProtocol {
             
         case .failure(let error):
             self.presenter?.fetchedMakerData(pinMakers: nil, error: error)
-        }
-    }
-   
-    //получение общего списка категорий продуктов
-    func fetchCategoriesData () {
-        let productCategories = coreDataManager.getProductCategories()
-        switch productCategories {
-        case.success(let productCategories):
-            self.presenter?.fetchedProductCategoriesData(productCategories: productCategories, error: nil)
-            
-        case .failure(let error):
-            self.presenter?.fetchedProductCategoriesData(productCategories: nil, error: error)
         }
     }
 }

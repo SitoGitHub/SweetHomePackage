@@ -4,7 +4,7 @@
 //
 //  Created by Aleksei Grachev on 13/12/22.
 //
-//import Foundation
+
 import MapKit
 // MARK: - RegistrationViewOutputProtocol
 protocol RegistrationViewOutputProtocol: AnyObject {
@@ -110,7 +110,6 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
               let nameMaker = view?.nameTextField.text,
               let phoneNumberMaker = view?.phoneTextField.text,
               let emailMaker = view?.emailTextField.text
-                //let passwordMaker = password
         else { return }
         
         self.surnameMaker = surnameMaker
@@ -209,8 +208,7 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
     }
     
     func isSelectedRowMenuTableView(indexRow: Int) {
-        guard let navigationController = //self.navigationController else { return }
-                view?.navController else { return }
+        guard let navigationController = view?.navController else { return }
         switch indexRow {
         case 0:
             router.pushGetProductCategoriesViewController(to: navigationController, animated: true, phoneMaker: self.phoneMaker, emailMaker: self.email)
@@ -228,7 +226,6 @@ extension RegistrationPresenter: RegistrationViewOutputProtocol {
               let nameMaker = view?.nameTextField.text,
               let phoneNumberMaker = view?.phoneTextField.text,
               let emailMaker = view?.emailTextField.text
-                //let passwordMaker = password
         else { return }
         
         interactor.editDataMaker(surnameMaker: surnameMaker, nameMaker: nameMaker, phoneNumberMaker: phoneNumberMaker, emailMaker: emailMaker, passwordMaker: password, pathImageMaker: pathImageMaker, touchCoordinateMaker: touchCoordinate)

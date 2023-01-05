@@ -195,7 +195,6 @@ private extension RegistrationViewController {
         topStack.spacing = 16.0
         
         passwordStack.axis = .vertical
-        //topStack.backgroundColor = .yellow
         passwordStack.distribution = .equalSpacing
         passwordStack.alignment = .leading
         passwordStack.spacing = 16.0
@@ -205,7 +204,6 @@ private extension RegistrationViewController {
     }
     
     private func createSaveButton(){
-        //RouteButton.layer.masksToBounds = true
         saveButton.setTitle("Сохранить", for: .normal)
         saveButton.setTitleColor(Colors.whiteLabel.colorViewUIColor, for: .normal)
         saveButton.backgroundColor = Colors.activeButtonColor.colorViewUIColor
@@ -283,7 +281,6 @@ private extension RegistrationViewController {
         }
         
         saveButton.snp.makeConstraints { (make) -> Void in
-            // make.left.equalToSuperview().offset(60)
             make.centerX.equalToSuperview()
             make.width.equalToSuperview().multipliedBy(0.3)
             make.height.equalTo(30)
@@ -436,8 +433,8 @@ extension RegistrationViewController: RegistrationViewInputProtocol {
     }
 }
 
-// MARK: - UITableViewDelegate, UITableViewDataSource
-extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource {
+// MARK: - UITableViewDataSource
+extension RegistrationViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return listMenu.listMenu.count
@@ -462,6 +459,10 @@ extension RegistrationViewController: UITableViewDelegate, UITableViewDataSource
         
         return cell
     }
+}
+
+// MARK: - UITableViewDelegate
+extension RegistrationViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         presenter?.isSelectedRowMenuTableView(indexRow: indexPath.row)

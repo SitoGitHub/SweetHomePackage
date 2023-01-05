@@ -16,7 +16,6 @@ import MapKit
     func setMakerImageView(imageMAker: UIImage)
     func showAlertLocation(title: String, message: String?, url: URL?, titleAction: String?, touchCoordinate: CLLocationCoordinate2D?)
     func setupBottomViewMakerData()
-    func updateSliderFilterCategoriesView(productCategories: [(String, Bool)])
     func removePinMakers(pinMakers: MakerAnotation)
     var mapView: MKMapView { get }
     
@@ -27,10 +26,6 @@ import MapKit
      var mapView = MKMapView()
     var maker: MakerAnotation?
      let locationManager = CLLocationManager()
-    
-    lazy var sliderFilterCategoriesView = SliderFilterCategoriesView(tableView: categoriesTableView)
-    let categoriesTableView = UITableView()
-    let identifier = "MyCell"
     
     let sliderBottomView = SliderBottomView()
     var productCategoriesButton: [UIButton] = []
@@ -45,11 +40,6 @@ import MapKit
     lazy var heightSliderView: CGFloat = 250
     lazy var indentOfRightForSliderFilterCategoriesView: CGFloat = 80
     
-    var productCategories: [(String, Bool)]? {
-        didSet {
-            categoriesTableView.reloadData()
-        }
-    }
     lazy var isHiddenFilterCategoriesView = true
     
     var presenter: MapViewOutputProtocol?
@@ -74,12 +64,8 @@ extension MapViewController: MKMapViewDelegate {
         setupSliderButtonView()
         createZoomInOutButton()
         createFilterCategoriesButton()
-        setupSliderFilterCategoriesView()
         addViewConstraints()
         presenter?.viewDidLoaded()
-        //addViewConstraints()
-        categoriesTableView.delegate = self
-        categoriesTableView.dataSource = self
     }
     private func createMApView(){
         mapView.delegate = self
@@ -97,12 +83,8 @@ extension MapViewController: MKMapViewDelegate {
         sliderBottomView.emailButton.addTarget(self, action: #selector(isClickeEmailButton), for: .touchUpInside)
     }
     
-    private func setupSliderFilterCategoriesView() {
-        mapView.addSubview(sliderFilterCategoriesView)
-    }
-    
     private func createFilterCategoriesButton() {
-        filterCategoriesButton.backgroundColor = .clear//Colors.activeButtonColor.colorViewUIColor
+        filterCategoriesButton.backgroundColor = .clear
         filterCategoriesButton.setImage(UIImage(named: "layers", in: .module, compatibleWith: nil), for: .normal)
         filterCategoriesButton.addTarget(self, action: #selector(isClickedFilterCategoriesButton), for: .touchUpInside)
         mapView.addSubview(filterCategoriesButton)
@@ -139,12 +121,6 @@ extension MapViewController: MKMapViewDelegate {
             make.height.equalTo(heightSliderView)
             make.top.equalTo(viewHeight)
         }
-        sliderFilterCategoriesView.snp.makeConstraints { (make) -> Void in
-            make.left.equalTo(-viewWidth)
-            make.width.equalTo(viewWidth - indentOfRightForSliderFilterCategoriesView)
-            make.top.equalTo(filterCategoriesButton.snp.bottom)
-            make.bottom.equalToSuperview()
-        }
         filterCategoriesButton.snp.makeConstraints { (make) -> Void in
             make.width.equalTo(37)
             make.height.equalTo(37)
@@ -167,17 +143,6 @@ extension MapViewController: MKMapViewDelegate {
     
     @objc func isClickedFilterCategoriesButton() {
         presenter?.isClickedFilterCategoriesButton()
-    }
-    
-    //показываем
-    private func showFilterCategoriesView() {
-        mapView.alpha = 0.5
-        UIView.animate(withDuration: 0.5, delay: 0, usingSpringWithDamping: 1.0, initialSpringVelocity: 1.0, options: .curveEaseInOut) {
-            self.sliderFilterCategoriesView.snp.updateConstraints { (make) -> Void in
-                make.left.equalTo(self.viewWidth - self.viewWidth)
-            }
-            self.mapView.layoutIfNeeded()
-        }
     }
     
     private func hideFilterCategoriesView() {
@@ -286,10 +251,9 @@ extension MapViewController: MKMapViewDelegate {
     }
     
     //построить маршрут build and show a route
-    @objc func routeToMaker(){ //(mapView: MKMapView, annotationView view: MKAnnotationView){
+    @objc func routeToMaker(){
         guard let coordinate = locationManager.location?.coordinate else {return}
         self.mapView.removeOverlays(mapView.overlays) //удаляем старый маршрут с карты
-        //let maker = annotationView?.annotation as! MakerAnotation
         let startPoint = MKPlacemark(coordinate: coordinate)
         guard let maker = maker else {return}
         let endPoint = MKPlacemark(coordinate: maker.coordinate)
@@ -440,21 +404,4 @@ extension MapViewController: MapViewInputProtocol {
         setupMakerImageView()
     }
     
-     func updateSliderFilterCategoriesView(productCategories: [(String, Bool)]) {
-        self.productCategories = productCategories
-    }
-}
-// MARK: - UITableViewDelegate, UITableViewDataSource
-extension MapViewController: UITableViewDelegate, UITableViewDataSource {
-    
-     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return presenter?.numberOfRowsInSectionCategoriesView ?? 0
-    }
-    
-     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: identifier, for: indexPath)
-        cell.textLabel?.text = productCategories?[indexPath.item].0
-        cell.accessoryType = productCategories?[indexPath.item].1 ?? false ? .checkmark : .none
-        return cell
-    }
 }

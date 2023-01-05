@@ -4,7 +4,6 @@
 //  Created by Aleksei Grachev on 28/11/22.
 //
 
-import Foundation
 // MARK: - Errors
 public enum Errors: Error {
     case loadCountriesError

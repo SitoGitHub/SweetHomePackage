@@ -5,7 +5,6 @@
 //  Created by Aleksei Grachev on 19/12/22.
 //
 
-//import Foundation
 import MapKit
 // MARK: - LocationManagerProtocol
 protocol LocationManagerProtocol: AnyObject {
